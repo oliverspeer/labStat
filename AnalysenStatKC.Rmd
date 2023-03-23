@@ -43,33 +43,86 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 ```{r prepare_data, echo=FALSE, message=FALSE, warning=FALSE}
 # import data
 library(readxl)
-Txp.Umsatz <- read.csv2("UmsatzStatistik.csv")
+tarif.scales <- read.csv2("UmsatzStatistik.csv")
 
 head1 <- read_excel("globaldata.xlsx", col_names = TRUE) %>% names()
 head2 <- read_excel("globaldata.xlsx", skip = 1, col_names = TRUE) %>% names()
-head <- paste0(head1, sep = "_", head2)
-global.data <- read_excel("globaldata.xlsx", skip = 2, col_names = head, col_types = 
-                            c("text", "skip", "skip", "skip", "date", "text", "text", "numeric", 
-                              "numeric",   "numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric",
-                              "numeric","numeric","numeric","numeric","numeric","numeric",
-                              "numeric","numeric","numeric","numeric","numeric","numeric",
-                              "numeric","numeric","numeric","numeric","numeric","numeric",
-                              "numeric","numeric","numeric","numeric","numeric","numeric",
-                              "numeric","numeric","numeric"))
+head <- paste0(head2, sep = "_", head1)
+global.data <- read_excel("globaldata.xlsx", skip = 2, col_names = head, col_types =
+                            c(
+                              "text",
+                              "skip",
+                              "skip",
+                              "skip",
+                              "date",
+                              "text",
+                              "text",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric"
+                            ))
 
-global.data <- global.data |> filter(!grepl("Tagesnummer", global.data$Tagesnummer_))
-global.data.na <- global.data |> filter(!is.na(Tagesnummer_))
+global.data <- global.data |> filter(!grepl("Tagesnummer", global.data$a_Tagesnummer))
+global.data <- global.data |> filter(!is.na(a_Tagesnummer))
 
 
-# change day-number to date
-global.data$Datum <- ymd(substr(global.data$Tagesnummer_, 1, 10))
+# change day-number to date and reorder column
+global.data$Datum <- ymd(substr(global.data$a_Tagesnummer, 1, 10))
+global.data <- cbind(global.data[,1:4], Datum = global.data$Datum, global.data[,5:ncol(global.data)])
+
 # count analysis and create new data frame
-global.data.sort <- global.data |> group_by(Datum) |>
-  summarise(
-    NaCount = sum(!is.na(Natrium)),
-    CRPCount = sum(!is.na(CRP)),
-    CRPhs = sum(!is.na(`CRP (hoch sensitiv)`))
-  )
+analy.pivot <- global.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte")
+
+
+
+
+
+
+#global.data.sort <- global.data |> group_by(Datum) |>
+#  summarise(
+#    NaCount = sum(!is.na(Natrium)),
+#    CRPCount = sum(!is.na(CRP)),
+#    CRPhs = sum(!is.na(`CRP (hoch sensitiv)`))
+#  )
 ```
 
 ```{r plotAU, echo=FALSE, message=FALSE, warning=FALSE}
