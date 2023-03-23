@@ -41,11 +41,29 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 
 
 ```{r prepare_data, echo=FALSE, message=FALSE, warning=FALSE}
+# import data
 library(readxl)
-global.data <- read_excel("C:\\R_local\\labStat\\globaldata.xlsx")
-# elektrolyte <- read_xlsx("C:\\R_local\\labStat\\MethodenStatistik_elektrol.xlsx")
+Txp.Umsatz <- read.csv2("UmsatzStatistik.csv")
 
-global.data$Datum <- ymd(substr(global.data$Tagesnummer, 1, 10))
+head1 <- read_excel("globaldata.xlsx", col_names = TRUE) %>% names()
+head2 <- read_excel("globaldata.xlsx", skip = 1, col_names = TRUE) %>% names()
+head <- paste0(head1, sep = "_", head2)
+global.data <- read_excel("globaldata.xlsx", skip = 2, col_names = head, col_types = 
+                            c("text", "skip", "skip", "skip", "date", "text", "text", "numeric", 
+                              "numeric",   "numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric",
+                              "numeric","numeric","numeric","numeric","numeric","numeric",
+                              "numeric","numeric","numeric","numeric","numeric","numeric",
+                              "numeric","numeric","numeric","numeric","numeric","numeric",
+                              "numeric","numeric","numeric","numeric","numeric","numeric",
+                              "numeric","numeric","numeric"))
+
+global.data <- global.data |> filter(!grepl("Tagesnummer", global.data$Tagesnummer_))
+global.data.na <- global.data |> filter(!is.na(Tagesnummer_))
+
+
+# change day-number to date
+global.data$Datum <- ymd(substr(global.data$Tagesnummer_, 1, 10))
+# count analysis and create new data frame
 global.data.sort <- global.data |> group_by(Datum) |>
   summarise(
     NaCount = sum(!is.na(Natrium)),
@@ -56,7 +74,7 @@ global.data.sort <- global.data |> group_by(Datum) |>
 
 ```{r plotAU, echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = global.data.sort) + 
-  geom_point(mapping =  aes(Datum, CRPCount)) +
+  geom_point(mapping =  aes(Datum, CRPCount,)) +
     geom_point(mapping = aes(Datum, NaCount))
 ```
 
