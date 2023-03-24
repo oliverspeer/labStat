@@ -113,6 +113,8 @@ global.data <- global.data |> filter(!is.na(a_Tagesnummer))
 
 # change day-number to date and reorder column
 global.data$Datum <- ymd(substr(global.data$a_Tagesnummer, 1, 10))
+
+
 global.data <- cbind(global.data[,1:4], Datum = global.data$Datum, 
                      global.data[,5:ncol(global.data)])
 
@@ -129,6 +131,13 @@ analy.pivot <- global.data |> pivot_longer(
 anpijona <- left_join(analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
 
 tidy.AU.data <- subset(anpijona, select = -c(Tagesnummer))
+
+#call age
+tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) - (month(tidy.AU.data$Datum) < month(tidy.AU.data$e_Geb.datum) | (month(tidy.AU.data$Datum) == month(tidy.AU.data$e_Geb.datum) & day(tidy.AU.data$Datum) < day(tidy.AU.data$e_Geb.datum)))
+
+tidy.AU.data <- cbind(tidy.AU.data[,1:3], Alter = tidy.AU.data$Alter, 
+                     tidy.AU.data[,4:ncol(tidy.AU.data)])
+
 
 write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
 
