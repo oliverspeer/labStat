@@ -5,9 +5,22 @@ global.data <- read_excel("globaldata.xlsx", col_types =
 # elektrolyte <- read_xlsx("C:\\R_local\\labStat\\MethodenStatistik_elektrol.xlsx")
 
 
-global.data$Datum <- ymd(substr(global.data$Tagesnummer, 1, 10))
+global.data$Datum[2] <- ymd(substr(global.data$Tagesnummer, 1, 10))
 
-Analysen <- global.data |> pivot_longer(cols = Calcium:Phosphat, names_to = "Parameter", values_to = "Werte")
+Analysen <- global.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte")
+
+analy.tarif <-
+  left_join(
+    DxI1.qm.data,
+    DxI2.qm.data,
+    by = c("Datum", "Level", "Parameter", "Zielwert", "SD", "Proben-ID"),
+    multiple = "any",
+    na_matches = "never"
+  )
 
 
 
