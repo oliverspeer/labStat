@@ -1,18 +1,39 @@
 library(lubridate)
 library(dplyr)
 
-# create a sample data frame
-df <- data.frame(
-  id = c(1, 2, 3, 4, 5),
-  date = c("2022-01-05", "2022-02-07", "2022-01-12", "2022-03-21", "2022-02-15"),
-  variable = c("A", "B", "C", "A", "B")
-)
+
 
 # convert date column to month-year format
-df$month_year <- format(ymd(df$date), "%Y-%m")
+tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+
+
+
+
+Monate <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+
+
 
 # count unique variables per month
-df %>%
-  group_by(month_year) %>%
-  summarize(count = n_distinct(variable))
 
+
+dxi.sum.data <- tidy.dxi.data |> 
+  group_by(Year_Month) |> 
+  summarize(DxI_TxpUmsatz = sum(!is.na(Taxpkt.)),
+            DxI_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
+            )
+
+dxi.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%d/%m/%Y")
+
+Analysen.count <- global.data |> group_by(Datum) |>
+  summarise(
+    Natrium.c = sum(!is.na(Natrium)),
+    Kalium.c = sum(!is.na(Kalium)),
+    Calcium.c = sum(!is.na(Calcium)),
+    Chlorid.c = sum(!is.na(Chlorid)),
+    Aufträge = sum(!is.na(Tagesnummer))
+  )

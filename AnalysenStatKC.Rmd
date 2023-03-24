@@ -40,7 +40,7 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 
 
 
-```{r prepare_data, echo=FALSE, message=FALSE, warning=FALSE}
+```{r prepare_AU_data, echo=FALSE, message=FALSE, warning=FALSE}
 # import data
 library(readxl)
 tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
@@ -114,9 +114,9 @@ global.data <- global.data |> filter(!is.na(a_Tagesnummer))
 # change day-number to date and reorder column
 global.data$Datum <- ymd(substr(global.data$a_Tagesnummer, 1, 10))
 
-
-global.data <- cbind(global.data[,1:4], Datum = global.data$Datum, 
-                     global.data[,5:ncol(global.data)])
+global.data <- global.data |> relocate(Datum, .before = g_Auftragg.)
+#global.data <- cbind(global.data[,1:4], Datum = global.data$Datum, 
+                    # global.data[,5:ncol(global.data)])
 
 # create new data frame, sort analysis-names in one column (Bezeichnung), 
 #code into another (Methode) and results into a third (Werte)
@@ -137,7 +137,7 @@ tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) 
 
 tidy.AU.data <- cbind(tidy.AU.data[,1:3], Alter = tidy.AU.data$Alter, 
                      tidy.AU.data[,4:ncol(tidy.AU.data)])
-
+tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
 
 write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
 
@@ -158,7 +158,121 @@ ggplot(data = global.data.sort) +
 
 
 #### DxI-800
+```{r prepare_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
+
+tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
+  "text",
+  "text",
+  "text",
+  "skip",
+  "skip",
+  "skip",
+  "numeric",
+  "skip",
+  "numeric",
+  "skip"))
+
+
+
+head1 <- read_excel("dxidata.xlsx", col_names = TRUE) %>% names()
+head2 <- read_excel("dxidata.xlsx", skip = 1, col_names = TRUE) %>% names()
+head <- paste0(head2, sep = "_", head1)
+global.dxi.data <- read_excel("dxidata.xlsx", skip = 2, col_names = head, col_types =
+                            c(
+                              "text",
+                              "numeric",
+                              "skip",
+                              "skip",
+                              "date",
+                              "text",
+                              "text",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric"
+                            ))
+
+global.dxi.data <- global.dxi.data |> filter(!grepl("Tagesnummer", global.dxi.data$a_Tagesnummer))
+global.dxi.data <- global.dxi.data |> filter(!is.na(a_Tagesnummer))
+
+
+# change day-number to date and reorder column
+global.dxi.data$Datum <- ymd(substr(global.dxi.data$a_Tagesnummer, 1, 10))
+
+global.dxi.data <- global.dxi.data |> relocate(Datum, .before = `a-Fetoprotein_14097`)   
+
+
+# create new data frame, sort analysis-names in one column (Bezeichnung), 
+#code into another (Methode) and results into a third (Werte)
+dxi.analy.pivot <- global.dxi.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte",
+  values_drop_na = TRUE)
+
+#left join to get tax point information from tariff, remove junk data, save tidy data
+dxi.anpijona <- left_join(dxi.analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+
+tidy.dxi.data <- subset(dxi.anpijona, select = -c(Tagesnummer))
+
+#call age
+tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datum) - (month(tidy.dxi.data$Datum) < month(tidy.dxi.data$e_Geb.datum) | (month(tidy.dxi.data$Datum) == month(tidy.dxi.data$e_Geb.datum) & day(tidy.dxi.data$Datum) < day(tidy.dxi.data$e_Geb.datum)))
+
+tidy.dxi.data <- tidy.dxi.data |> relocate(Alter, .before = f_Geschl.)
+
+
+write.csv2(tidy.dxi.data, "tidy_DxI_dataTxp.csv", col.names = TRUE)
+
+```
   
+
+```{r}
+tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+
+dxi.sum.data <- tidy.dxi.data |> 
+  group_by(Year_Month) |> 
+  summarize(DxI_TxpUmsatz = sum(!is.na(Taxpkt.)),
+            DxI_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
+            )
+
+dxi.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%d/%m/%Y")
+
+```
+
+
   
 ## Spez. Chemie  
   
