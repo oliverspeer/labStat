@@ -15,3 +15,4 @@ df$month_year <- format(ymd(df$date), "%Y-%m")
 df %>%
   group_by(month_year) %>%
   summarize(count = n_distinct(variable))
+
