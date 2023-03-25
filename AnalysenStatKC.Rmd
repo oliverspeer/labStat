@@ -222,8 +222,8 @@ tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
 
 
 
-head1 <- read_excel("dxidata.xlsx", col_names = TRUE) %>% names()
-head2 <- read_excel("dxidata.xlsx", skip = 1, col_names = TRUE) %>% names()
+head1 <- read_excel("dxidata.xlsx", col_names = TRUE) |>  names()
+head2 <- read_excel("dxidata.xlsx", skip = 1, col_names = TRUE)  |>  names()
 head <- paste0(head2, sep = "_", head1)
 global.dxi.data <- read_excel("dxidata.xlsx", skip = 2, col_names = head, col_types =
                             c(
@@ -304,7 +304,7 @@ write.csv2(tidy.dxi.data, "tidy_DxI_dataTxp.csv", col.names = TRUE)
 
 ```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
-tidy.dxi.data$Quarter 
+
 
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
@@ -312,16 +312,29 @@ dxi.sum.data <- tidy.dxi.data |>
             DxI_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
             )
+dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
+dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
 
 dxi.sum.data |> flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+          value = as_paragraph(
+            linerange(value = DxI_TxpUmsatz, max = max(DxI_TxpUmsatz), height = .15)
+            ),
+  part = "body") |> 
+  set_header_labels(
+    DxI_TxpUmsatz = " ",
+    DxI_Aufträge = "Aufträge",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit") |> 
-  colformat_date(fmt_date = "%d/%m/%Y")
+  colformat_date(fmt_date = "%m/%Y") 
 
 ```
 
-```{r show DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
+```{r 2022 DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
 dxi.sum.method <- tidy.dxi.data |> 
      mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
             Year = year(Datum)) |> 
@@ -345,9 +358,15 @@ dxi.sum.method |>
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
   add_header_row(
-    values = c("Methoden", "2022"),
+    values = c("Methoden", "n in 2022"),
     colwidths = c(1, 4)) |> 
     theme_box() |>  
+  set_header_labels(
+    Q1_2022 = "Q1",
+    Q2_2022 = "Q2",
+    Q3_2022 = "Q3",
+    Q4_2022 = "Q4"
+  ) |> 
   align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit")
 
