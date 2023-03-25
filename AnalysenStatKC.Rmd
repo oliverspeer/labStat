@@ -333,15 +333,22 @@ dxi.sum.method <- tidy.dxi.data |>
      pivot_wider(
          names_from = c(Quarter, Year), 
          values_from = Analysen, 
-         names_glue = "{Quarter}_{Year}",
+         # names_glue = "{Quarter}_{Year}",
          names_sort = TRUE
      )
+
+
+
 
 dxi.sum.method |> 
   flextable() |> 
   theme_vanilla() |> 
-  align(align = "center", part = "all")|> 
   bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "2022"),
+    colwidths = c(1, 4)) |> 
+    theme_box() |>  
+  align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit")
 
 
