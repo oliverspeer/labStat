@@ -61,7 +61,7 @@ head <- paste0(head2, sep = "_", head1)
 global.data <- read_excel("globaldata.xlsx", skip = 2, col_names = head, col_types =
                             c(
                               "text",
-                              "skip",
+                              "numeric",
                               "skip",
                               "skip",
                               "date",
@@ -128,16 +128,17 @@ analy.pivot <- global.data |> pivot_longer(
   values_drop_na = TRUE)
 
 #left join to get tax point information from tariff, remove junk data, save tidy data
-anpijona <- left_join(analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+tidy.AU.data <- left_join(analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
 
-tidy.AU.data <- subset(anpijona, select = -c(Tagesnummer))
+tidy.AU.data <- subset(tidy.AU.data, select = -c(Tagesnummer))
 
 #call age
 tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) - (month(tidy.AU.data$Datum) < month(tidy.AU.data$e_Geb.datum) | (month(tidy.AU.data$Datum) == month(tidy.AU.data$e_Geb.datum) & day(tidy.AU.data$Datum) < day(tidy.AU.data$e_Geb.datum)))
 
-tidy.AU.data <- cbind(tidy.AU.data[,1:3], Alter = tidy.AU.data$Alter, 
-                     tidy.AU.data[,4:ncol(tidy.AU.data)])
+# tidy.AU.data <- cbind(tidy.AU.data[,1:3], Alter = tidy.AU.data$Alter, 
+#                      tidy.AU.data[,4:ncol(tidy.AU.data)])
 tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
+
 
 write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
 
@@ -149,16 +150,63 @@ write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
 #  )
 ```
 
+```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
+tidy.AU.data$Quarter 
+
+AU.sum.data <- tidy.AU.data |> 
+  group_by(Year_Month) |> 
+  summarize(AU_TxpUmsatz = sum(!is.na(Taxpkt.)),
+            AU_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
+            )
+
+AU.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%d/%m/%Y")
+
+```
+
+
+```{r show DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
+AU.sum.method <- tidy.AU.data |> 
+     mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+            Year = year(Datum)) |> 
+     filter(Year == 2022) |> 
+     summarise(
+         Analysen = n(),
+         .by = c(Quarter, Year, Bezeichnung)
+     ) |> 
+     pivot_wider(
+         names_from = c(Quarter, Year), 
+         values_from = Analysen, 
+         names_glue = "{Quarter}_{Year}",
+         names_sort = TRUE
+     )
+
+AU.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  align(align = "center", part = "all")|> 
+  bg(bg = "grey", part = "header") |> 
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+```
+
+
 ```{r plotAU, echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(data = global.data.sort) + 
-  geom_point(mapping =  aes(Datum, CRPCount,)) +
-    geom_point(mapping = aes(Datum, NaCount))
+# ggplot(data = global.data.sort) + 
+#   geom_point(mapping =  aes(Datum, CRPCount,)) +
+#     geom_point(mapping = aes(Datum, NaCount))
 ```
 
 
 
 #### DxI-800
-```{r prepare_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
+```{r tidyup_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
 
 tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "text",
@@ -239,9 +287,9 @@ dxi.analy.pivot <- global.dxi.data |> pivot_longer(
   values_drop_na = TRUE)
 
 #left join to get tax point information from tariff, remove junk data, save tidy data
-dxi.anpijona <- left_join(dxi.analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+tidy.dxi.data <- left_join(dxi.analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
 
-tidy.dxi.data <- subset(dxi.anpijona, select = -c(Tagesnummer))
+tidy.dxi.data <- subset(tidy.dxi.data, select = -c(Tagesnummer))
 
 #call age
 tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datum) - (month(tidy.dxi.data$Datum) < month(tidy.dxi.data$e_Geb.datum) | (month(tidy.dxi.data$Datum) == month(tidy.dxi.data$e_Geb.datum) & day(tidy.dxi.data$Datum) < day(tidy.dxi.data$e_Geb.datum)))
@@ -254,8 +302,9 @@ write.csv2(tidy.dxi.data, "tidy_DxI_dataTxp.csv", col.names = TRUE)
 ```
   
 
-```{r}
+```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+tidy.dxi.data$Quarter 
 
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
@@ -272,6 +321,31 @@ dxi.sum.data |> flextable() |>
 
 ```
 
+```{r show DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
+dxi.sum.method <- tidy.dxi.data |> 
+     mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+            Year = year(Datum)) |> 
+     filter(Year == 2022) |> 
+     summarise(
+         Analysen = n(),
+         .by = c(Quarter, Year, Bezeichnung)
+     ) |> 
+     pivot_wider(
+         names_from = c(Quarter, Year), 
+         values_from = Analysen, 
+         names_glue = "{Quarter}_{Year}",
+         names_sort = TRUE
+     )
+
+dxi.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  align(align = "center", part = "all")|> 
+  bg(bg = "grey", part = "header") |> 
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+```
 
   
 ## Spez. Chemie  
