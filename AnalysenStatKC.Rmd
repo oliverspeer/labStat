@@ -41,8 +41,10 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 
 
 ```{r prepare_AU_data, echo=FALSE, message=FALSE, warning=FALSE}
-# import data
+# import AU data
 library(readxl)
+
+#import tariff data
 tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "text",
   "text",
@@ -55,10 +57,26 @@ tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "numeric",
   "skip"))
 
-head1 <- read_excel("globaldata.xlsx", col_names = TRUE) %>% names()
-head2 <- read_excel("globaldata.xlsx", skip = 1, col_names = TRUE) %>% names()
+
+# import AU data
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the materila and machine in its name
+
+file_pattern <- "BlutAU"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+
+head1 <- read_excel(full_path, col_names = TRUE)  |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
 head <- paste0(head2, sep = "_", head1)
-global.data <- read_excel("globaldata.xlsx", skip = 2, col_names = head, col_types =
+global.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                             c(
                               "text",
                               "numeric",
@@ -114,7 +132,7 @@ global.data <- global.data |> filter(!is.na(a_Tagesnummer))
 # change day-number to date and reorder column
 global.data$Datum <- ymd(substr(global.data$a_Tagesnummer, 1, 10))
 
-global.data <- global.data |> relocate(Datum, .before = g_Auftragg.)
+global.data <- global.data |> relocate(Datum, .before = 6)
 #global.data <- cbind(global.data[,1:4], Datum = global.data$Datum, 
                     # global.data[,5:ncol(global.data)])
 
@@ -140,7 +158,7 @@ tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) 
 tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
 
 
-write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
+write_excel_csv(tidy.AU.data, "tidyAUdataTxp.csv", col_names = TRUE)
 
 #global.data.sort <- global.data |> group_by(Datum) |>
 #  summarise(
@@ -152,20 +170,33 @@ write.csv2(tidy.AU.data, "tidyAUdataTxp.csv", col.names = TRUE)
 
 ```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
-tidy.AU.data$Quarter 
+
 
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
   summarize(AU_TxpUmsatz = sum(!is.na(Taxpkt.)),
             AU_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
-            )
+  )
+AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
+AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
 
 AU.sum.data |> flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = AU_TxpUmsatz, max = max(AU_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    AU_TxpUmsatz = " ",
+    AU_Aufträge = "Aufträge",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit") |> 
-  colformat_date(fmt_date = "%d/%m/%Y")
+  colformat_date(fmt_date = "%m/%Y") 
 
 ```
 
@@ -220,12 +251,24 @@ tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "numeric",
   "skip"))
 
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the material and machine in its name
+
+file_pattern <- "BlutDxI"
 
 
-head1 <- read_excel("dxidata.xlsx", col_names = TRUE) |>  names()
-head2 <- read_excel("dxidata.xlsx", skip = 1, col_names = TRUE)  |>  names()
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+
 head <- paste0(head2, sep = "_", head1)
-global.dxi.data <- read_excel("dxidata.xlsx", skip = 2, col_names = head, col_types =
+global.dxi.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                             c(
                               "text",
                               "numeric",
@@ -274,7 +317,7 @@ global.dxi.data <- global.dxi.data |> filter(!is.na(a_Tagesnummer))
 # change day-number to date and reorder column
 global.dxi.data$Datum <- ymd(substr(global.dxi.data$a_Tagesnummer, 1, 10))
 
-global.dxi.data <- global.dxi.data |> relocate(Datum, .before = `a-Fetoprotein_14097`)   
+global.dxi.data <- global.dxi.data |> relocate(Datum, .before = 6)   
 
 
 # create new data frame, sort analysis-names in one column (Bezeichnung), 
@@ -297,7 +340,7 @@ tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datu
 tidy.dxi.data <- tidy.dxi.data |> relocate(Alter, .before = f_Geschl.)
 
 
-write.csv2(tidy.dxi.data, "tidy_DxI_dataTxp.csv", col.names = TRUE)
+write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 
 ```
   
@@ -379,11 +422,13 @@ dxi.sum.method |>
 #### BNII Nephelometrie  
 
 ```{r tidyup_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
+files <- list.files("H:\\Statistiken\\")
 
-tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
+
+tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
   "text",
   "text",
-  "text",
+  "skip",
   "skip",
   "skip",
   "skip",
@@ -393,65 +438,73 @@ tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "skip"))
 
 
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
 
-head1 <- read_excel("BNIIdata.xlsx", col_names = TRUE) |>  names()
-head2 <- read_excel("BNIIdata.xlsx", skip = 1, col_names = TRUE)  |>  names()
+# find the file that has the materila and machine in its name
+
+file_pattern <- "BNII"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+
 head <- paste0(head2, sep = "_", head1)
-global.dxi.data <- read_excel("BNIIdata.xlsx", skip = 2, col_names = head, col_types =
-                            c(
-                              "text",
-                              "numeric",
-                              "skip",
-                              "skip",
-                              "date",
-                              "text",
-                              "text",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric"
-                            ))
+global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                                c(
+                                  "text",
+                                  "numeric",
+                                  "skip",
+                                  "skip",
+                                  "date",
+                                  "text",
+                                  "text",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric"
+                                ))
 
-global.bn.data <- global.bn.data |> filter(!grepl("Tagesnummer", global.dxi.data$a_Tagesnummer))
+global.bn.data <- global.bn.data |> filter(!grepl("Tagesnummer", global.bn.data$a_Tagesnummer))
 global.bn.data <- global.bn.data |> filter(!is.na(a_Tagesnummer))
 
 
 # change day-number to date and reorder column
-global.dxi.data$Datum <- ymd(substr(global.dxi.data$a_Tagesnummer, 1, 10))
+global.bn.data$Datum <- ymd(substr(global.bn.data$a_Tagesnummer, 1, 10))
 
-global.dxi.data <- global.dxi.data |> relocate(Datum, .before = `a-Fetoprotein_14097`)   
+global.bn.data <- global.bn.data |> relocate(Datum, .before = 6)   
 
 
 # create new data frame, sort analysis-names in one column (Bezeichnung), 
 #code into another (Methode) and results into a third (Werte)
-dxi.analy.pivot <- global.dxi.data |> pivot_longer(
+bn.analy.pivot <- global.bn.data |> pivot_longer(
   cols = !(a_Tagesnummer:Datum), 
   names_to = c("Bezeichnung","Methode"),
   names_sep = "_",
@@ -459,45 +512,45 @@ dxi.analy.pivot <- global.dxi.data |> pivot_longer(
   values_drop_na = TRUE)
 
 #left join to get tax point information from tariff, remove junk data, save tidy data
-tidy.dxi.data <- left_join(dxi.analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+tidy.bn.data <- left_join(bn.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
 
-tidy.dxi.data <- subset(tidy.dxi.data, select = -c(Tagesnummer))
+tidy.bn.data <- subset(tidy.bn.data, select = -c(Tagesnummer))
 
 #call age
-tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datum) - (month(tidy.dxi.data$Datum) < month(tidy.dxi.data$e_Geb.datum) | (month(tidy.dxi.data$Datum) == month(tidy.dxi.data$e_Geb.datum) & day(tidy.dxi.data$Datum) < day(tidy.dxi.data$e_Geb.datum)))
+tidy.bn.data$Alter <- year(tidy.bn.data$Datum) - year(tidy.bn.data$e_Geb.datum) - (month(tidy.bn.data$Datum) < month(tidy.bn.data$e_Geb.datum) | (month(tidy.bn.data$Datum) == month(tidy.bn.data$e_Geb.datum) & day(tidy.bn.data$Datum) < day(tidy.bn.data$e_Geb.datum)))
 
-tidy.dxi.data <- tidy.dxi.data |> relocate(Alter, .before = f_Geschl.)
+tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
 
 
-write.csv2(tidy.dxi.data, "tidy_DxI_dataTxp.csv", col.names = TRUE)
+write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
 
 ```
   
 
 ```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
 
 
-dxi.sum.data <- tidy.dxi.data |> 
+bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
-  summarize(DxI_TxpUmsatz = sum(!is.na(Taxpkt.)),
-            DxI_Aufträge = n_distinct(a_Tagesnummer),
+  summarize(bn_TxpUmsatz = sum(!is.na(Taxpkt.)),
+            bn_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
-            )
-dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
-dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
+  )
+bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
+bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
 
-dxi.sum.data |> flextable() |> 
+bn.sum.data |> flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
   mk_par(j = 2,
-          value = as_paragraph(
-            linerange(value = DxI_TxpUmsatz, max = max(DxI_TxpUmsatz), height = .15)
-            ),
-  part = "body") |> 
+         value = as_paragraph(
+           linerange(value = bn_TxpUmsatz, max = max(bn_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
   set_header_labels(
-    DxI_TxpUmsatz = " ",
-    DxI_Aufträge = "Aufträge",
+    bn_TxpUmsatz = " ",
+    bn_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -509,32 +562,31 @@ dxi.sum.data |> flextable() |>
 
 
 ```{r 2022 DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
-dxi.sum.method <- tidy.dxi.data |> 
-     mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
-            Year = year(Datum)) |> 
-     filter(Year == 2022) |> 
-     summarise(
-         Analysen = n(),
-         .by = c(Quarter, Year, Bezeichnung)
-     ) |> 
-     pivot_wider(
-         names_from = c(Quarter, Year), 
-         values_from = Analysen, 
-         # names_glue = "{Quarter}_{Year}",
-         names_sort = TRUE
-     )
+bn.sum.method <- tidy.bn.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2022) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
 
 
 
 
-dxi.sum.method |> 
+bn.sum.method |> 
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
   add_header_row(
     values = c("Methoden", "n in 2022"),
     colwidths = c(1, 4)) |> 
-    theme_box() |>  
+  theme_box() |>  
   set_header_labels(
     Q1_2022 = "Q1",
     Q2_2022 = "Q2",
@@ -543,6 +595,7 @@ dxi.sum.method |>
   ) |> 
   align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit")
+
 
 
 ```
