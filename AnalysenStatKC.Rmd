@@ -1142,7 +1142,7 @@ write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 
 
 ```{r flex vhII.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
+  tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
 
 
 vh.sum.data <- tidy.vh.data |> 
@@ -1214,14 +1214,17 @@ vh.sum.method |>
 ```
 
 
-```{r}
+```{r summing up, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(stringr)
+
 combined.data <- bind_rows(AU.sum.data, 
-                      dxi.sum.data, 
-                      bn.sum.data, 
-                      hplc.sum.data, 
-                      lcms.sum.data,
-                      vh.sum.data
-                      )
+                           dxi.sum.data, 
+                           bn.sum.data, 
+                           hplc.sum.data, 
+                           lcms.sum.data,
+                           vh.sum.data
+)
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
@@ -1229,7 +1232,44 @@ sum.data <- combined.data |>
     Aufträge_KC = sum(sum(ifelse(is.na(AU_Aufträge), 0, AU_Aufträge)), 
                       sum(ifelse(is.na(DxI_Aufträge), 0, DxI_Aufträge))),
     Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
-           )))
+    )))
+
+sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
+sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
+sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
+
+
+
+
+
+sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
+sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
+sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
+
+
+
+sum.data.22 |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    TxpUmsatz_KC = " ",
+    Aufträge_KC = "Aufträge KC",
+    Anz_Patienten_sum = "Patienten (n)"
+  ) |> 
+  merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+
 ```
 
 
