@@ -168,13 +168,13 @@ write_excel_csv(tidy.AU.data, "tidyAUdataTxp.csv", col_names = TRUE)
 #  )
 ```
 
-```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+```{r flex AU.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
 
 
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
-  summarize(AU_TxpUmsatz = sum(!is.na(Taxpkt.)),
+  summarize(AU_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
             AU_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
@@ -201,7 +201,7 @@ AU.sum.data |> flextable() |>
 ```
 
 
-```{r show DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
+```{r show AU analysis, echo=FALSE, message=FALSE, warning=FALSE}
 AU.sum.method <- tidy.AU.data |> 
      mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
             Year = year(Datum)) |> 
@@ -345,13 +345,13 @@ write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 ```
   
 
-```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+```{r flex DxI.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
 
 
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
-  summarize(DxI_TxpUmsatz = sum(!is.na(Taxpkt.)),
+  summarize(DxI_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
             DxI_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
             )
@@ -421,7 +421,7 @@ dxi.sum.method |>
 
 #### BNII Nephelometrie  
 
-```{r tidyup_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
+```{r tidyup_BNII_data, echo=FALSE, message=FALSE, warning=FALSE}
 files <- list.files("H:\\Statistiken\\")
 
 
@@ -527,13 +527,13 @@ write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
 ```
   
 
-```{r flex tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+```{r flex BNII.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
 
 
 bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
-  summarize(bn_TxpUmsatz = sum(!is.na(Taxpkt.)),
+  summarize(bn_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
             bn_Aufträge = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
@@ -561,7 +561,7 @@ bn.sum.data |> flextable() |>
 
 
 
-```{r 2022 DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
+```{r 2022 BNII analysis, echo=FALSE, message=FALSE, warning=FALSE}
 bn.sum.method <- tidy.bn.data |> 
   mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
          Year = year(Datum)) |> 
@@ -600,6 +600,618 @@ bn.sum.method |>
 
 ```
 
+
+
+#### HPLC  
+
+```{r tidyup_HPLC_data, echo=FALSE, message=FALSE, warning=FALSE}
+files <- list.files("H:\\Statistiken\\")
+
+
+tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+  "text",
+  "text",
+  "skip",
+  "skip",
+  "skip",
+  "skip",
+  "numeric",
+  "skip",
+  "numeric",
+  "skip"))
+
+
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the materila and machine in its name
+
+file_pattern <- "HPLC"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+
+head <- paste0(head2, sep = "_", head1)
+global.hplc.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                               c(
+                                 "text",
+                                 "numeric",
+                                 "skip",
+                                 "skip",
+                                 "date",
+                                 "text",
+                                 "text",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric"
+                               ))
+
+global.hplc.data <- global.hplc.data |> filter(!grepl("Tagesnummer", global.hplc.data$a_Tagesnummer))
+global.hplc.data <- global.hplc.data |> filter(!is.na(a_Tagesnummer))
+
+
+# change day-number to date and reorder column
+global.hplc.data$Datum <- ymd(substr(global.hplc.data$a_Tagesnummer, 1, 10))
+
+global.hplc.data <- global.hplc.data |> relocate(Datum, .before = 6)   
+
+
+# create new data frame, sort analysis-names in one column (Bezeichnung), 
+#code into another (Methode) and results into a third (Werte)
+hplc.analy.pivot <- global.hplc.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte",
+  values_drop_na = TRUE)
+
+#left join to get tax point information from tariff, remove junk data, save tidy data
+tidy.hplc.data <- left_join(hplc.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
+
+tidy.hplc.data <- subset(tidy.hplc.data, select = -c(Tagesnummer))
+
+#call age
+tidy.hplc.data$Alter <-
+  year(tidy.hplc.data$Datum) - year(tidy.hplc.data$e_Geb.datum) - (
+    month(tidy.hplc.data$Datum) < month(tidy.hplc.data$e_Geb.datum) |
+      (
+        month(tidy.hplc.data$Datum) == month(tidy.hplc.data$e_Geb.datum) &
+          day(tidy.hplc.data$Datum) < day(tidy.hplc.data$e_Geb.datum)
+      )
+  )
+
+tidy.hplc.data <- tidy.hplc.data |> relocate(Alter, .before = f_Geschl.)
+
+
+write_excel_csv(tidy.hplc.data, "tidy_hplc_dataTxp.csv")
+
+```
+  
+
+```{r flex HPLC.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
+
+hplc.sum.data <- tidy.hplc.data |> 
+  group_by(Year_Month) |> 
+  summarize(hplc_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            hplc_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
+  )
+hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz
+hplc.sum.data <- hplc.sum.data |> relocate(TxpUmsatz,  .before = hplc_TxpUmsatz)
+
+hplc.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = hplc_TxpUmsatz, max = max(hplc_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    hplc_TxpUmsatz = " ",
+    hplc_Aufträge = "Aufträge",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y")  
+
+```
+
+
+
+```{r 2022 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
+hplc.sum.method <- tidy.hplc.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2022) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+hplc.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2022"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2022 = "Q1",
+    Q2_2022 = "Q2",
+    Q3_2022 = "Q3",
+    Q4_2022 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+```
+
+```{r 2021 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
+hplc.sum.method <- tidy.hplc.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2021) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+hplc.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2021"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2021 = "Q1",
+    Q2_2021 = "Q2",
+    Q3_2021 = "Q3",
+    Q4_2021 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+```
+
+
+
+#### Lc-MS/MS  
+
+```{r tidyup_LcMS_data, echo=FALSE, message=FALSE, warning=FALSE}
+files <- list.files("H:\\Statistiken\\")
+
+
+tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+  "text",
+  "text",
+  "skip",
+  "skip",
+  "skip",
+  "skip",
+  "numeric",
+  "skip",
+  "numeric",
+  "skip"))
+
+
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the materila and machine in its name
+
+file_pattern <- "LcMSMS"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:8] <- c("a", "b", "c", "d", "e", "f", "g", "h")
+
+head <- paste0(head2, sep = "_", head1)
+global.lcms.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                                 c(
+                                   "text",
+                                   "skip",
+                                   "numeric",
+                                   "skip",
+                                   "skip",
+                                   "date",
+                                   "text",
+                                   "text",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric",
+                                   "numeric"
+                                 ))
+
+global.lcms.data <- global.lcms.data |> filter(!grepl("Tagesnummer", global.lcms.data$a_Tagesnummer))
+global.lcms.data <- global.lcms.data |> filter(!is.na(a_Tagesnummer))
+
+
+# change day-number to date and reorder column
+global.lcms.data$Datum <- ymd(substr(global.lcms.data$a_Tagesnummer, 1, 10))
+
+global.lcms.data <- global.lcms.data |> relocate(Datum, .before = 6)   
+
+
+# create new data frame, sort analysis-names in one column (Bezeichnung), 
+#code into another (Methode) and results into a third (Werte)
+lcms.analy.pivot <- global.lcms.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte",
+  values_drop_na = TRUE)
+
+#left join to get tax point information from tariff, remove junk data, save tidy data
+tidy.lcms.data <- left_join(lcms.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
+
+tidy.lcms.data <- subset(tidy.lcms.data, select = -c(Tagesnummer))
+
+#call age
+tidy.lcms.data$Alter <-
+  year(tidy.lcms.data$Datum) - year(tidy.lcms.data$f_Geb.datum) - (
+    month(tidy.lcms.data$Datum) < month(tidy.lcms.data$f_Geb.datum) |
+      (
+        month(tidy.lcms.data$Datum) == month(tidy.lcms.data$f_Geb.datum) &
+          day(tidy.lcms.data$Datum) < day(tidy.lcms.data$f_Geb.datum)
+      )
+  )
+
+tidy.lcms.data <- tidy.lcms.data |> relocate(Alter, .before = g_Geschl.)
+
+
+write_excel_csv(tidy.lcms.data, "tidy_lcms_dataTxp.csv")
+
+```
+  
+
+```{r flex LCMS.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
+
+lcms.sum.data <- tidy.lcms.data |> 
+  group_by(Year_Month) |> 
+  summarize(lcms_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            lcms_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(c_Fallnummer)
+  )
+lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
+lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
+
+lcms.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = lcms_TxpUmsatz, max = max(lcms_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    lcms_TxpUmsatz = " ",
+    lcms_Aufträge = "Aufträge",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+```
+
+
+
+```{r 2022 LCMS analysis, echo=FALSE, message=FALSE, warning=FALSE}
+lcms.sum.method <- tidy.lcms.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2022) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+lcms.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2022"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2022 = "Q1",
+    Q2_2022 = "Q2",
+    Q3_2022 = "Q3",
+    Q4_2022 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+
+```
+
+```{r 2021 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
+lcms.sum.method <- tidy.lcms.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2021) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+lcms.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2021"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2021 = "Q1",
+    Q2_2021 = "Q2",
+    Q3_2021 = "Q3",
+    Q4_2021 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+```
+
+#### VH4  
+
+```{r tidyup_VH4_data, echo=FALSE, message=FALSE, warning=FALSE}
+files <- list.files("H:\\Statistiken\\")
+
+
+tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+  "text",
+  "text",
+  "skip",
+  "skip",
+  "skip",
+  "skip",
+  "numeric",
+  "skip",
+  "numeric",
+  "skip"))
+
+
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the materila and machine in its name
+
+file_pattern <- "VH4"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+
+head <- paste0(head2, sep = "_", head1)
+global.vh.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                               c(
+                                 "text",
+                                 "numeric",
+                                 "skip",
+                                 "skip",
+                                 "date",
+                                 "text",
+                                 "text",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric",
+                                 "numeric"
+                               ))
+
+global.vh.data <- global.vh.data |> filter(!grepl("Tagesnummer", global.vh.data$a_Tagesnummer))
+global.vh.data <- global.vh.data |> filter(!is.na(a_Tagesnummer))
+
+
+# change day-number to date and reorder column
+global.vh.data$Datum <- ymd(substr(global.vh.data$a_Tagesnummer, 1, 10))
+
+global.vh.data <- global.vh.data |> relocate(Datum, .before = 6)   
+
+
+# create new data frame, sort analysis-names in one column (Bezeichnung), 
+#code into another (Methode) and results into a third (Werte)
+vh.analy.pivot <- global.vh.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte",
+  values_drop_na = TRUE)
+
+#left join to get tax point information from tariff, remove junk data, save tidy data
+tidy.vh.data <- left_join(vh.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
+
+tidy.vh.data <- subset(tidy.vh.data, select = -c(Tagesnummer))
+
+#call age
+tidy.vh.data$Alter <- year(tidy.vh.data$Datum) - year(tidy.vh.data$e_Geb.datum) - (month(tidy.vh.data$Datum) < month(tidy.vh.data$e_Geb.datum) | (month(tidy.vh.data$Datum) == month(tidy.vh.data$e_Geb.datum) & day(tidy.vh.data$Datum) < day(tidy.vh.data$e_Geb.datum)))
+
+tidy.vh.data <- tidy.vh.data |> relocate(Alter, .before = f_Geschl.)
+
+
+write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
+
+```
+
+
+```{r flex vhII.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
+
+
+vh.sum.data <- tidy.vh.data |> 
+  group_by(Year_Month) |> 
+  summarize(vh_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            vh_Aufträge = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
+  )
+vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
+vh.sum.data <- vh.sum.data |> relocate(TxpUmsatz,  .before = vh_TxpUmsatz)
+
+vh.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = vh_TxpUmsatz, max = max(vh_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    vh_TxpUmsatz = " ",
+    vh_Aufträge = "Aufträge",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+```
+
+
+```{r 2022 vhII analysis, echo=FALSE, message=FALSE, warning=FALSE}
+vh.sum.method <- tidy.vh.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2022) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+vh.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2022"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2022 = "Q1",
+    Q2_2022 = "Q2",
+    Q3_2022 = "Q3",
+    Q4_2022 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+```
 
 ---
   
