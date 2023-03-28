@@ -1213,6 +1213,27 @@ vh.sum.method |>
 
 ```
 
+
+```{r}
+combined.data <- bind_rows(AU.sum.data, 
+                      dxi.sum.data, 
+                      bn.sum.data, 
+                      hplc.sum.data, 
+                      lcms.sum.data,
+                      vh.sum.data
+                      )
+sum.data <- combined.data |> 
+  group_by(Year_Month) |> 
+  summarize(
+    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
+    Aufträge_KC = sum(sum(ifelse(is.na(AU_Aufträge), 0, AU_Aufträge)), 
+                      sum(ifelse(is.na(DxI_Aufträge), 0, DxI_Aufträge))),
+    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
+           )))
+```
+
+
+
 ---
   
 
