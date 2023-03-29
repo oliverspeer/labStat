@@ -35,7 +35,7 @@ opts_chunk$set(echo = TRUE, ft.align = "center", fig.align = "center")
   
 Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückrat des KCHI. Ein regelmässiges Monitoring der Umsatzentwicklung in diesem Bereich sollte, neben HRM und QM, ein zentrales Element der Führung der Klinischen Chemie sein.   
   
-#### AU5800
+#### AU5800: Taxpunkt-Umsatz & Auftragszahlen
 
 
 
@@ -45,17 +45,16 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 library(readxl)
 
 #import tariff data
-tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
+tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
   "text",
   "text",
-  "text",
+  "skip",
   "skip",
   "skip",
   "skip",
   "numeric",
   "skip",
-  "numeric",
-  "skip"))
+  "numeric"))
 
 
 # import AU data
@@ -146,7 +145,7 @@ analy.pivot <- global.data |> pivot_longer(
   values_drop_na = TRUE)
 
 #left join to get tax point information from tariff, remove junk data, save tidy data
-tidy.AU.data <- left_join(analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+tidy.AU.data <- left_join(analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
 
 tidy.AU.data <- subset(tidy.AU.data, select = -c(Tagesnummer))
 
@@ -175,7 +174,7 @@ tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
   summarize(AU_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            AU_Aufträge = n_distinct(a_Tagesnummer),
+            AU_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
 AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
@@ -191,7 +190,7 @@ AU.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     AU_TxpUmsatz = " ",
-    AU_Aufträge = "Aufträge",
+    AU_Auftraege = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -199,6 +198,11 @@ AU.sum.data |> flextable() |>
   colformat_date(fmt_date = "%m/%Y") 
 
 ```
+<br>
+
+<br>
+
+#### AU5800: Anzahl der einzelnen Analysen pro Quartal
 
 
 ```{r show AU analysis, echo=FALSE, message=FALSE, warning=FALSE}
@@ -228,28 +232,23 @@ AU.sum.method |>
 ```
 
 
-```{r plotAU, echo=FALSE, message=FALSE, warning=FALSE}
-# ggplot(data = global.data.sort) + 
-#   geom_point(mapping =  aes(Datum, CRPCount,)) +
-#     geom_point(mapping = aes(Datum, NaCount))
-```
+\newpage
 
 
-
-#### DxI-800
+#### DxI-800: Taxpunkt-Umsatz & Auftragszahlen
 ```{r tidyup_DxI_data, echo=FALSE, message=FALSE, warning=FALSE}
 
-tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
-  "text",
-  "text",
-  "text",
-  "skip",
-  "skip",
-  "skip",
-  "numeric",
-  "skip",
-  "numeric",
-  "skip"))
+# tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric",
+#   "skip"))
 
 # list all files in the directory
 files <- list.files("H:\\Statistiken\\")
@@ -330,7 +329,7 @@ dxi.analy.pivot <- global.dxi.data |> pivot_longer(
   values_drop_na = TRUE)
 
 #left join to get tax point information from tariff, remove junk data, save tidy data
-tidy.dxi.data <- left_join(dxi.analy.pivot, tarif.scales, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+tidy.dxi.data <- left_join(dxi.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
 
 tidy.dxi.data <- subset(tidy.dxi.data, select = -c(Tagesnummer))
 
@@ -345,6 +344,8 @@ write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 ```
   
 
+
+
 ```{r flex DxI.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
 tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
 
@@ -352,7 +353,7 @@ tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
   summarize(DxI_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            DxI_Aufträge = n_distinct(a_Tagesnummer),
+            DxI_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
             )
 dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
@@ -368,7 +369,7 @@ dxi.sum.data |> flextable() |>
   part = "body") |> 
   set_header_labels(
     DxI_TxpUmsatz = " ",
-    DxI_Aufträge = "Aufträge",
+    DxI_Auftraege = "Auftraege",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -376,6 +377,12 @@ dxi.sum.data |> flextable() |>
   colformat_date(fmt_date = "%m/%Y") 
 
 ```
+
+<br>
+
+<br>
+
+#### DxI800: Anzahl der einzelnen Analysen pro Quartal
 
 ```{r 2022 DxI analysis, echo=FALSE, message=FALSE, warning=FALSE}
 dxi.sum.method <- tidy.dxi.data |> 
@@ -415,27 +422,26 @@ dxi.sum.method |>
 
 
 ```
-
+\newpage
   
 ### Spez. Chemie  
 
-#### BNII Nephelometrie  
+#### BNII Nephelometrie: Taxpunkt-Umsatz & Auftragszahlen  
 
 ```{r tidyup_BNII_data, echo=FALSE, message=FALSE, warning=FALSE}
-files <- list.files("H:\\Statistiken\\")
-
-
-tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
-  "text",
-  "text",
-  "skip",
-  "skip",
-  "skip",
-  "skip",
-  "numeric",
-  "skip",
-  "numeric",
-  "skip"))
+# files <- list.files("H:\\Statistiken\\")
+# 
+# 
+# tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric"))
 
 
 # list all files in the directory
@@ -534,7 +540,7 @@ tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
 bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
   summarize(bn_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            bn_Aufträge = n_distinct(a_Tagesnummer),
+            bn_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
 bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
@@ -550,7 +556,7 @@ bn.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     bn_TxpUmsatz = " ",
-    bn_Aufträge = "Aufträge",
+    bn_Auftraege = "Auftraege",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -559,7 +565,11 @@ bn.sum.data |> flextable() |>
 
 ```
 
+<br>
 
+<br>
+
+#### BNII: Anzahl der einzelnen Analysen pro Quartal
 
 ```{r 2022 BNII analysis, echo=FALSE, message=FALSE, warning=FALSE}
 bn.sum.method <- tidy.bn.data |> 
@@ -599,26 +609,217 @@ bn.sum.method |>
 
 
 ```
+\newpage
+#### Protein-Elektrophorese & Immun-Fixationen & Iso-Enzym-Elektrophoresen: Taxpunkt-Umsatz & Auftragszahlen  
+```{r tidyup_EPIFE_data, echo=FALSE, message=FALSE, warning=FALSE}
 
 
 
-#### HPLC  
+# tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric"))
+
+
+# list all files in the directory
+files <- list.files("H:\\Statistiken\\")
+data_path <- "H:/Statistiken"
+
+# find the file that has the materila and machine in its name
+
+file_pattern <- "EPIFE"
+
+
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2[1:8] <- c("a", "b", "c", "d", "e", "f", "g", "h")
+
+head <- paste0(head2, sep = "_", head1)
+global.ep.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                                 c(
+                                   "text",
+                                   "skip",
+                                   "numeric",
+                                   "skip",
+                                   "skip",
+                                   "date",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text",
+                                   "text"
+                                 ))
+library(dplyr)
+library(stringr)
+
+global.ep.data <- global.ep.data  |> 
+  mutate_all(~ str_replace_all(., c("s.unten" = "1", 
+                                    "folgt" = "1", 
+                                    "s. unten" ="1", 
+                                    "negative" ="1", 
+                                    "fraglich" = "1",
+                                    "s.u." = "1", 
+                                    " Nachweis von Chylomikronen" ="1",
+                                    "keine Chylomikronen" = "1"
+                                    ))) |> as.data.frame() 
+
+
+global.ep.data <- global.ep.data |> filter(!grepl("Tagesnummer", global.ep.data$a_Tagesnummer))
+global.ep.data <- global.ep.data |> filter(!is.na(a_Tagesnummer))
+
+
+# change day-number to date and reorder column
+global.ep.data$Datum <- ymd(substr(global.ep.data$a_Tagesnummer, 1, 10))
+
+global.ep.data <- global.ep.data |> relocate(Datum, .before = 6)   
+
+
+# create new data frame, sort analysis-names in one column (Bezeichnung), 
+#code into another (Methode) and results into a third (Werte)
+ep.analy.pivot <- global.ep.data |> pivot_longer(
+  cols = !(a_Tagesnummer:Datum), 
+  names_to = c("Bezeichnung","Methode"),
+  names_sep = "_",
+  values_to = "Werte",
+  values_drop_na = TRUE)
+
+#left join to get tax point information from tariff, remove junk data, save tidy data
+tidy.ep.data <- left_join(ep.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
+
+tidy.ep.data <- subset(tidy.ep.data, select = -c(Tagesnummer))
+
+#call age
+tidy.ep.data$Alter <-
+  year(tidy.ep.data$Datum) - year(tidy.ep.data$f_Geb.datum) - (
+    month(tidy.ep.data$Datum) < month(tidy.ep.data$f_Geb.datum) |
+      (
+        month(tidy.ep.data$Datum) == month(tidy.ep.data$f_Geb.datum) &
+          day(tidy.ep.data$Datum) < day(tidy.ep.data$f_Geb.datum)
+      )
+  )
+
+tidy.ep.data <- tidy.ep.data |> relocate(Alter, .before = g_Geschl.)
+
+
+write_excel_csv(tidy.ep.data, "tidy_ep_dataTxp.csv")
+
+```
+
+```{r flex_ep.tidy.data_into_summary, echo=FALSE, message=FALSE, warning=FALSE}
+
+tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
+
+ep.sum.data <- tidy.ep.data |> 
+  group_by(Year_Month) |> 
+  summarize(ep_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            ep_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(c_Fallnummer)
+  )
+ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz
+ep.sum.data <- ep.sum.data |> relocate(TxpUmsatz,  .before = ep_TxpUmsatz)
+
+ep.sum.data |> flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = ep_TxpUmsatz, max = max(ep_TxpUmsatz), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    ep_TxpUmsatz = " ",
+    ep_Auftraege = "Auftraege",
+    Anz_Patienten = "Patienten (n)"
+  ) |> merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+```
+
+<br>
+
+<br>
+
+#### EP & IEF: Anzahl der einzelnen Analysen pro Quartal
+
+```{r 2022 ep analysis, echo=FALSE, message=FALSE, warning=FALSE}
+ep.sum.method <- tidy.ep.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2022) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
+
+
+
+
+ep.sum.method |> 
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2022"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2022 = "Q1",
+    Q2_2022 = "Q2",
+    Q3_2022 = "Q3",
+    Q4_2022 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+
+```
+
+\newpage
+
+#### HPLC: Taxpunkt-Umsatz & Auftragszahlen   
 
 ```{r tidyup_HPLC_data, echo=FALSE, message=FALSE, warning=FALSE}
-files <- list.files("H:\\Statistiken\\")
+# files <- list.files("H:\\Statistiken\\")
 
 
-tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
-  "text",
-  "text",
-  "skip",
-  "skip",
-  "skip",
-  "skip",
-  "numeric",
-  "skip",
-  "numeric",
-  "skip"))
+# tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric"))
 
 
 # list all files in the directory
@@ -715,7 +916,7 @@ tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
 hplc.sum.data <- tidy.hplc.data |> 
   group_by(Year_Month) |> 
   summarize(hplc_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            hplc_Aufträge = n_distinct(a_Tagesnummer),
+            hplc_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
 hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz
@@ -731,7 +932,7 @@ hplc.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     hplc_TxpUmsatz = " ",
-    hplc_Aufträge = "Aufträge",
+    hplc_Auftraege = "Auftraege",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -739,8 +940,11 @@ hplc.sum.data |> flextable() |>
   colformat_date(fmt_date = "%m/%Y")  
 
 ```
+<br>
 
+<br>
 
+#### HPLC 2021: Anzahl der einzelnen Analysen pro Quartal
 
 ```{r 2022 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
 hplc.sum.method <- tidy.hplc.data |> 
@@ -781,6 +985,11 @@ hplc.sum.method |>
 
 
 ```
+<br>
+
+<br>
+
+#### HPLC 2021: Anzahl der einzelnen Analysen pro Quartal
 
 ```{r 2021 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
 hplc.sum.method <- tidy.hplc.data |> 
@@ -822,25 +1031,24 @@ hplc.sum.method |>
 
 ```
 
+\newpage
 
-
-#### Lc-MS/MS  
+#### Lc-MS/MS: Taxpunkt-Umsatz & Auftragszahlen    
 
 ```{r tidyup_LcMS_data, echo=FALSE, message=FALSE, warning=FALSE}
-files <- list.files("H:\\Statistiken\\")
+# files <- list.files("H:\\Statistiken\\")
 
 
-tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
-  "text",
-  "text",
-  "skip",
-  "skip",
-  "skip",
-  "skip",
-  "numeric",
-  "skip",
-  "numeric",
-  "skip"))
+# tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric"))
 
 
 # list all files in the directory
@@ -930,7 +1138,7 @@ tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
 lcms.sum.data <- tidy.lcms.data |> 
   group_by(Year_Month) |> 
   summarize(lcms_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            lcms_Aufträge = n_distinct(a_Tagesnummer),
+            lcms_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(c_Fallnummer)
   )
 lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
@@ -946,7 +1154,7 @@ lcms.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     lcms_TxpUmsatz = " ",
-    lcms_Aufträge = "Aufträge",
+    lcms_Auftraege = "Auftraege",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -954,8 +1162,11 @@ lcms.sum.data |> flextable() |>
   colformat_date(fmt_date = "%m/%Y") 
 
 ```
+<br>
 
+<br>
 
+#### LcMS/MS 2022: Anzahl der einzelnen Analysen pro Quartal
 
 ```{r 2022 LCMS analysis, echo=FALSE, message=FALSE, warning=FALSE}
 lcms.sum.method <- tidy.lcms.data |> 
@@ -998,7 +1209,13 @@ lcms.sum.method |>
 
 ```
 
-```{r 2021 HPLC analysis, echo=FALSE, message=FALSE, warning=FALSE}
+<br>
+
+<br>
+
+#### LcMS/MS 2021: Anzahl der einzelnen Analysen pro Quartal
+
+```{r 2021 LCMS analysis, echo=FALSE, message=FALSE, warning=FALSE}
 lcms.sum.method <- tidy.lcms.data |> 
   mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
          Year = year(Datum)) |> 
@@ -1037,24 +1254,24 @@ lcms.sum.method |>
 
 
 ```
-
-#### VH4  
+\newpage
+#### Hand-Methoden: Taxpunkt-Umsatz & Auftragszahlen    
 
 ```{r tidyup_VH4_data, echo=FALSE, message=FALSE, warning=FALSE}
-files <- list.files("H:\\Statistiken\\")
-
-
-tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
-  "text",
-  "text",
-  "skip",
-  "skip",
-  "skip",
-  "skip",
-  "numeric",
-  "skip",
-  "numeric",
-  "skip"))
+# files <- list.files("H:\\Statistiken\\")
+# 
+# 
+# tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+#   "text",
+#   "text",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "skip",
+#   "numeric",
+#   "skip",
+#   "numeric",
+#   "skip"))
 
 
 # list all files in the directory
@@ -1141,14 +1358,14 @@ write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 ```
 
 
-```{r flex vhII.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
+```{r flex vh4.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
   tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
 
 
 vh.sum.data <- tidy.vh.data |> 
   group_by(Year_Month) |> 
   summarize(vh_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            vh_Aufträge = n_distinct(a_Tagesnummer),
+            vh_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
 vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
@@ -1164,7 +1381,7 @@ vh.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     vh_TxpUmsatz = " ",
-    vh_Aufträge = "Aufträge",
+    vh_Auftraege = "Auftraege",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1172,9 +1389,13 @@ vh.sum.data |> flextable() |>
   colformat_date(fmt_date = "%m/%Y") 
 
 ```
+<br>
 
+<br>
 
-```{r 2022 vhII analysis, echo=FALSE, message=FALSE, warning=FALSE}
+#### Hand-Methoden 2022: Anzahl der einzelnen Analysen pro Quartal
+
+```{r 2022 vh4 analysis, echo=FALSE, message=FALSE, warning=FALSE}
 vh.sum.method <- tidy.vh.data |> 
   mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
          Year = year(Datum)) |> 
@@ -1213,24 +1434,29 @@ vh.sum.method |>
 
 ```
 
+\newpage
+
+## Zusammenfassung 
 
 ```{r summing up, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(stringr)
 
-combined.data <- bind_rows(AU.sum.data, 
-                           dxi.sum.data, 
-                           bn.sum.data, 
-                           hplc.sum.data, 
-                           lcms.sum.data,
-                           vh.sum.data
+combined.data <- bind_rows(
+  AU.sum.data,
+  dxi.sum.data,
+  ep.sum.data,
+  bn.sum.data,
+  hplc.sum.data,
+  lcms.sum.data,
+  vh.sum.data
 )
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
     TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
-    Aufträge_KC = sum(sum(ifelse(is.na(AU_Aufträge), 0, AU_Aufträge)), 
-                      sum(ifelse(is.na(DxI_Aufträge), 0, DxI_Aufträge))),
+    Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
+                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege))),
     Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
     )))
 
@@ -1261,7 +1487,7 @@ sum.data.22 |>
          part = "body") |> 
   set_header_labels(
     TxpUmsatz_KC = " ",
-    Aufträge_KC = "Aufträge KC",
+    Auftraege_KC = "Auftraege KC",
     Anz_Patienten_sum = "Patienten (n)"
   ) |> 
   merge_at(j = c(2, 3), part = "header") |> 
