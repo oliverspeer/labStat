@@ -172,8 +172,8 @@ AU.sum.data <- tidy.AU.data |>
             AU_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 20
-AU.sum.data$AU_TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 20
+AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
+AU.sum.data$AU_TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
 AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
 
 AU.sum.data |> flextable() |> 
@@ -353,8 +353,8 @@ dxi.sum.data <- tidy.dxi.data |>
             DxI_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
             )
-dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 20
-dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 20
+dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
+dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
 dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
 
 dxi.sum.data |> flextable() |> 
@@ -601,8 +601,8 @@ bn.sum.data <- tidy.bn.data |>
             bn_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 20
-bn.sum.data$bn_TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 20
+bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
+bn.sum.data$bn_TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
 bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
 
 bn.sum.data |> flextable() |> 
@@ -796,8 +796,8 @@ ep.sum.data <- tidy.ep.data |>
 
 
 
-ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 20
-ep.sum.data$ep_TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 20
+ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
+ep.sum.data$ep_TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
 ep.sum.data <- ep.sum.data |> relocate(TxpUmsatz,  .before = ep_TxpUmsatz)
 
 ep.sum.data |> flextable() |> 
@@ -984,8 +984,8 @@ hplc.sum.data <- tidy.hplc.data |>
             hplc_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 20
-hplc.sum.data$hplc_TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 20
+hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
+hplc.sum.data$hplc_TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
 hplc.sum.data <- hplc.sum.data |> relocate(TxpUmsatz,  .before = hplc_TxpUmsatz)
 
 hplc.sum.data |> flextable() |> 
@@ -1209,8 +1209,8 @@ lcms.sum.data <- tidy.lcms.data |>
             lcms_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(c_Fallnummer)
   )
-lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 20
-lcms.sum.data$lcms_TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 20
+lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
+lcms.sum.data$lcms_TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
 lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
 
 lcms.sum.data |> flextable() |> 
@@ -1439,8 +1439,8 @@ vh.sum.data <- tidy.vh.data |>
             vh_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 20
-vh.sum.data$vh_TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 20
+vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
+vh.sum.data$vh_TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
 vh.sum.data <- vh.sum.data |> relocate(TxpUmsatz,  .before = vh_TxpUmsatz)
 
 vh.sum.data |> flextable() |> 
