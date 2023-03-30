@@ -159,12 +159,7 @@ tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
 
 write_excel_csv(tidy.AU.data, "tidyAUdataTxp.csv", col_names = TRUE)
 
-#global.data.sort <- global.data |> group_by(Datum) |>
-#  summarise(
-#    NaCount = sum(!is.na(Natrium)),
-#    CRPCount = sum(!is.na(CRP)),
-#    CRPhs = sum(!is.na(`CRP (hoch sensitiv)`))
-#  )
+
 ```
 
 ```{r flex AU.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
@@ -177,7 +172,8 @@ AU.sum.data <- tidy.AU.data |>
             AU_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
+AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 20
+AU.sum.data$AU_TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 20
 AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
 
 AU.sum.data |> flextable() |> 
@@ -222,6 +218,7 @@ AU.sum.method <- tidy.AU.data |>
      )
 
 AU.sum.method |> 
+  arrange(desc(Q4_2022)) |> 
   flextable() |> 
   theme_vanilla() |> 
   align(align = "center", part = "all")|> 
@@ -356,7 +353,8 @@ dxi.sum.data <- tidy.dxi.data |>
             DxI_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
             )
-dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
+dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 20
+dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 20
 dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
 
 dxi.sum.data |> flextable() |> 
@@ -404,6 +402,7 @@ dxi.sum.method <- tidy.dxi.data |>
 
 
 dxi.sum.method |> 
+  arrange(desc(Q4_2022)) |> 
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -422,6 +421,65 @@ dxi.sum.method |>
 
 
 ```
+\newpage
+
+### Zusammenfassung Hochdurchsatz
+
+```{r summing_up_CoreLab, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(stringr)
+
+combined.data <- bind_rows(
+  AU.sum.data,
+  dxi.sum.data,
+  )
+sum.data <- combined.data |> 
+  group_by(Year_Month) |> 
+  summarize(
+    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
+    Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
+                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege))),
+    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
+    )))
+
+sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
+sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
+sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
+
+
+
+
+
+sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
+sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
+sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
+
+
+
+sum.data.22 |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    TxpUmsatz = "TxpUmsatz -Hochdurchsatz-",
+    Auftraege_KC = "Auftraege",
+    Anz_Patienten_sum = "Patienten (n)"
+  ) |> 
+  merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+
+```
+
 \newpage
   
 ### Spez. Chemie  
@@ -543,7 +601,8 @@ bn.sum.data <- tidy.bn.data |>
             bn_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
+bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 20
+bn.sum.data$bn_TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 20
 bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
 
 bn.sum.data |> flextable() |> 
@@ -590,6 +649,7 @@ bn.sum.method <- tidy.bn.data |>
 
 
 bn.sum.method |> 
+  arrange(desc(Q4_2022)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -733,7 +793,11 @@ ep.sum.data <- tidy.ep.data |>
             ep_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(c_Fallnummer)
   )
-ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz
+
+
+
+ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 20
+ep.sum.data$ep_TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 20
 ep.sum.data <- ep.sum.data |> relocate(TxpUmsatz,  .before = ep_TxpUmsatz)
 
 ep.sum.data |> flextable() |> 
@@ -780,6 +844,7 @@ ep.sum.method <- tidy.ep.data |>
 
 
 ep.sum.method |> 
+  arrange(desc(Q4_2022)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -919,7 +984,8 @@ hplc.sum.data <- tidy.hplc.data |>
             hplc_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz
+hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 20
+hplc.sum.data$hplc_TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 20
 hplc.sum.data <- hplc.sum.data |> relocate(TxpUmsatz,  .before = hplc_TxpUmsatz)
 
 hplc.sum.data |> flextable() |> 
@@ -965,6 +1031,7 @@ hplc.sum.method <- tidy.hplc.data |>
 
 
 hplc.sum.method |> 
+  arrange(desc(Q4_2022)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -1010,6 +1077,7 @@ hplc.sum.method <- tidy.hplc.data |>
 
 
 hplc.sum.method |> 
+  arrange(desc(Q4_2021)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -1141,7 +1209,8 @@ lcms.sum.data <- tidy.lcms.data |>
             lcms_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(c_Fallnummer)
   )
-lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
+lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 20
+lcms.sum.data$lcms_TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 20
 lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
 
 lcms.sum.data |> flextable() |> 
@@ -1187,6 +1256,7 @@ lcms.sum.method <- tidy.lcms.data |>
 
 
 lcms.sum.method |> 
+  arrange(desc(Q4_2022)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -1234,6 +1304,7 @@ lcms.sum.method <- tidy.lcms.data |>
 
 
 lcms.sum.method |> 
+  arrange(desc(Q4_2021)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -1368,7 +1439,8 @@ vh.sum.data <- tidy.vh.data |>
             vh_Auftraege = n_distinct(a_Tagesnummer),
             Anz_Patienten = n_distinct(b_Fallnummer)
   )
-vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
+vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 20
+vh.sum.data$vh_TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 20
 vh.sum.data <- vh.sum.data |> relocate(TxpUmsatz,  .before = vh_TxpUmsatz)
 
 vh.sum.data |> flextable() |> 
@@ -1414,6 +1486,7 @@ vh.sum.method <- tidy.vh.data |>
 
 
 vh.sum.method |> 
+  arrange(desc(Q4_2022)) |>
   flextable() |> 
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
@@ -1433,6 +1506,73 @@ vh.sum.method |>
 
 
 ```
+
+
+\newpage
+
+### Zusammenfassung spez Chemie
+
+```{r summing_up_specLab, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(stringr)
+
+combined.data <- bind_rows(
+   ep.sum.data,
+  bn.sum.data,
+  hplc.sum.data,
+  lcms.sum.data,
+  vh.sum.data
+)
+sum.data <- combined.data |> 
+  group_by(Year_Month) |> 
+  summarize(
+    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
+    Auftraege_KC = sum(sum(ifelse(is.na(ep_Auftraege), 0, ep_Auftraege)), 
+                      sum(ifelse(is.na(bn_Auftraege), 0, bn_Auftraege)),
+                      sum(ifelse(is.na(hplc_Auftraege), 0, hplc_Auftraege)),
+                      sum(ifelse(is.na(lcms_Auftraege), 0, lcms_Auftraege)),
+                      sum(ifelse(is.na(vh_Auftraege), 0, vh_Auftraege))),
+    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
+    )))
+
+sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
+sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
+sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
+
+
+
+
+
+sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
+sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
+sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
+
+
+
+sum.data.22 |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+         ),
+         part = "body") |> 
+  set_header_labels(
+    TxpUmsatz = "TxpUmsatz -Spez. Chemie-",
+    Auftraege_KC = "Auftraege",
+    Anz_Patienten_sum = "Patienten (n)"
+  ) |> 
+  merge_at(j = c(2, 3), part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+
+
+```
+
 
 \newpage
 
@@ -1456,7 +1596,12 @@ sum.data <- combined.data |>
   summarize(
     TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
     Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
-                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege))),
+                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege)),
+                      sum(ifelse(is.na(ep_Auftraege), 0, ep_Auftraege)), 
+                      sum(ifelse(is.na(bn_Auftraege), 0, bn_Auftraege)),
+                      sum(ifelse(is.na(hplc_Auftraege), 0, hplc_Auftraege)),
+                      sum(ifelse(is.na(lcms_Auftraege), 0, lcms_Auftraege)),
+                      sum(ifelse(is.na(vh_Auftraege), 0, vh_Auftraege))),
     Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
     )))
 
