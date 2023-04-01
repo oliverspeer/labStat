@@ -121,6 +121,12 @@ global.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                               "numeric",
                               "numeric",
                               "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
                               "numeric"
                             ))
 
