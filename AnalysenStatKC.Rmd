@@ -174,11 +174,12 @@ tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
 
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
-  summarize(AU_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            AU_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
+  summarize(AU_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            AU_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
   )
-AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
+AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
+AU.sum.data$AU_TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
 AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
 
 AU.sum.data |> flextable() |> 
@@ -358,7 +359,8 @@ dxi.sum.data <- tidy.dxi.data |>
             DxI_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
             )
-dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
+dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
+dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
 dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
 
 dxi.sum.data |> flextable() |> 
@@ -434,23 +436,31 @@ library(dplyr)
 library(stringr)
 
 combined.data <- bind_rows(
-  tidy.AU.data,
-  tidy.dxi.data,
+  AU.sum.data,
+  dxi.sum.data,
   )
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
-    TxpUmsatz_KC = sum(TxpUmsatz, na.rm = TRUE),
-    Auftraege_Hochd. = sum(AU_Auftraege, DxI_Auftraege, na.rm = TRUE), 
-    Anz_Patienten_sum = sum(Anz_Patienten, na.rm = TRUE)
-            )
+    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
+    Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
+                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege))),
+    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
+    )))
 
-
+sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
+sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
+sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
+
+
+
+
 
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
 sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
-
+sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
+sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
 
 
 
@@ -458,11 +468,17 @@ sum.data.22 |>
   flextable() |>  
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
+  mk_par(j = 2,
+         value = as_paragraph(
+           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+         ),
+         part = "body") |> 
   set_header_labels(
-    TxpUmsatz_KC = "TxpUmsatz -Hochdurchsatz",
+    TxpUmsatz = "TxpUmsatz -Hochdurchsatz-",
     Auftraege_KC = "Auftraege",
     Anz_Patienten_sum = "Patienten (n)"
   ) |> 
+  merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit") |> 
   colformat_date(fmt_date = "%m/%Y") 
@@ -587,11 +603,12 @@ tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
 
 bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
-  summarize(bn_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            bn_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
+  summarize(bn_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            bn_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
   )
-bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
+bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
+bn.sum.data$bn_TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
 bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
 
 bn.sum.data |> flextable() |> 
@@ -778,14 +795,15 @@ tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
 
 ep.sum.data <- tidy.ep.data |> 
   group_by(Year_Month) |> 
-  summarize(ep_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            ep_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
+  summarize(ep_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            ep_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(c_Fallnummer)
   )
 
 
 
-ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz
+ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
+ep.sum.data$ep_TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
 ep.sum.data <- ep.sum.data |> relocate(TxpUmsatz,  .before = ep_TxpUmsatz)
 
 ep.sum.data |> flextable() |> 
@@ -968,11 +986,12 @@ tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
 
 hplc.sum.data <- tidy.hplc.data |> 
   group_by(Year_Month) |> 
-  summarize(hplc_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            hplc_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
+  summarize(hplc_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            hplc_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
   )
-hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz 
+hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
+hplc.sum.data$hplc_TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
 hplc.sum.data <- hplc.sum.data |> relocate(TxpUmsatz,  .before = hplc_TxpUmsatz)
 
 hplc.sum.data |> flextable() |> 
@@ -1192,11 +1211,12 @@ tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
 
 lcms.sum.data <- tidy.lcms.data |> 
   group_by(Year_Month) |> 
-  summarize(lcms_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            lcms_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
+  summarize(lcms_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            lcms_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(c_Fallnummer)
   )
-lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
+lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
+lcms.sum.data$lcms_TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
 lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
 
 lcms.sum.data |> flextable() |> 
@@ -1421,11 +1441,12 @@ write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 
 vh.sum.data <- tidy.vh.data |> 
   group_by(Year_Month) |> 
-  summarize(vh_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            vh_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
+  summarize(vh_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
+            vh_Auftraege = n_distinct(a_Tagesnummer),
+            Anz_Patienten = n_distinct(b_Fallnummer)
   )
-vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
+vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
+vh.sum.data$vh_TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
 vh.sum.data <- vh.sum.data |> relocate(TxpUmsatz,  .before = vh_TxpUmsatz)
 
 vh.sum.data |> flextable() |> 
@@ -1502,23 +1523,33 @@ library(dplyr)
 library(stringr)
 
 combined.data <- bind_rows(
-   tidy.ep.data,
-  tidy.bn.data,
-  tidy.hplc.data,
-  tidy.lcms.data,
-  tidy.vh.data
+   ep.sum.data,
+  bn.sum.data,
+  hplc.sum.data,
+  lcms.sum.data,
+  vh.sum.data
 )
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
-    TxpUmsatz_spezChem = sum(Taxpkt., na.rm = TRUE),
-    Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE)
-              )
+    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
+    Auftraege_KC = sum(sum(ifelse(is.na(ep_Auftraege), 0, ep_Auftraege)), 
+                      sum(ifelse(is.na(bn_Auftraege), 0, bn_Auftraege)),
+                      sum(ifelse(is.na(hplc_Auftraege), 0, hplc_Auftraege)),
+                      sum(ifelse(is.na(lcms_Auftraege), 0, lcms_Auftraege)),
+                      sum(ifelse(is.na(vh_Auftraege), 0, vh_Auftraege))),
+    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
+    )))
 
-
-
+sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
+sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
+sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
+
+
+
+
+
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
 sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
 sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
@@ -1618,7 +1649,48 @@ sum.data.22 |>
 
 ```
 
+### Quartals-Übersicht
 
+
+```{r quarterly owerview, echo=FALSE, message=TRUE, warning=TRUE}
+
+library(dplyr)
+library(stringr)
+
+combined.cases <- bind_rows(
+  tidy.dxi.data,
+  tidy.bn.data
+)
+#as data frame
+sum.cases <- combined.cases |> 
+  #group_by(Qtr_Year, Year) |> 
+  filter(Year == 2022) |>
+  summarize(TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+            Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE),
+            Auftragstaxen = n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+            .by = Quarter
+                    ) |> as.data.frame()
+
+
+#nor properly working so far...
+sum.cases.piv <- sum.cases |> 
+  rownames_to_column() |> 
+  pivot_longer(!rowname, names_to = "Quartal", values_to = "col2") %>% 
+  pivot_wider(names_from = "rowname", values_from = "col2")
+names(sum.cases) <- sum.cases[1,] 
+sum.cases <- sum.cases[-1,]
+
+sum.case |>
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+```
 
 ---
   
