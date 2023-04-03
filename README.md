@@ -11,7 +11,7 @@ sum unique orders DONE 24.3.23
 sum tax points DONE 24.3.23
 over quarters DONE 24.3.23
 % in/decrease, Auftrag2?helpdesk?
-add units
+add units (askes IT to generate a .csv)
 TAT? with data from remisol?
-how many tests / h and FTE
+how many tests / h and FTE (HR in R?)
 go for refference intervals (included age 24.3.23)
