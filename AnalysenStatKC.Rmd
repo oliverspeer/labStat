@@ -355,9 +355,9 @@ tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
 
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
-  summarize(DxI_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            DxI_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(b_Fallnummer)
+  summarize(DxI_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            DxI_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
             )
 dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
 dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
@@ -509,8 +509,8 @@ sum.data.22 |>
 
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("/Users/olli/R/labStat")
+data_path <- "/Users/olli/R/labStat"
 
 # find the file that has the materila and machine in its name
 
@@ -561,35 +561,35 @@ global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                                   "numeric",
                                   "numeric"
                                 ))
-
-global.bn.data <- global.bn.data |> filter(!grepl("Tagesnummer", global.bn.data$a_Tagesnummer))
-global.bn.data <- global.bn.data |> filter(!is.na(a_Tagesnummer))
-
-
-# change day-number to date and reorder column
-global.bn.data$Datum <- ymd(substr(global.bn.data$a_Tagesnummer, 1, 10))
-
-global.bn.data <- global.bn.data |> relocate(Datum, .before = 6)   
-
-
-# create new data frame, sort analysis-names in one column (Bezeichnung), 
-#code into another (Methode) and results into a third (Werte)
-bn.analy.pivot <- global.bn.data |> pivot_longer(
-  cols = !(a_Tagesnummer:Datum), 
-  names_to = c("Bezeichnung","Methode"),
-  names_sep = "_",
-  values_to = "Werte",
-  values_drop_na = TRUE)
-
-#left join to get tax point information from tariff, remove junk data, save tidy data
-tidy.bn.data <- left_join(bn.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
-
-tidy.bn.data <- subset(tidy.bn.data, select = -c(Tagesnummer))
-
-#call age
-tidy.bn.data$Alter <- year(tidy.bn.data$Datum) - year(tidy.bn.data$e_Geb.datum) - (month(tidy.bn.data$Datum) < month(tidy.bn.data$e_Geb.datum) | (month(tidy.bn.data$Datum) == month(tidy.bn.data$e_Geb.datum) & day(tidy.bn.data$Datum) < day(tidy.bn.data$e_Geb.datum)))
-
-tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
+  
+  global.bn.data <- global.bn.data |> filter(!grepl("Tagesnummer", global.bn.data$a_Tagesnummer))
+  global.bn.data <- global.bn.data |> filter(!is.na(a_Tagesnummer))
+  
+  
+  # change day-number to date and reorder column
+  global.bn.data$Datum <- ymd(substr(global.bn.data$a_Tagesnummer, 1, 10))
+  
+  global.bn.data <- global.bn.data |> relocate(Datum, .before = 6)   
+  
+  
+  # create new data frame, sort analysis-names in one column (Bezeichnung), 
+  #code into another (Methode) and results into a third (Werte)
+  bn.analy.pivot <- global.bn.data |> pivot_longer(
+    cols = !(a_Tagesnummer:Datum), 
+    names_to = c("Bezeichnung","Methode"),
+    names_sep = "_",
+    values_to = "Werte",
+    values_drop_na = TRUE)
+  
+  #left join to get tax point information from tariff, remove junk data, save tidy data
+  tidy.bn.data <- left_join(bn.analy.pivot, tarif.scales, by = c("Methode"), keep = FALSE, multiple = "any")
+  
+  tidy.bn.data <- subset(tidy.bn.data, select = -c(Tagesnummer))
+  
+  #call age
+  tidy.bn.data$Alter <- year(tidy.bn.data$Datum) - year(tidy.bn.data$e_Geb.datum) - (month(tidy.bn.data$Datum) < month(tidy.bn.data$e_Geb.datum) | (month(tidy.bn.data$Datum) == month(tidy.bn.data$e_Geb.datum) & day(tidy.bn.data$Datum) < day(tidy.bn.data$e_Geb.datum)))
+  
+  tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
 
 
 write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
@@ -1649,7 +1649,48 @@ sum.data.22 |>
 
 ```
 
+### Quartals-Übersicht
 
+
+```{r quarterly owerview, echo=FALSE, message=TRUE, warning=TRUE}
+
+library(dplyr)
+library(stringr)
+
+combined.cases <- bind_rows(
+  tidy.dxi.data,
+  tidy.bn.data
+)
+#as data frame
+sum.cases <- combined.cases |> 
+  #group_by(Qtr_Year, Year) |> 
+  filter(Year == 2022) |>
+  summarize(TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+            Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE),
+            Auftragstaxen = n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+            .by = Quarter
+                    ) |> as.data.frame()
+
+
+#nor properly working so far...
+sum.cases.piv <- sum.cases |> 
+  rownames_to_column() |> 
+  pivot_longer(!rowname, names_to = "Quartal", values_to = "col2") %>% 
+  pivot_wider(names_from = "rowname", values_from = "col2")
+names(sum.cases) <- sum.cases[1,] 
+sum.cases <- sum.cases[-1,]
+
+sum.case |>
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+```
 
 ---
   
