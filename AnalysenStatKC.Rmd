@@ -45,7 +45,7 @@ Die Hochdurchsatz-Chemie bestehend aus 2 AU5800 und 2 DxI-800 bildet das Rückra
 library(readxl)
 
 #import tariff data
-tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = c(
+tarif.scales <- read_excel("UmsatzStatistik.xlsx", col_types = c(
   "text",
   "text",
   "skip",
@@ -59,8 +59,8 @@ tarif.scales <- read_excel("H:\\Statistiken\\UmsatzStatistik.xlsx", col_types = 
 
 # import AU data
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -161,7 +161,7 @@ tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) 
 # tidy.AU.data <- cbind(tidy.AU.data[,1:3], Alter = tidy.AU.data$Alter, 
 #                      tidy.AU.data[,4:ncol(tidy.AU.data)])
 tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
-
+tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.AU.data, "tidyAUdataTxp.csv", col_names = TRUE)
 
@@ -174,12 +174,11 @@ tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
 
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
-  summarize(AU_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            AU_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(b_Fallnummer)
+  summarize(AU_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            AU_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
-AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
-AU.sum.data$AU_TxpUmsatz <- AU.sum.data$AU_TxpUmsatz + AU.sum.data$AU_Auftraege * 10
+AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
 AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
 
 AU.sum.data |> flextable() |> 
@@ -254,8 +253,8 @@ AU.sum.method |>
 #   "skip"))
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the material and machine in its name
 
@@ -279,6 +278,15 @@ global.dxi.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                               "date",
                               "text",
                               "text",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
+                              "numeric",
                               "numeric",
                               "numeric",
                               "numeric",
@@ -340,7 +348,7 @@ tidy.dxi.data <- subset(tidy.dxi.data, select = -c(Tagesnummer))
 tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datum) - (month(tidy.dxi.data$Datum) < month(tidy.dxi.data$e_Geb.datum) | (month(tidy.dxi.data$Datum) == month(tidy.dxi.data$e_Geb.datum) & day(tidy.dxi.data$Datum) < day(tidy.dxi.data$e_Geb.datum)))
 
 tidy.dxi.data <- tidy.dxi.data |> relocate(Alter, .before = f_Geschl.)
-
+tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 
@@ -350,7 +358,7 @@ write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 
 
 ```{r flex DxI.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
+
 
 
 dxi.sum.data <- tidy.dxi.data |> 
@@ -359,8 +367,7 @@ dxi.sum.data <- tidy.dxi.data |>
             DxI_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
             )
-dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
-dxi.sum.data$DxI_TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz + dxi.sum.data$DxI_Auftraege * 10
+dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
 dxi.sum.data <- dxi.sum.data |> relocate(TxpUmsatz,  .before = DxI_TxpUmsatz)
 
 dxi.sum.data |> flextable() |> 
@@ -436,31 +443,23 @@ library(dplyr)
 library(stringr)
 
 combined.data <- bind_rows(
-  AU.sum.data,
-  dxi.sum.data,
+  tidy.AU.data,
+  tidy.dxi.data,
   )
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
-    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
-    Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
-                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege))),
-    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
-    )))
+    TxpUmsatz_CoreLab = sum(Taxpkt., na.rm = TRUE),
+    Auftraege_Hochd. = n_distinct(a_Tagesnummer, na.rm = TRUE), 
+    Anz_Patienten_sum = n_distinct(b_Fallnummer, na.rm = TRUE)
+            )
 
-sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
-sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
-sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
-
-
-
-
 
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
-sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
-sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
-sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:4]))) 
+
 
 
 
@@ -468,17 +467,11 @@ sum.data.22 |>
   flextable() |>  
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
-  mk_par(j = 2,
-         value = as_paragraph(
-           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
-         ),
-         part = "body") |> 
   set_header_labels(
-    TxpUmsatz = "TxpUmsatz -Hochdurchsatz-",
-    Auftraege_KC = "Auftraege",
+    TxpUmsatz_CoreLab = "TxpUmsatz -Hochdurchsatz",
+    Auftraege_Hochd. = "Auftraege",
     Anz_Patienten_sum = "Patienten (n)"
   ) |> 
-  merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit") |> 
   colformat_date(fmt_date = "%m/%Y") 
@@ -509,8 +502,8 @@ sum.data.22 |>
 
 
 # list all files in the directory
-files <- list.files("/Users/olli/R/labStat")
-data_path <- "/Users/olli/R/labStat"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -534,6 +527,15 @@ global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                                   "date",
                                   "text",
                                   "text",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
                                   "numeric",
                                   "numeric",
                                   "numeric",
@@ -589,8 +591,8 @@ global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
   #call age
   tidy.bn.data$Alter <- year(tidy.bn.data$Datum) - year(tidy.bn.data$e_Geb.datum) - (month(tidy.bn.data$Datum) < month(tidy.bn.data$e_Geb.datum) | (month(tidy.bn.data$Datum) == month(tidy.bn.data$e_Geb.datum) & day(tidy.bn.data$Datum) < day(tidy.bn.data$e_Geb.datum)))
   
-  tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
-
+tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
+tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
 
@@ -598,17 +600,16 @@ write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
   
 
 ```{r flex BNII.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
+
 
 
 bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
-  summarize(bn_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            bn_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(b_Fallnummer)
+  summarize(bn_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            bn_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
-bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
-bn.sum.data$bn_TxpUmsatz <- bn.sum.data$bn_TxpUmsatz + bn.sum.data$bn_Auftraege * 10
+bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
 bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
 
 bn.sum.data |> flextable() |> 
@@ -694,8 +695,8 @@ bn.sum.method |>
 
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -737,7 +738,7 @@ library(dplyr)
 library(stringr)
 
 global.ep.data <- global.ep.data  |> 
-  mutate_all(~ str_replace_all(., c("s.unten" = "1", 
+  mutate_at(vars(!a_Tagesnummer:h_Auftragg.), ~as.numeric(str_replace_all(., c("s.unten" = "1", 
                                     "folgt" = "1", 
                                     "s. unten" ="1", 
                                     "negative" ="1", 
@@ -745,7 +746,7 @@ global.ep.data <- global.ep.data  |>
                                     "s.u." = "1", 
                                     " Nachweis von Chylomikronen" ="1",
                                     "keine Chylomikronen" = "1"
-                                    ))) |> as.data.frame() 
+                                    )))) |> as.data.frame() 
 
 
 global.ep.data <- global.ep.data |> filter(!grepl("Tagesnummer", global.ep.data$a_Tagesnummer))
@@ -783,7 +784,7 @@ tidy.ep.data$Alter <-
   )
 
 tidy.ep.data <- tidy.ep.data |> relocate(Alter, .before = g_Geschl.)
-
+tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.ep.data, "tidy_ep_dataTxp.csv")
 
@@ -791,19 +792,18 @@ write_excel_csv(tidy.ep.data, "tidy_ep_dataTxp.csv")
 
 ```{r flex_ep.tidy.data_into_summary, echo=FALSE, message=FALSE, warning=FALSE}
 
-tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
+
 
 ep.sum.data <- tidy.ep.data |> 
   group_by(Year_Month) |> 
-  summarize(ep_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            ep_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(c_Fallnummer)
+  summarize(ep_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            ep_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
   )
 
 
 
-ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
-ep.sum.data$ep_TxpUmsatz <- ep.sum.data$ep_TxpUmsatz + ep.sum.data$ep_Auftraege * 10
+ep.sum.data$TxpUmsatz <- ep.sum.data$ep_TxpUmsatz
 ep.sum.data <- ep.sum.data |> relocate(TxpUmsatz,  .before = ep_TxpUmsatz)
 
 ep.sum.data |> flextable() |> 
@@ -894,8 +894,8 @@ ep.sum.method |>
 
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -974,7 +974,7 @@ tidy.hplc.data$Alter <-
   )
 
 tidy.hplc.data <- tidy.hplc.data |> relocate(Alter, .before = f_Geschl.)
-
+tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.hplc.data, "tidy_hplc_dataTxp.csv")
 
@@ -982,16 +982,15 @@ write_excel_csv(tidy.hplc.data, "tidy_hplc_dataTxp.csv")
   
 
 ```{r flex HPLC.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
+
 
 hplc.sum.data <- tidy.hplc.data |> 
   group_by(Year_Month) |> 
-  summarize(hplc_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            hplc_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(b_Fallnummer)
+  summarize(hplc_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            hplc_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
-hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
-hplc.sum.data$hplc_TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz + hplc.sum.data$hplc_Auftraege * 10
+hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz 
 hplc.sum.data <- hplc.sum.data |> relocate(TxpUmsatz,  .before = hplc_TxpUmsatz)
 
 hplc.sum.data |> flextable() |> 
@@ -1126,8 +1125,8 @@ hplc.sum.method |>
 
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -1199,7 +1198,7 @@ tidy.lcms.data$Alter <-
   )
 
 tidy.lcms.data <- tidy.lcms.data |> relocate(Alter, .before = g_Geschl.)
-
+tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
 
 write_excel_csv(tidy.lcms.data, "tidy_lcms_dataTxp.csv")
 
@@ -1207,16 +1206,15 @@ write_excel_csv(tidy.lcms.data, "tidy_lcms_dataTxp.csv")
   
 
 ```{r flex LCMS.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
+
 
 lcms.sum.data <- tidy.lcms.data |> 
   group_by(Year_Month) |> 
-  summarize(lcms_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            lcms_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(c_Fallnummer)
+  summarize(lcms_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            lcms_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
   )
-lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
-lcms.sum.data$lcms_TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz + lcms.sum.data$lcms_Auftraege * 10
+lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
 lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
 
 lcms.sum.data |> flextable() |> 
@@ -1352,8 +1350,8 @@ lcms.sum.method |>
 
 
 # list all files in the directory
-files <- list.files("H:\\Statistiken\\")
-data_path <- "H:/Statistiken"
+files <- list.files("C:\\R_local\\labStat\\")
+data_path <- "C:\\R_local\\labStat\\"
 
 # find the file that has the materila and machine in its name
 
@@ -1441,12 +1439,11 @@ write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 
 vh.sum.data <- tidy.vh.data |> 
   group_by(Year_Month) |> 
-  summarize(vh_TxpUmsatz = sum(ifelse(is.na(Taxpkt.), 0, Taxpkt.)),
-            vh_Auftraege = n_distinct(a_Tagesnummer),
-            Anz_Patienten = n_distinct(b_Fallnummer)
+  summarize(vh_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
+            vh_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
-vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
-vh.sum.data$vh_TxpUmsatz <- vh.sum.data$vh_TxpUmsatz + vh.sum.data$vh_Auftraege * 10
+vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
 vh.sum.data <- vh.sum.data |> relocate(TxpUmsatz,  .before = vh_TxpUmsatz)
 
 vh.sum.data |> flextable() |> 
@@ -1523,37 +1520,27 @@ library(dplyr)
 library(stringr)
 
 combined.data <- bind_rows(
-   ep.sum.data,
-  bn.sum.data,
-  hplc.sum.data,
-  lcms.sum.data,
-  vh.sum.data
+   tidy.ep.data,
+  tidy.bn.data,
+  tidy.hplc.data,
+  tidy.lcms.data,
+  tidy.vh.data
 )
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
-    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
-    Auftraege_KC = sum(sum(ifelse(is.na(ep_Auftraege), 0, ep_Auftraege)), 
-                      sum(ifelse(is.na(bn_Auftraege), 0, bn_Auftraege)),
-                      sum(ifelse(is.na(hplc_Auftraege), 0, hplc_Auftraege)),
-                      sum(ifelse(is.na(lcms_Auftraege), 0, lcms_Auftraege)),
-                      sum(ifelse(is.na(vh_Auftraege), 0, vh_Auftraege))),
-    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
-    )))
+    TxpUmsatz_spezChem = sum(Taxpkt., na.rm = TRUE),
+    Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE)
+              )
 
-sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
-sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+
+
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
-sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
-
-
-
-
-
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
-sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
-sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
-sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:4]))) 
+sum.data.22$TxpUmsatz_spezChem <- as.numeric(sum.data.22$TxpUmsatz_spezChem)
+# sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
 
 
 
@@ -1561,15 +1548,15 @@ sum.data.22 |>
   flextable() |>  
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
-  mk_par(j = 2,
-         value = as_paragraph(
-           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
-         ),
-         part = "body") |> 
+  # mk_par(j = 2,
+  #        value = as_paragraph(
+  #          linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+  #        ),
+  #        part = "body") |> 
   set_header_labels(
-    TxpUmsatz = "TxpUmsatz -Spez. Chemie-",
-    Auftraege_KC = "Auftraege",
-    Anz_Patienten_sum = "Patienten (n)"
+    TxpUmsatz_spezChem = "TxpUmsatz -Spez. Chemie-",
+    Anz_Auftraege = "Auftraege",
+    Anz_Faelle = "Patienten (n)"
   ) |> 
   merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1649,48 +1636,7 @@ sum.data.22 |>
 
 ```
 
-### Quartals-Übersicht
 
-
-```{r quarterly owerview, echo=FALSE, message=TRUE, warning=TRUE}
-
-library(dplyr)
-library(stringr)
-
-combined.cases <- bind_rows(
-  tidy.dxi.data,
-  tidy.bn.data
-)
-#as data frame
-sum.cases <- combined.cases |> 
-  #group_by(Qtr_Year, Year) |> 
-  filter(Year == 2022) |>
-  summarize(TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
-            Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE),
-            Auftragstaxen = n_distinct(b_Fallnummer, na.rm = TRUE)*10,
-            .by = Quarter
-                    ) |> as.data.frame()
-
-
-#nor properly working so far...
-sum.cases.piv <- sum.cases |> 
-  rownames_to_column() |> 
-  pivot_longer(!rowname, names_to = "Quartal", values_to = "col2") %>% 
-  pivot_wider(names_from = "rowname", values_from = "col2")
-names(sum.cases) <- sum.cases[1,] 
-sum.cases <- sum.cases[-1,]
-
-sum.case |>
-  flextable() |>  
-  theme_vanilla() |> 
-  bg(bg = "grey", part = "header") |> 
-  align(align = "center", part = "all")|>
-  set_table_properties(width = 0.8, layout = "autofit")
-
-
-
-```
 
 ---
   
