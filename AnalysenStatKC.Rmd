@@ -162,24 +162,32 @@ tidy.AU.data$Alter <- year(tidy.AU.data$Datum) - year(tidy.AU.data$e_Geb.datum) 
 #                      tidy.AU.data[,4:ncol(tidy.AU.data)])
 tidy.AU.data <- tidy.AU.data |> relocate(Alter, .before = f_Geschl.)
 tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
-
+tidy.AU.data <- tidy.AU.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.AU.data, "tidyAUdataTxp.csv", col_names = TRUE)
 
 
 ```
 
 ```{r flex AU.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-tidy.AU.data$Year_Month <- format(ymd(tidy.AU.data$Datum), "%Y-%m")
+
 
 
 AU.sum.data <- tidy.AU.data |> 
   group_by(Year_Month) |> 
   summarize(AU_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            AU_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            AU_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 AU.sum.data$TxpUmsatz <- AU.sum.data$AU_TxpUmsatz
 AU.sum.data <- AU.sum.data |> relocate(TxpUmsatz,  .before = AU_TxpUmsatz)
+
+set_flextable_defaults(
+  digits = 1,
+  decimal.mark = ".",
+  big.mark = "'",
+  na_str = "<na>"
+)
 
 AU.sum.data |> flextable() |> 
   theme_vanilla() |> 
@@ -191,7 +199,7 @@ AU.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     AU_TxpUmsatz = " ",
-    AU_Auftraege = "Aufträge",
+    AU_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -349,7 +357,8 @@ tidy.dxi.data$Alter <- year(tidy.dxi.data$Datum) - year(tidy.dxi.data$e_Geb.datu
 
 tidy.dxi.data <- tidy.dxi.data |> relocate(Alter, .before = f_Geschl.)
 tidy.dxi.data$Year_Month <- format(ymd(tidy.dxi.data$Datum), "%Y-%m")
-
+tidy.dxi.data <- tidy.dxi.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 
 ```
@@ -364,7 +373,7 @@ write_excel_csv(tidy.dxi.data, "tidy_DxI_dataTxp.csv")
 dxi.sum.data <- tidy.dxi.data |> 
   group_by(Year_Month) |> 
   summarize(DxI_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            DxI_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            DxI_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
             )
 dxi.sum.data$TxpUmsatz <- dxi.sum.data$DxI_TxpUmsatz
@@ -380,7 +389,7 @@ dxi.sum.data |> flextable() |>
   part = "body") |> 
   set_header_labels(
     DxI_TxpUmsatz = " ",
-    DxI_Auftraege = "Auftraege",
+    DxI_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -450,7 +459,7 @@ sum.data <- combined.data |>
   group_by(Year_Month) |> 
   summarize(
     TxpUmsatz_CoreLab = sum(Taxpkt., na.rm = TRUE),
-    Auftraege_Hochd. = n_distinct(a_Tagesnummer, na.rm = TRUE), 
+    Aufträge_Hochd. = n_distinct(a_Tagesnummer, na.rm = TRUE), 
     Anz_Patienten_sum = n_distinct(b_Fallnummer, na.rm = TRUE)
             )
 
@@ -458,7 +467,16 @@ sum.data <- combined.data |>
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
 
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
-sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:4]))) 
+
+totals <- data.frame(Year_Month = "Total", 
+                     TxpUmsatz_CoreLab = colSums(sum.data.22[,2]), 
+                     Aufträge_Hochd. = colSums(sum.data.22[,3]), 
+                     Anz_Patienten_sum = colSums(sum.data.22[,4]))
+sum.data.22 <- rbind(sum.data.22, totals)
+
+
+
+
 
 
 
@@ -469,7 +487,7 @@ sum.data.22 |>
   bg(bg = "grey", part = "header") |> 
   set_header_labels(
     TxpUmsatz_CoreLab = "TxpUmsatz -Hochdurchsatz",
-    Auftraege_Hochd. = "Auftraege",
+    Aufträge_Hochd. = "Aufträge",
     Anz_Patienten_sum = "Patienten (n)"
   ) |> 
   align(align = "center", part = "all")|>
@@ -478,6 +496,36 @@ sum.data.22 |>
 
 
 ```
+<br>
+
+<br>
+
+```{r quarterly_corelab, echo=FALSE, message=FALSE, warning=FALSE}
+sum.cases.cl.22 <- combined.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
+  filter(Year == 2022) |> 
+  summarize(
+    TxpUmsatz_CoreLab = sum(Taxpkt., na.rm = TRUE),
+    Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+    Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+    .by = Quarter
+  )
+
+sum.cases.cl.22.piv <- sum.cases.cl.22 |> 
+  pivot_longer(!Quarter, names_to = "Umsätze", values_to = "col2") %>% 
+  pivot_wider(names_from = "Quarter", values_from = "col2")
+
+sum.cases.cl.22.piv |> 
+  arrange(desc(Q1_2022)) |>
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+```
+
+
 
 \newpage
   
@@ -561,6 +609,15 @@ global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                                   "numeric",
                                   "numeric",
                                   "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
+                                  "numeric",
                                   "numeric"
                                 ))
   
@@ -606,11 +663,14 @@ write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
 bn.sum.data <- tidy.bn.data |> 
   group_by(Year_Month) |> 
   summarize(bn_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            bn_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            bn_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 bn.sum.data$TxpUmsatz <- bn.sum.data$bn_TxpUmsatz
 bn.sum.data <- bn.sum.data |> relocate(TxpUmsatz,  .before = bn_TxpUmsatz)
+tidy.bn.data <- tidy.bn.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
+
 
 bn.sum.data |> flextable() |> 
   theme_vanilla() |> 
@@ -622,7 +682,7 @@ bn.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     bn_TxpUmsatz = " ",
-    bn_Auftraege = "Auftraege",
+    bn_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -708,14 +768,13 @@ full_path <- file.path(data_path, file_name)
 
 head1 <- read_excel(full_path, col_names = TRUE) |>  names()
 head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
-head2[1:8] <- c("a", "b", "c", "d", "e", "f", "g", "h")
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
 
 head <- paste0(head2, sep = "_", head1)
 global.ep.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                                  c(
                                    "text",
-                                   "skip",
-                                   "numeric",
+                                "numeric",
                                    "skip",
                                    "skip",
                                    "date",
@@ -737,17 +796,22 @@ global.ep.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
 library(dplyr)
 library(stringr)
 
-global.ep.data <- global.ep.data  |> 
-  mutate_at(vars(!a_Tagesnummer:h_Auftragg.), ~as.numeric(str_replace_all(., c("s.unten" = "1", 
-                                    "folgt" = "1", 
-                                    "s. unten" ="1", 
-                                    "negative" ="1", 
-                                    "fraglich" = "1",
-                                    "s.u." = "1", 
-                                    " Nachweis von Chylomikronen" ="1",
-                                    "keine Chylomikronen" = "1"
-                                    )))) |> as.data.frame() 
 
+global.ep.data <- global.ep.data  |>
+  mutate_at(vars(!a_Tagesnummer:g_Auftragg.),
+            ~ as.numeric(str_replace_all(
+              .,
+              c(
+                "s.unten" = "1",
+                "folgt" = "1",
+                "s. unten" = "1",
+                "negative" = "1",
+                "fraglich" = "1",
+                "s.u." = "1",
+                " Nachweis von Chylomikronen" = "1",
+                "keine Chylomikronen" = "1"
+              )
+            ))) |> as.data.frame()
 
 global.ep.data <- global.ep.data |> filter(!grepl("Tagesnummer", global.ep.data$a_Tagesnummer))
 global.ep.data <- global.ep.data |> filter(!is.na(a_Tagesnummer))
@@ -775,17 +839,19 @@ tidy.ep.data <- subset(tidy.ep.data, select = -c(Tagesnummer))
 
 #call age
 tidy.ep.data$Alter <-
-  year(tidy.ep.data$Datum) - year(tidy.ep.data$f_Geb.datum) - (
-    month(tidy.ep.data$Datum) < month(tidy.ep.data$f_Geb.datum) |
+  year(tidy.ep.data$Datum) - year(tidy.ep.data$e_Geb.datum) - (
+    month(tidy.ep.data$Datum) < month(tidy.ep.data$e_Geb.datum) |
       (
-        month(tidy.ep.data$Datum) == month(tidy.ep.data$f_Geb.datum) &
-          day(tidy.ep.data$Datum) < day(tidy.ep.data$f_Geb.datum)
+        month(tidy.ep.data$Datum) == month(tidy.ep.data$e_Geb.datum) &
+          day(tidy.ep.data$Datum) < day(tidy.ep.data$e_Geb.datum)
       )
   )
 
-tidy.ep.data <- tidy.ep.data |> relocate(Alter, .before = g_Geschl.)
-tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
 
+tidy.ep.data <- tidy.ep.data |> relocate(Alter, .before = f_Geschl.)
+tidy.ep.data$Year_Month <- format(ymd(tidy.ep.data$Datum), "%Y-%m")
+tidy.ep.data <- tidy.ep.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.ep.data, "tidy_ep_dataTxp.csv")
 
 ```
@@ -797,8 +863,8 @@ write_excel_csv(tidy.ep.data, "tidy_ep_dataTxp.csv")
 ep.sum.data <- tidy.ep.data |> 
   group_by(Year_Month) |> 
   summarize(ep_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            ep_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
+            ep_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 
 
@@ -816,7 +882,7 @@ ep.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     ep_TxpUmsatz = " ",
-    ep_Auftraege = "Auftraege",
+    ep_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -872,7 +938,47 @@ ep.sum.method |>
 
 
 ```
+```{r 2021 ep analysis, echo=FALSE, message=FALSE, warning=FALSE}
+ep.sum.method <- tidy.ep.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter"))),
+         Year = year(Datum)) |> 
+  filter(Year == 2021) |> 
+  summarise(
+    Analysen = n(),
+    .by = c(Quarter, Year, Bezeichnung)
+  ) |> 
+  pivot_wider(
+    names_from = c(Quarter, Year), 
+    values_from = Analysen, 
+    names_sort = TRUE
+  )
 
+
+
+
+ep.sum.method |> 
+  arrange(desc(Q4_2021)) |>
+  flextable() |> 
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  add_header_row(
+    values = c("Methoden", "n in 2021"),
+    colwidths = c(1, 4)) |> 
+  theme_box() |>  
+  set_header_labels(
+    Q1_2021 = "Q1",
+    Q2_2021 = "Q2",
+    Q3_2021 = "Q3",
+    Q4_2021 = "Q4"
+  ) |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+
+
+
+```
 \newpage
 
 #### HPLC: Taxpunkt-Umsatz & Auftragszahlen   
@@ -975,7 +1081,8 @@ tidy.hplc.data$Alter <-
 
 tidy.hplc.data <- tidy.hplc.data |> relocate(Alter, .before = f_Geschl.)
 tidy.hplc.data$Year_Month <- format(ymd(tidy.hplc.data$Datum), "%Y-%m")
-
+tidy.hplc.data <- tidy.hplc.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.hplc.data, "tidy_hplc_dataTxp.csv")
 
 ```
@@ -987,7 +1094,7 @@ write_excel_csv(tidy.hplc.data, "tidy_hplc_dataTxp.csv")
 hplc.sum.data <- tidy.hplc.data |> 
   group_by(Year_Month) |> 
   summarize(hplc_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            hplc_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            hplc_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 hplc.sum.data$TxpUmsatz <- hplc.sum.data$hplc_TxpUmsatz 
@@ -1003,7 +1110,7 @@ hplc.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     hplc_TxpUmsatz = " ",
-    hplc_Auftraege = "Auftraege",
+    hplc_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1138,13 +1245,12 @@ full_path <- file.path(data_path, file_name)
 
 head1 <- read_excel(full_path, col_names = TRUE) |>  names()
 head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
-head2[1:8] <- c("a", "b", "c", "d", "e", "f", "g", "h")
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
 
 head <- paste0(head2, sep = "_", head1)
 global.lcms.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
                                  c(
                                    "text",
-                                   "skip",
                                    "numeric",
                                    "skip",
                                    "skip",
@@ -1189,17 +1295,18 @@ tidy.lcms.data <- subset(tidy.lcms.data, select = -c(Tagesnummer))
 
 #call age
 tidy.lcms.data$Alter <-
-  year(tidy.lcms.data$Datum) - year(tidy.lcms.data$f_Geb.datum) - (
-    month(tidy.lcms.data$Datum) < month(tidy.lcms.data$f_Geb.datum) |
+  year(tidy.lcms.data$Datum) - year(tidy.lcms.data$e_Geb.datum) - (
+    month(tidy.lcms.data$Datum) < month(tidy.lcms.data$e_Geb.datum) |
       (
-        month(tidy.lcms.data$Datum) == month(tidy.lcms.data$f_Geb.datum) &
-          day(tidy.lcms.data$Datum) < day(tidy.lcms.data$f_Geb.datum)
+        month(tidy.lcms.data$Datum) == month(tidy.lcms.data$e_Geb.datum) &
+          day(tidy.lcms.data$Datum) < day(tidy.lcms.data$e_Geb.datum)
       )
   )
 
-tidy.lcms.data <- tidy.lcms.data |> relocate(Alter, .before = g_Geschl.)
+tidy.lcms.data <- tidy.lcms.data |> relocate(Alter, .before = f_Geschl.)
 tidy.lcms.data$Year_Month <- format(ymd(tidy.lcms.data$Datum), "%Y-%m")
-
+tidy.lcms.data <- tidy.lcms.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.lcms.data, "tidy_lcms_dataTxp.csv")
 
 ```
@@ -1211,8 +1318,8 @@ write_excel_csv(tidy.lcms.data, "tidy_lcms_dataTxp.csv")
 lcms.sum.data <- tidy.lcms.data |> 
   group_by(Year_Month) |> 
   summarize(lcms_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            lcms_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Patienten = n_distinct(c_Fallnummer, na.rm = TRUE)
+            lcms_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 lcms.sum.data$TxpUmsatz <- lcms.sum.data$lcms_TxpUmsatz
 lcms.sum.data <- lcms.sum.data |> relocate(TxpUmsatz,  .before = lcms_TxpUmsatz)
@@ -1227,7 +1334,7 @@ lcms.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     lcms_TxpUmsatz = " ",
-    lcms_Auftraege = "Auftraege",
+    lcms_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1426,7 +1533,9 @@ tidy.vh.data <- subset(tidy.vh.data, select = -c(Tagesnummer))
 tidy.vh.data$Alter <- year(tidy.vh.data$Datum) - year(tidy.vh.data$e_Geb.datum) - (month(tidy.vh.data$Datum) < month(tidy.vh.data$e_Geb.datum) | (month(tidy.vh.data$Datum) == month(tidy.vh.data$e_Geb.datum) & day(tidy.vh.data$Datum) < day(tidy.vh.data$e_Geb.datum)))
 
 tidy.vh.data <- tidy.vh.data |> relocate(Alter, .before = f_Geschl.)
-
+tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
+tidy.vh.data <- tidy.vh.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 
 write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 
@@ -1434,13 +1543,13 @@ write_excel_csv(tidy.vh.data, "tidy_vh_dataTxp.csv")
 
 
 ```{r flex vh4.tidy.data into summary, echo=FALSE, message=FALSE, warning=FALSE}
-  tidy.vh.data$Year_Month <- format(ymd(tidy.vh.data$Datum), "%Y-%m")
+  
 
 
 vh.sum.data <- tidy.vh.data |> 
   group_by(Year_Month) |> 
   summarize(vh_TxpUmsatz = sum(Taxpkt., na.rm = TRUE),
-            vh_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            vh_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
             Anz_Patienten = n_distinct(b_Fallnummer, na.rm = TRUE)
   )
 vh.sum.data$TxpUmsatz <- vh.sum.data$vh_TxpUmsatz
@@ -1456,7 +1565,7 @@ vh.sum.data |> flextable() |>
          part = "body") |> 
   set_header_labels(
     vh_TxpUmsatz = " ",
-    vh_Auftraege = "Auftraege",
+    vh_Aufträge = "Aufträge",
     Anz_Patienten = "Patienten (n)"
   ) |> merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1530,14 +1639,16 @@ sum.data <- combined.data |>
   group_by(Year_Month) |> 
   summarize(
     TxpUmsatz_spezChem = sum(Taxpkt., na.rm = TRUE),
-    Anz_Auftraege = n_distinct(a_Tagesnummer, na.rm = TRUE),
-            Anz_Faelle = n_distinct(b_Fallnummer, na.rm = TRUE)
+    Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+            Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE)
               )
 
 
 
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
+
+
 sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:4]))) 
 sum.data.22$TxpUmsatz_spezChem <- as.numeric(sum.data.22$TxpUmsatz_spezChem)
 # sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
@@ -1555,8 +1666,8 @@ sum.data.22 |>
   #        part = "body") |> 
   set_header_labels(
     TxpUmsatz_spezChem = "TxpUmsatz -Spez. Chemie-",
-    Anz_Auftraege = "Auftraege",
-    Anz_Faelle = "Patienten (n)"
+    Anz_Aufträge = "Aufträge",
+    Anz_Fälle = "Patienten (n)"
   ) |> 
   merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
@@ -1565,7 +1676,33 @@ sum.data.22 |>
 
 
 ```
+<br>
 
+<br>
+
+```{r quarterly_spezchem, echo=FALSE, message=FALSE, warning=FALSE}
+sum.cases.sc.22 <- combined.data |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
+  filter(Year == 2022) |> 
+  summarize(
+    TxpUmsatz_spezChem = sum(Taxpkt., na.rm = TRUE),
+    Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+    Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+    .by = Quarter
+  )
+
+sum.cases.sc.22 <- sum.cases.sc.22 |> 
+  pivot_longer(!Quarter, names_to = "Umsätze", values_to = "col2") %>% 
+  pivot_wider(names_from = "Quarter", values_from = "col2")
+
+sum.cases.sc.22 |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+```
 
 \newpage
 
@@ -1587,19 +1724,18 @@ combined.data <- bind_rows(
 sum.data <- combined.data |> 
   group_by(Year_Month) |> 
   summarize(
-    TxpUmsatz_KC = sum(ifelse(is.na(TxpUmsatz), 0, TxpUmsatz)),
-    Auftraege_KC = sum(sum(ifelse(is.na(AU_Auftraege), 0, AU_Auftraege)), 
-                      sum(ifelse(is.na(DxI_Auftraege), 0, DxI_Auftraege)),
-                      sum(ifelse(is.na(ep_Auftraege), 0, ep_Auftraege)), 
-                      sum(ifelse(is.na(bn_Auftraege), 0, bn_Auftraege)),
-                      sum(ifelse(is.na(hplc_Auftraege), 0, hplc_Auftraege)),
-                      sum(ifelse(is.na(lcms_Auftraege), 0, lcms_Auftraege)),
-                      sum(ifelse(is.na(vh_Auftraege), 0, vh_Auftraege))),
-    Anz_Patienten_sum = sum(ifelse(is.na(Anz_Patienten), 0, Anz_Patienten
-    )))
+    TxpUmsatz_KC = sum(TxpUmsatz, na.rm = TRUE),
+    Aufträge_KC = sum(sum(AU_Aufträge, na.rm = TRUE), 
+                      sum(DxI_Aufträge, na.rm = TRUE),
+                      sum(ep_Aufträge, na.rm = TRUE), 
+                      sum(bn_Aufträge, na.rm = TRUE),
+                      sum(hplc_Aufträge, na.rm = TRUE),
+                      sum(lcms_Aufträge, na.rm = TRUE),
+                      sum(vh_Aufträge, na.rm = TRUE)),
+    Anz_Patienten_sum = sum(Anz_Patienten, na.rm = TRUE))
 
-sum.data$TxpUmsatz <- sum.data$TxpUmsatz_KC
-sum.data <- sum.data |> relocate(TxpUmsatz,  .before = TxpUmsatz_KC)
+
+
 sum.data$Year <- format(ym(sum.data$Year_Month), "%Y")
 sum.data <- sum.data |> relocate(Year,  .before = Year_Month) 
 
@@ -1608,8 +1744,8 @@ sum.data <- sum.data |> relocate(Year,  .before = Year_Month)
 
 
 sum.data.22 <- sum.data |> filter(Year == "2022")|> subset(select = -c(Year))
-sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:5]))) 
-sum.data.22$TxpUmsatz <- as.numeric(sum.data.22$TxpUmsatz)
+sum.data.22 <-  rbind(sum.data.22, c("Total", colSums(sum.data.22[,2:4]))) 
+
 sum.data.22$TxpUmsatz_KC <- as.numeric(sum.data.22$TxpUmsatz_KC)
 
 
@@ -1618,23 +1754,103 @@ sum.data.22 |>
   flextable() |>  
   theme_vanilla() |> 
   bg(bg = "grey", part = "header") |> 
-  mk_par(j = 2,
-         value = as_paragraph(
-           linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
-         ),
-         part = "body") |> 
+  # mk_par(j = 2,
+  #        value = as_paragraph(
+  #          linerange(value = TxpUmsatz_KC, max = max(TxpUmsatz_KC), height = .15)
+  #        ),
+  #        part = "body") |> 
   set_header_labels(
-    TxpUmsatz_KC = " ",
-    Auftraege_KC = "Auftraege KC",
+    TxpUmsatz_KC = "TxpUmsatz",
+    Aufträge_KC = "Aufträge KC",
     Anz_Patienten_sum = "Patienten (n)"
   ) |> 
-  merge_at(j = c(2, 3), part = "header") |> 
+  # merge_at(j = c(2, 3), part = "header") |> 
   align(align = "center", part = "all")|>
   set_table_properties(width = 0.8, layout = "autofit") |> 
   colformat_date(fmt_date = "%m/%Y") 
 
 
 ```
+<br>
+
+<br>
+```{r sum_all_21, echo=FALSE, message=FALSE, warning=FALSE}
+combined.cases.all <- bind_rows(
+   tidy.AU.data,
+   tidy.dxi.data,
+   tidy.ep.data, 
+   tidy.bn.data,
+   tidy.hplc.data,
+   tidy.lcms.data,
+   tidy.vh.data,)
+ 
+sum.cases.all.21 <- combined.cases.all |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
+  filter(Year == 2021) |> 
+  summarize(
+    TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+    Auftragstaxen = n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+    Umsatz_CHF = sum(Taxpkt., na.rm = TRUE) + n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+    Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+    Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+    .by = Quarter
+  )
+
+sum.cases.all.21.piv <- sum.cases.all.21 |> 
+  pivot_longer(!Quarter, names_to = "Umsätze", values_to = "col2") %>% 
+  pivot_wider(names_from = "Quarter", values_from = "col2")
+
+
+
+
+sum.cases.all.21.piv |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+```
+
+```{r sum_all_22, echo=FALSE, message=FALSE, warning=FALSE}
+# combined.cases.all <- bind_rows(
+#   tidy.AU.data,
+#   tidy.dxi.data,
+#   tidy.ep.data, 
+#   tidy.bn.data,
+#   tidy.hplc.data,
+#   tidy.lcms.data,
+#   tidy.vh.data,)
+ 
+sum.cases.all.22 <- combined.cases.all |> 
+  mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
+  filter(Year == 2022) |> 
+  summarize(
+    TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+    Auftragstaxen = n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+    Umsatz_CHF = sum(Taxpkt., na.rm = TRUE) + n_distinct(b_Fallnummer, na.rm = TRUE)*10,
+    Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+    Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+    .by = Quarter
+  )
+sum.cases.all.22$`Delta 22vs21(%)` <- as.integer(sum.cases.all.22$TxpUmsatz_KC*100/sum.cases.all.21$TxpUmsatz_KC-100)
+
+
+
+sum.cases.all.22.piv <- sum.cases.all.22 |> 
+  pivot_longer(!Quarter, names_to = "Umsätze", values_to = "col2") %>% 
+  pivot_wider(names_from = "Quarter", values_from = "col2")
+
+
+sum.cases.all.22.piv |>  
+  flextable() |>  
+  theme_vanilla() |> 
+  bg(bg = "grey", part = "header") |> 
+  align(align = "center", part = "all")|>
+  set_table_properties(width = 0.8, layout = "autofit") |> 
+  colformat_date(fmt_date = "%m/%Y") 
+```
+
 
 
 
