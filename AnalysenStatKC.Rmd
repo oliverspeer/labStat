@@ -650,7 +650,8 @@ global.bn.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
   
 tidy.bn.data <- tidy.bn.data |> relocate(Alter, .before = f_Geschl.)
 tidy.bn.data$Year_Month <- format(ymd(tidy.bn.data$Datum), "%Y-%m")
-
+tidy.bn.data <- tidy.bn.data %>% 
+  mutate(Quarter = quarter(Datum), Year = year(Datum))
 write_excel_csv(tidy.bn.data, "tidy_bn_dataTxp.csv")
 
 ```
@@ -1783,7 +1784,12 @@ combined.cases.all <- bind_rows(
    tidy.hplc.data,
    tidy.lcms.data,
    tidy.vh.data,)
- 
+
+combined.cases.all$Methode <- as.numeric(combined.cases.all$Methode) 
+methoden.kc <- read_excel("MethodenKatalogKC.xlsx", col_types = c("text", "numeric", "text"))
+combined.data.kc <- left_join(combined.cases.all, methoden.kc, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
+write_excel_csv(tidy.vh.data, "Combined_Data_KC.csv")
+
 sum.cases.all.21 <- combined.cases.all |> 
   mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
   filter(Year == 2021) |> 
