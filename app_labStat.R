@@ -1,10 +1,14 @@
 library(shiny)
+library(tidyverse)
 
 ui <- fluidPage(
   selectInput("gerät", "Gerät", choices = unique(combined.data.kc$Gerät)),
   selectInput("methodenbezeichnung", "Analysen Methode", choices = NULL),
   selectInput("year", "Jahr", choices = NULL),
-  tableOutput("data")
+  fluidRow(
+    column(6, tableOutput("quarterly")),
+    column(6, tableOutput("yearly"))
+  )
 )
 
 server <- function(input, output, session) {
@@ -25,20 +29,28 @@ server <- function(input, output, session) {
     updateSelectInput(inputId = "year", choices = choices)
   })
   
-  output$data <- renderTable({
-    req(input$year)
+  output$quarterly <- renderTable({
+    req(input$year, input$methodenbezeichnung)
     methode() %>% 
       filter(Year == input$year) %>% 
-      #select(Taxpkt., g_Auftragg., f_Geschl.) |> 
+      group_by(Quarter) %>% 
       summarize(
         TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
         Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
-        .by = Quarter
+        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE)
+      )
+  })
+  
+  output$yearly <- renderTable({
+    req(input$year, input$methodenbezeichnung)
+    methode() %>% 
+      group_by(Year) %>% 
+      summarize(
+        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE)
       )
   })
 }
-
-
 
 shinyApp(ui, server)
