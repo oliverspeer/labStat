@@ -4,42 +4,38 @@ library(ggplot2)
 library(shinythemes)
 library(flextable)
 library(shinyjs)
+library(DT)
 
 ui <- fluidPage(
   
   #themeSelector(),
-  list(tags$head(HTML('<href="logo_pos.png",
-                                   type="png" />'))),
-  div(style="padding: 10px 10px; width: '100%'",
-      titlePanel(
-        title="", windowTitle="Statistiken Klinische Chemie"
-      )
-  ),
+  
   navbarPage(
     title = div(" ", img(src="logo_pos.png", 
                          height = 28, 
                          width = 130, 
                          style = "margin:1px 3px")
     ), 
-    theme = shinytheme("readable"), 
+    theme = shinytheme("paper"), 
     collapsible = TRUE,
     fluid = TRUE,
     tabPanel("KPI Klinische Chemie", "Analysen",
              sidebarLayout(
                sidebarPanel(
-                 selectInput("gerät", "Gerät", choices = unique(combined.data.kc$Gerät)),
+                 selectInput("gerät", "Arbeitsplatz", choices = unique(combined.data.kc$Gerät)),
                  selectInput("methodenbezeichnung", "Analysen Methode", choices = NULL),
                  selectInput("year", "Jahr", choices = NULL)
                ),
                mainPanel(
                  fluidRow(
-                   column(12, tableOutput("quarterly")),
-                   # column(6, tableOutput("yearly"))
+                   column(12, DTOutput("yearlyAP"))
                  ),
                  fluidRow(
-                   # column(6, tableOutput("quarterly")),
-                   column(12, tableOutput("yearly"))
+                   column(12, DTOutput("yearly"))
                  ),
+                 fluidRow(
+                   column(12, DTOutput("quarterly"))
+                 )
                  
                )
              )
@@ -72,29 +68,74 @@ server <- function(input, output, session) {
     updateSelectInput(inputId = "year", choices = choices)
   })
   
-  output$quarterly <- renderTable(hover = TRUE,
-                                  {
-                                    req(input$year, input$methodenbezeichnung)
-                                    methode() %>% 
-                                      filter(Year == input$year) %>% 
-                                      group_by(Quarter) %>% 
-                                      summarize(
-                                        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
-                                        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-                                        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE)
-                                      ) 
-                                  })
-  
-  output$yearly <- renderTable({
+  output$quarterly <- renderDT({
     req(input$year, input$methodenbezeichnung)
     methode() %>% 
-      #group_by(Year) %>% 
+      filter(Year == input$year) %>% 
+      group_by(Quarter) %>% 
+      summarize(
+        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE)
+      )%>%
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 4, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE,
+                                   paging = FALSE), 
+                    caption = "Quartals-Zahlen pro Methode") 
+  })
+  
+  calculate_relative_difference <- function(df, variable) {
+    df %>%
+      arrange(Year) %>%
+      mutate(
+        !!paste0("%Delta ", variable) :=
+          round((!!sym(variable) - lag(!!sym(variable))) / lag(!!sym(variable)) * 100, 2),
+        Year = as.character(Year)
+      ) |> arrange(desc(Year))
+  }
+  
+  output$yearly <- renderDT({
+    req(input$year, input$methodenbezeichnung)
+    methode() %>%  
       summarize(
         TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
         Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
         Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
         .by = Year
+      ) %>% 
+      calculate_relative_difference("Anz_Aufträge")%>%
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
+      )%>%
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 2, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE), 
+                    caption = "Jährlicher Umsatz pro Methode")
+    
+  })
+  
+  output$yearlyAP <- renderDT({
+    req(input$year, input$gerät)
+    gerät() %>%  
+      summarize(
+        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
+        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
+        #Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+        .by = Year
+      ) %>% 
+      calculate_relative_difference("Anz_Aufträge")%>%
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      )
+      )%>%
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 2, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE), 
+                    caption = "Jährlicher Umsatz pro Arbeitsplatz")
+    
   })
   
   output$plot1 <- renderPlot({

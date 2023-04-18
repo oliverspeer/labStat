@@ -1788,7 +1788,7 @@ combined.cases.all <- bind_rows(
 combined.cases.all$Methode <- as.numeric(combined.cases.all$Methode) 
 methoden.kc <- read_excel("MethodenKatalogKC.xlsx", col_types = c("text", "numeric", "text"))
 combined.data.kc <- left_join(combined.cases.all, methoden.kc, by = c("Bezeichnung", "Methode"), keep = FALSE, multiple = "any")
-write_excel_csv(tidy.vh.data, "Combined_Data_KC.csv")
+write_excel_csv(combined.data.kc, "Combined_Data_KC.csv")
 
 sum.cases.all.21 <- combined.cases.all |> 
   mutate(Quarter = paste0("Q", quarter(floor_date(Datum, "quarter")), "_", Year = year(Datum))) |>
