@@ -1,11 +1,11 @@
-
-
 # prepare libraries -------------------------------------------------------
 
 library(tidyverse)
 library(parallel)
 library(robslopes)
 library(readxl)
+
+
 
 # import tariff data ------------------------------------------------------
 
@@ -25,12 +25,32 @@ tarif.scales <- read_excel(
 )
 
 
+
 # import method data ------------------------------------------------------
 
 methoden.kc <- read_excel("MethodenKatalogKC.xlsx",
                           col_types = c("text", "numeric", "text"))
 
 
+# import reagent costs ----------------------------------------------------
+
+reag.costs <- read_excel("Bestellliste.xlsx", col_types = c("text", 
+                                        "date", 
+                                        "text",
+                                        "skip",
+                                        "skip",
+                                        "skip",
+                                        "skip",
+                                        "text",
+                                        "skip",
+                                        "skip",
+                                        "skip",
+                                        "numeric",
+                                        "numeric"))
+reag.costs$Year_Month <- format(ymd(reag.costs$Datum), "%Y-%m")
+reag.costs <- reag.costs |>  
+  mutate(Quarter = quarter(Datum), Year = year(Datum)) |> 
+  mutate(across(where(is.numeric), ~round(., 1)))
 
 
 # define functions --------------------------------------------------------
@@ -42,7 +62,7 @@ fun.read.excel.data <- function(file_pattern, df_name) {
   
   head1 <- read_excel(full_path, col_names = TRUE) |> names()
   head2 <-
-    read_excel(full_path, skip = 1, col_names = TRUE) |> names()
+    read_excel(full_path, skip = 1, col_names = TRUE, .name_repair = "minimal") |> names()
   head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
   head <- paste0(head2, sep = "_", head1)
   
@@ -62,6 +82,7 @@ fun.read.excel.data <- function(file_pattern, df_name) {
     ),
     envir = .GlobalEnv
   )
+ 
 }
 
 fun.process.data <- function(data, tarif) {
@@ -109,9 +130,11 @@ fun.write.tidy.data <- function(data, tarif, df_name) {
 }
 
 
-# AU data (read excel, tidy up data,  -------------------------------------
+
+# AU data (read excel, tidy up data)  -------------------------------------
 fun.read.excel.data("BlutAU", "AU.data")
 fun.write.tidy.data(AU.data, tarif.scales, "tidy.AU.data")
+
 
 
 # DxI data (read excel, tidy up data) -------------------------------------
@@ -119,9 +142,11 @@ fun.read.excel.data("BlutDxI", "dxi.data")
 fun.write.tidy.data(dxi.data, tarif.scales, "tidy.dxi.data")
 
 
+
 # BNII Data (read excel, tidy up data) ------------------------------------
 fun.read.excel.data("BNII", "bn.data")
 fun.write.tidy.data(bn.data, tarif.scales, "tidy.bn.data")
+
 
 # EP Data (read excel, tidy up data) ------------------------------------
 files <- list.files("C:\\R_local\\labStat\\")
@@ -136,7 +161,7 @@ file_name <- files[grep(file_pattern, files)]
 full_path <- file.path(data_path, file_name)
 
 head1 <- read_excel(full_path, col_names = TRUE) |>  names()
-head2 <- read_excel(full_path, skip = 1, col_names = TRUE)  |>  names()
+head2 <- read_excel(full_path, skip = 1, col_names = TRUE, .name_repair = "minimal")  |>  names()
 head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
 
 head <- paste0(head2, sep = "_", head1)
@@ -183,17 +208,47 @@ ep.data <- ep.data  |>
 fun.write.tidy.data(ep.data, tarif.scales, "tidy.ep.data")
 
 
+
 # HPLC Data (read excel, tidy up data) ------------------------------------
 fun.read.excel.data("HPLC", "hplc.data")
 fun.write.tidy.data(hplc.data, tarif.scales, "tidy.hplc.data")
+
 
 # LcMSMS Data (read excel, tidy up data) ------------------------------------
 fun.read.excel.data("LcMSMS", "lcms.data")
 fun.write.tidy.data(lcms.data, tarif.scales, "tidy.lcms.data")
 
+
 # VH4 Data (read excel, tidy up data) ------------------------------------
-fun.read.excel.data("VH4", "vh.data")
-fun.write.tidy.data(lcms.data, tarif.scales, "tidy.vh.data")
+data_path <- "C:\\R_local\\labStat\\"
+file_pattern <- "VH4"
+files <- list.files(data_path)
+file_name <- files[grep(file_pattern, files)]
+full_path <- file.path(data_path, file_name)
+
+head1 <- read_excel(full_path, col_names = TRUE) |> names()
+head2 <-
+  read_excel(full_path, skip = 1, col_names = TRUE, .name_repair = "minimal") |> names()
+head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+head <- paste0(head2, sep = "_", head1)
+
+col.count <- ncol(read_excel(full_path, n_max = 1))
+col.types <- c(rep(c("text", "numeric", "skip", "skip", "date", "text", "text"), 1), 
+               rep(c("numeric","skip", "text", "skip"), c(col.count-16, 1, 1, 1)), 
+               rep("numeric", 6))
+vh.data <- read_excel(full_path, skip = 2, col_names = head, col_types =
+                        col.types
+)
+
+vh.data <- vh.data |> mutate_at(vars(!a_Tagesnummer:g_Auftragg.),
+                                  ~ ifelse(is.character(.) & . != "SISTIERT", "1", .)) |> 
+  mutate_at(vars(!a_Tagesnummer:g_Auftragg.), as.numeric)  |> 
+  as.data.frame()
+
+
+
+fun.write.tidy.data(vh.data, tarif.scales, "tidy.vh.data")
+
 
 
 # combine data, write csv -------------------------------------------------
@@ -220,3 +275,6 @@ combined.data.kc <-
     multiple = "any"
   )
 write_excel_csv(combined.data.kc, "Combined_Data_KC.csv")
+
+
+
