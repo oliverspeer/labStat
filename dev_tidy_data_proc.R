@@ -274,7 +274,12 @@ combined.data.kc <-
     keep = FALSE,
     multiple = "any"
   )
-write_excel_csv(combined.data.kc, "Combined_Data_KC.csv")
 
+# append combined.data.kc to existing file
+# write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = TRUE)
+
+# write combined.data.kc to new file
+write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = FALSE)
+```
 
 
