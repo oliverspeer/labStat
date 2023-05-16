@@ -5,7 +5,8 @@ library(parallel)
 library(robslopes)
 library(readxl)
 
-
+# set working directory ----------------------------------------------------
+setwd("C:/R_local/labStat")
 
 # import tariff data ------------------------------------------------------
 
@@ -52,6 +53,10 @@ reag.costs <- reag.costs |>
   mutate(Quarter = quarter(Datum), Year = year(Datum)) |> 
   mutate(across(where(is.numeric), ~round(., 1)))
 
+# read excel from file with name pattern ----------------------------------
+bookings  <- read_excel("Kopie von 2022 Q1-2023 Q1 KST S0210 S0212  S0410.xlsx")
+
+salary <- read_excel("Lohn_os_KCH.xlsx")
 
 # define functions --------------------------------------------------------
 fun.read.excel.data <- function(file_pattern, df_name) {
@@ -280,6 +285,6 @@ combined.data.kc <-
 
 # write combined.data.kc to new file
 write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = FALSE)
-```
+saveRDS(combined.data.kc, "Combined_Data_KC.rds")
 
 

@@ -8,6 +8,18 @@ library(DT)
 library(memoise)
 library(cachem)
 
+# set working directory ----------------------------------------------------
+#setwd("C:/R_local/labStat")
+
+
+# import rds data ---------------------------------------------------------
+
+#combined.data.kc <- readRDS("Combined_Data_KC.rds")
+
+
+
+# shiny app ----------------------------------------------------------------
+
 shinyOptions(cache = cache_mem(max_size = 5000e6))
 
 ui <- fluidPage(
@@ -61,17 +73,28 @@ ui <- fluidPage(
              )
           ),
 
-# Costs for reagents tabPanel ---------------------------------------------
+# Costs for salary, reagents, contracts, services tabPanel ---------------------------------------------
 
-    tabPanel("Reagenzienkosten", "Quartals-Verlauf",
+    tabPanel("Lohn- und Sach-Kosten", "jährliche Lohnkosten, jährliche Sachkosten (inkl Unterauftrag & Services & Reagenzien), quart Reagenzien-Kosten",
+            
             fluidRow(
-              column(6, DTOutput("quarterlyReagents")),
+              column(6, DTOutput("yearlysalary"))
+            ),
+            fluidRow(
+              column(6, DTOutput("yearlycosts"))
+                    ),
+            fluidRow(
+              column(6, DTOutput("yearlyrevenue"))
+            ),
+            fluidRow(
+              column(6, DTOutput("quarterlyReagents"))
+                    ),
            #column(12, plotOutput("plot2"))
            #column(12, plotOutput("plot3"))
          )
-),
+      )
     )
-  )
+ 
 
 server <- function(input, output, session) {
   session$cache <- cache_mem(max_size = 4000e6)
@@ -98,6 +121,19 @@ server <- function(input, output, session) {
   reagents <- reactive({
     filter(reag.costs, Year == input$year)
   }) |> bindCache(reag.costs, input$year, cache = "session")
+
+  cons.costs  <- reactive({
+    filter(bookings, Year == input$year)
+  }) |> bindCache(bookings, input$year, cache = "session")
+  
+  HR.costs  <- reactive({
+    filter(salary, Year == input$year)
+  }) |> bindCache(salary, input$year, cache = "session")
+  
+  revenue  <- reactive({
+    filter(combined.data.kc, Year == input$year)
+  }) |> bindCache(combined.data.kc, input$year, cache = "session")
+  
   
   output$quarterly <- renderDT({
     req(input$year, input$methodenbezeichnung)
@@ -108,7 +144,7 @@ server <- function(input, output, session) {
         summarize(
         TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
         Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+        #Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
         .by = Quarter
       )|>
       mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
@@ -190,9 +226,9 @@ server <- function(input, output, session) {
       ggplot(aes(x = paste0(Year, " Q", Quarter), y = TxpUmsatz_KC)) + 
       geom_bar(stat = "identity") +
       labs(x = "Quartal", y = "Taxpunkte", 
-           title = paste("Taxpunkt-Umsatz je Quartal:", input$methodenbezeichnung)
+           title = paste("Taxpunkt-Umsatz je Quartal:", input$gerät)
       )
-  }) |> bindCache(input$year, input$methodenbezeichnung, methode(), cache = "session")
+  }) #|> bindCache(input$year, input$methodenbezeichnung, methode(), cache = "session")
   
   output$plot2 <- renderPlot({
     req(input$year, input$methodenbezeichnung)
@@ -226,6 +262,7 @@ server <- function(input, output, session) {
 #       guides(fill = guide_legend(title = NULL))
 #   })|> bindCache(input$year, input$methodenbezeichnung, methode())
   
+  # output of quaterly reagents costs
   output$quarterlyReagents <- renderDT({
     req(input$year)
     reagents() |> 
@@ -233,7 +270,9 @@ server <- function(input, output, session) {
       #group_by(Quarter) |> 
       summarize(
         Reagenzienkosten = sum(Wwgesamtbrutto, na.rm = TRUE),
-        .by = Quarter
+        .by = Quarter  )|>
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      )
       )|>
       DT::datatable(options = list(hover = TRUE, 
                                    pageLength = 4, 
@@ -242,6 +281,75 @@ server <- function(input, output, session) {
                                    paging = FALSE), 
                     caption = paste("Quartals-Zahlen ", input$year),
                     rownames = FALSE) 
+ })
+  
+  # output of yearly salary
+  output$yearlysalary <- renderDT({
+    req(input$year)
+    HR.costs() |> 
+      filter(Year == input$year) |> 
+      #group_by(Quarter) |> 
+      summarize(
+        Lohnkosten = sum(Ges.Lohn, na.rm = TRUE),
+        .by = Year
+      )|>
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      )
+      )|>
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 4, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE,
+                                   paging = FALSE), 
+                    #caption = paste("Jährliche Ausgaben ", input$year),
+                    rownames = FALSE) 
+    
+  })
+  
+  # output of yearly costs
+  output$yearlycosts <- renderDT({
+    req(input$year)
+    cons.costs() |> 
+      filter(Year == input$year) |> 
+      #group_by(Quarter) |> 
+      summarize(
+        Sachkosten = sum(WertBWähr, na.rm = TRUE),
+        .by = Year
+      )|>
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      )
+      )|>
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 4, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE,
+                                   paging = FALSE), 
+                    #caption = paste("Jährliche Ausgaben ", input$year),
+                    rownames = FALSE) 
+                   
+  })
+  
+  # output of yearly revenues
+  output$yearlyrevenue <- renderDT({
+    req(input$year)
+    revenue() |> 
+      filter(Year == input$year) |> 
+      #group_by(Quarter) |> 
+      summarize(
+        Umsatz = sum(Taxpkt., na.rm = TRUE),
+        .by = Year
+      )|>
+      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      )
+      )|>
+      DT::datatable(options = list(hover = TRUE, 
+                                   pageLength = 4, 
+                                   lengthChange = FALSE,
+                                   searching = FALSE,
+                                   paging = FALSE), 
+                    caption = paste("Umsatz ", input$year),
+                    rownames = FALSE) 
+    
   })
   
 }
