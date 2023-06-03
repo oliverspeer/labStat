@@ -4,6 +4,7 @@ library(tidyverse)
 library(parallel)
 library(robslopes)
 library(readxl)
+library(readr)
 
 # set working directory ----------------------------------------------------
 setwd("C:/R_local/labStat")
@@ -30,8 +31,27 @@ tarif.scales <- read_excel(
 # import method data ------------------------------------------------------
 
 methoden.kc <- read_excel("MethodenKatalogKC.xlsx",
-                          col_types = c("text", "numeric", "text"))
+                          col_types = c("text", "text", "text"))
 
+
+# import units and reference intervals ------------------------------------------------------
+
+units.refint.kc <- read_delim(
+  "Einheiten&RefIntrvle.csv",
+  delim = ";",
+  escape_double = FALSE,
+  col_types = cols(
+    ABTEILUNG = col_skip(),
+    `NUMMER` = col_character(),
+    `REF_UNTEN M` = col_character(),
+    `REF_OBEN M` = col_character(),
+    `REF_UNTEN W` = col_character(),
+    `REF_OBEN W` = col_character()
+  ),
+  trim_ws = TRUE,
+  locale = locale(encoding = "UTF-8")
+)
+units.refint.kc <- units.refint.kc |> rename(Methode = NUMMER) |> rename(Bezeichnung = NAME)
 
 # import reagent costs ----------------------------------------------------
 
@@ -270,11 +290,23 @@ combined.data.kc <- bind_rows(
 
 combined.data.kc$Methode <-
   as.numeric(combined.data.kc$Methode)
-
+# add instrument type by comparing character string "Bezeichnung" and 
+# numeric values "Methode" and left join 
 combined.data.kc <-
   left_join(
     combined.data.kc,
     methoden.kc,
+    by = c("Bezeichnung", "Methode"),
+    keep = FALSE,
+    multiple = "any"
+  )
+
+# adding units and reference intervals by comparing character string "Bezeichnung" and 
+# numeric values "Methode" and left join 
+combined.data.kc <-
+  left_join(
+    combined.data.kc,
+    units.refint.kc,
     by = c("Bezeichnung", "Methode"),
     keep = FALSE,
     multiple = "any"
