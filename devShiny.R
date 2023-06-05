@@ -4,6 +4,7 @@ library(ggplot2)
 library(plotly)
 library(shinythemes)
 library(shinyjs)
+library(shinycssloaders)
 library(DT)
 library(memoise)
 library(cachem)
@@ -55,7 +56,7 @@ ui <- fluidPage(
                    column(12, DTOutput("yearly"))
                  ),
                  fluidRow(
-                  column(6, plotOutput("plot2")), 
+                  column(6, withSpinner(plotOutput("plot2"),type = 5, color = "blue", size = 2)), 
                   column(6, DTOutput("quarterly"))
                  )
                  
