@@ -9,6 +9,8 @@ library(readr)
 # set working directory ----------------------------------------------------
 setwd("C:/R_local/labStat")
 
+
+
 # import tariff data ------------------------------------------------------
 
 tarif.scales <- read_excel(
@@ -288,8 +290,8 @@ combined.data.kc <- bind_rows(
   tidy.vh.data,
 )
 
-combined.data.kc$Methode <-
-  as.numeric(combined.data.kc$Methode)
+# combined.data.kc$Methode <-
+#   as.numeric(combined.data.kc$Methode)
 # add instrument type by comparing character string "Bezeichnung" and 
 # numeric values "Methode" and left join 
 combined.data.kc <-
@@ -312,11 +314,37 @@ combined.data.kc <-
     multiple = "any"
   )
 
+# introducing age groups -------------------------------------------------
+combined.data.kc <- combined.data.kc |> 
+  mutate(Altersgruppe = case_when(
+    Alter <= 1 ~ 'Säugling(<1a)',
+    Alter > 1 & Alter <= 2 ~ 'Baby(1-2a)',
+    Alter > 2 & Alter <= 7 ~ 'Kleinkind(2-7a)',
+    Alter > 7 & Alter <= 12 ~ 'Kind(7-12a)',
+    Alter > 12 & Alter <= 18 ~ 'Jugendlich(12-18a)',
+    Alter > 18 & Alter <= 25 ~ 'JungeErwachsene(18-25a)',
+    Alter > 25 & Alter <= 60 ~ 'Erwachsene(25-60a)',
+    Alter > 60 & Alter <= 75 ~ 'jungeSenioren(60-75a)',
+    Alter > 75  ~ 'Senioren.(>75a)'
+  ))
+
+# save old data ----------------------------------------------------
+# Load the existing RDS file
+existing_data <- readRDS("Combined_Data_KC.rds")
+
+# Append the new data to the existing data
+combined_data <- rbind(existing_data, combined.data.kc)
+
+# Save the updated data to the RDS file
+saveRDS(combined_data, "Combined_Data_KC.rds")
+
+
+
 # append combined.data.kc to existing file
-# write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = TRUE)
+write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = TRUE)
 
 # write combined.data.kc to new file
-write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = FALSE)
-saveRDS(combined.data.kc, "Combined_Data_KC.rds")
+#write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = FALSE)
+#saveRDS(combined.data.kc, "Combined_Data_KC.rds")
 
 
