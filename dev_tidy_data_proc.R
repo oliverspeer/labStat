@@ -82,7 +82,7 @@ salary <- read_excel("Lohn_os_KCH.xlsx")
 
 # define functions --------------------------------------------------------
 fun.read.excel.data <- function(file_pattern, df_name) {
-  data_path <- "C:\\R_local\\labStat\\"
+  data_path <- "C:/R_local/labStat"
   files <- list.files(data_path)
   file_name <- files[grep(file_pattern, files)]
   full_path <- file.path(data_path, file_name)
@@ -245,6 +245,9 @@ fun.write.tidy.data(hplc.data, tarif.scales, "tidy.hplc.data")
 fun.read.excel.data("LcMSMS", "lcms.data")
 fun.write.tidy.data(lcms.data, tarif.scales, "tidy.lcms.data")
 
+# LcMSUSZ Data (read excel, tidy up data) ------------------------------------
+# fun.read.excel.data("LcMSUSZ", "lcmsusz.data")
+# fun.write.tidy.data(lcmsusz.data, tarif.scales, "tidy.lcmsusz.data")
 
 # VH4 Data (read excel, tidy up data) ------------------------------------
 data_path <- "C:\\R_local\\labStat\\"
@@ -290,8 +293,8 @@ combined.data.kc <- bind_rows(
   tidy.vh.data,
 )
 
-# combined.data.kc$Methode <-
-#   as.numeric(combined.data.kc$Methode)
+#combined.data.kc$Methode <-
+ #  as.numeric(combined.data.kc$Methode)
 # add instrument type by comparing character string "Bezeichnung" and 
 # numeric values "Methode" and left join 
 combined.data.kc <-
@@ -317,7 +320,7 @@ combined.data.kc <-
 # introducing age groups -------------------------------------------------
 combined.data.kc <- combined.data.kc |> 
   mutate(Altersgruppe = case_when(
-    Alter <= 1 ~ 'Säugling(<1a)',
+    Alter <= 1 ~ 'Säugling(u1a)',
     Alter > 1 & Alter <= 2 ~ 'Baby(1-2a)',
     Alter > 2 & Alter <= 7 ~ 'Kleinkind(2-7a)',
     Alter > 7 & Alter <= 12 ~ 'Kind(7-12a)',
@@ -325,7 +328,7 @@ combined.data.kc <- combined.data.kc |>
     Alter > 18 & Alter <= 25 ~ 'JungeErwachsene(18-25a)',
     Alter > 25 & Alter <= 60 ~ 'Erwachsene(25-60a)',
     Alter > 60 & Alter <= 75 ~ 'jungeSenioren(60-75a)',
-    Alter > 75  ~ 'Senioren.(>75a)'
+    Alter > 75  ~ 'Senioren(ü75a)'
   ))
 
 # save old data ----------------------------------------------------
@@ -346,5 +349,35 @@ write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = TRUE)
 # write combined.data.kc to new file
 #write_excel_csv(combined.data.kc, "Combined_Data_KC.csv", append = FALSE)
 #saveRDS(combined.data.kc, "Combined_Data_KC.rds")
+
+
+
+create_and_save_age_groups <- function(df, age_col = "Alter", group_col = "Altersgruppe"){
+  
+  # Define age groups
+  df <- df |> 
+    mutate(!!group_col := case_when(
+      !!sym(age_col) <= 1 ~ 'Säugling(u1a)',
+      !!sym(age_col) > 1 & !!sym(age_col) <= 2 ~ 'Baby(1-2a)',
+      !!sym(age_col) > 2 & !!sym(age_col) <= 7 ~ 'Kleinkind(2-7a)',
+      !!sym(age_col) > 7 & !!sym(age_col) <= 12 ~ 'Kind(7-12a)',
+      !!sym(age_col) > 12 & !!sym(age_col) <= 18 ~ 'Jugendlich(12-18a)',
+      !!sym(age_col) > 18 & !!sym(age_col) <= 25 ~ 'JungeErwachsene(18-25a)',
+      !!sym(age_col) > 25 & !!sym(age_col) <= 60 ~ 'Erwachsene(25-60a)',
+      !!sym(age_col) > 60 & !!sym(age_col) <= 75 ~ 'jungeSenioren(60-75a)',
+      !!sym(age_col) > 75  ~ 'Senioren(ü75a)'
+    ))
+  
+  # split the dataframe by age groups
+  age_groups <- split(df, df[[group_col]])
+  
+  # Write each dataframe to a separate CSV file
+  lapply(names(age_groups), function(x) write.csv(age_groups[[x]], paste0(x, '.csv')))
+  
+  return(age_groups)
+}
+
+# Use the function
+age_groups <- create_and_save_age_groups(combined.data.kc)
 
 
