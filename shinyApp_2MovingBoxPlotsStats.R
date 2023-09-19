@@ -37,10 +37,12 @@ ui <- fluidPage(
       plotOutput("boxplots"),
       tableOutput("quartileTable1"),
       tableOutput("quartileTable2"),
+      
+      uiOutput("dynamicRatioTitel"),
       tableOutput("quartileRatios")
-    )
-  )
-)
+              )
+                  )
+                )
 
 # server ------------------------------------------------------------
 
@@ -55,11 +57,13 @@ server <- function(input, output, session) {
         arrange(Datum)
       filtered_data$Year <- as.integer(filtered_data$Year)
       return(filtered_data)
-    }
+                                                  }
   
     
     # filter data reactively after choosing the analyte
-    data1 <- reactive({generate_filtered_data(input$analyte1)})
+    data1 <- reactive({
+      generate_filtered_data(input$analyte1)
+            })
     data2 <- reactive({generate_filtered_data(input$analyte2)})
     
     
@@ -68,65 +72,78 @@ server <- function(input, output, session) {
       quartiles <- data  |> 
         group_by(Year) |> 
         summarise(
+          
           `25th Quartile` = round(quantile(Werte, 0.25, na.rm = TRUE), 2),
           `50th Quartile (Median)` = round(quantile(Werte, 0.5, na.rm = TRUE), 2),
-          `75th Quartile` = round(quantile(Werte, 0.75, na.rm = TRUE), 2)
-        )
+          `75th Quartile` = round(quantile(Werte, 0.75, na.rm = TRUE), 2),
+          Count = n()
+          
+                  )
       quartiles$Analyte <- analyte
       
       # move the column "Analyte" to the first position
       quartiles <- quartiles[,c("Analyte", setdiff(names(quartiles), "Analyte"))]
       return(quartiles)
-    }
+                                                      }
     
     # Create a reactive expression for the ratio data
     ratio_data <- reactive({
       df1 <- data1()
       df2 <- data2()
       
-      common_data <- inner_join(df1, df2, by = c("a_Tagesnummer", "Year"), suffix = c(".df1", ".df2"))
+      common_data <- inner_join(
+                                df1, df2, 
+                                by = c("a_Tagesnummer", "Year"), 
+                                suffix = c(".df1", ".df2"), 
+                                multiple = "any"
+                                )
       
       common_data$Ratio <- common_data$Werte.df1 / common_data$Werte.df2
       return(common_data)
-    })
+                            })
     
     # Create a function to compute the quartiles for the ratio data
     calculate_ratio_quartiles <- function(data) {
       quartiles <- data  |> 
         group_by(Year) |> 
         summarise(
+          
           `25th Quartile` = round(quantile(Ratio, 0.25, na.rm = TRUE), 2),
           `50th Quartile (Median)` = round(quantile(Ratio, 0.5, na.rm = TRUE), 2),
-          `75th Quartile` = round(quantile(Ratio, 0.75, na.rm = TRUE),2)
-        )
+          `75th Quartile` = round(quantile(Ratio, 0.75, na.rm = TRUE),2),
+          CountQ = n()
+          
+                  )
       return(quartiles)
-    }
+                                                  }
     
   #boxplots as output from data 1 & data2, with log10 scale, showing plots in one row  
   output$boxplots <- renderPlot({
     
       plot1 <- ggplot(data1(), aes(x = factor(Year), y = Werte)) +
-      geom_boxplot() +
-      scale_y_log10() +
-      labs(
-        title = paste("Boxplot of", input$analyte1, "by Year"),
-        x = "Year",
-        y = "Values (log10)"
-      ) +
-      theme_minimal()
+        geom_boxplot() +
+        scale_y_log10() +
+        # geom_text(data = Count, aes(x = factor(Year), y = Inf, label = paste("n =", Count)), vjust = 2)
+        labs(
+          title = paste("Boxplot of", input$analyte1, "by Year"),
+          x = "Year",
+          y = "Values (log10)"
+              ) +
+        theme_minimal()
     
-    plot2 <- ggplot(data2(), aes(x = factor(Year), y = Werte)) +
-      geom_boxplot() +
-      scale_y_log10() +
-      labs(
-        title = paste("Boxplot of", input$analyte2, "by Year"),
-        x = "Year",
-        y = "Values (log10)"
-      ) +
-      theme_minimal()
+      plot2 <- ggplot(data2(), aes(x = factor(Year), y = Werte)) +
+        geom_boxplot() +
+        scale_y_log10() +
+        #geom_text(aes(label = paste("n =", Count())), vjust = 2) +
+        labs(
+          title = paste("Boxplot of", input$analyte2, "by Year"),
+          x = "Year",
+          y = "Values (log10)"
+              ) +
+        theme_minimal()
     
-    grid.arrange(plot1, plot2, nrow = 1)
-  })
+      grid.arrange(plot1, plot2, nrow = 1)
+                                })
   
   #creating a table with the quartiles over the years as output
   output$quartileTable1 <- renderTable({
@@ -154,6 +171,9 @@ server <- function(input, output, session) {
   })
   
   # Create a new output for the ratio quartile table
+  output$dynamicRatioTitel <- renderUI({
+    paste("ratio", input$analyte1, "/", input$analyte2)
+  })
   output$quartileRatios <- renderTable({
     ratio_stats <- calculate_ratio_quartiles(ratio_data())
     return(ratio_stats)
@@ -167,6 +187,7 @@ server <- function(input, output, session) {
       plot1 <- ggplot(data1(), aes(x = factor(Year), y = Werte)) +
         geom_boxplot() +
         scale_y_log10() +
+       # geom_text(aes(label = paste("n =", Count)), vjust = 2) +
         labs(
           title = paste("Boxplot of", input$analyte1, "by Year"),
           x = "Year",
@@ -193,9 +214,14 @@ server <- function(input, output, session) {
      
        grid.newpage()
       grid.table(stats1)
-      grid.newpage()
+      
+        grid.newpage()
       grid.table(stats2)
-      grid.newpage()
+     
+       grid.newpage()
+       grid.text(paste("RATIO", input$analyte1, "/", input$analyte2), just = c(0.2, 0.8),
+                 gp=gpar(fontsize=20))
+      #grid.text("ratio FLK/FLL", just = "left")
       grid.table(ratio_stats)
       
       dev.off()
