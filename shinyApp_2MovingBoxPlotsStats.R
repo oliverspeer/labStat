@@ -72,10 +72,11 @@ server <- function(input, output, session) {
       quartiles <- data  |> 
         group_by(Year) |> 
         summarise(
-          
+          `2.5th Quantile` = round(quantile(Werte, 0.025, na.rm = TRUE), 2),
           `25th Quartile` = round(quantile(Werte, 0.25, na.rm = TRUE), 2),
           `50th Quartile (Median)` = round(quantile(Werte, 0.5, na.rm = TRUE), 2),
           `75th Quartile` = round(quantile(Werte, 0.75, na.rm = TRUE), 2),
+          `97.5th Quantile` = round(quantile(Werte, 0.975, na.rm = TRUE), 2),
           Count = n()
           
                   )
@@ -107,10 +108,11 @@ server <- function(input, output, session) {
       quartiles <- data  |> 
         group_by(Year) |> 
         summarise(
-          
+          `2.5th Quantile` = round(quantile(Ratio, 0.025, na.rm = TRUE), 2),
           `25th Quartile` = round(quantile(Ratio, 0.25, na.rm = TRUE), 2),
           `50th Quartile (Median)` = round(quantile(Ratio, 0.5, na.rm = TRUE), 2),
           `75th Quartile` = round(quantile(Ratio, 0.75, na.rm = TRUE),2),
+          `97.5th Quantile` = round(quantile(Ratio, 0.975, na.rm = TRUE), 2),
           CountQ = n()
           
                   )
@@ -219,9 +221,9 @@ server <- function(input, output, session) {
       grid.table(stats2)
      
        grid.newpage()
-       grid.text(paste("RATIO", input$analyte1, "/", input$analyte2), just = c(0.2, 0.8),
-                 gp=gpar(fontsize=20))
-      #grid.text("ratio FLK/FLL", just = "left")
+       grid.text(paste("RATIO", input$analyte1, "/", input$analyte2), y = 0.8, just = c(0.5, 0.8),
+                 gp=gpar(fontsize=12))
+      #grid.text("ratio FLK/FLL", just = "top")
       grid.table(ratio_stats)
       
       dev.off()
