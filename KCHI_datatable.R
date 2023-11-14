@@ -44,9 +44,44 @@ DT.bookings  <- data.table(DT.bookings)
 DT.salary <- read_excel("Lohn_os_KCH.xlsx")
 DT.salary <- data.table(DT.salary)
 
-# import lab result data with file pattern--------------------------------------------------
-files <- list.files("C:\\R_local\\labStat\\")
-data_path <- "C:\\R_local\\labStat\\"
+# define functions --------------------------------------------------------
+fun.read.excel.data <- function(file.pattern, dt.name) {
+  data.path <- "/home/olli/R_local/labStat"
+  files <- list.files(data.path)
+  file.name <- files[grep(file.pattern, files)]
+  full.path <- file.path(data.path, file.name)
+ 
+  # Read the header 
+  head1 <- read_excel(full.path, col_names = TRUE) |> names()
+  head2 <-
+    read_excel(full.path, skip = 1, col_names = TRUE, .name_repair = "minimal") |> names()
+  head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
+  head <- paste0(head2, sep = "_", head1)
+  
+  # Define the column types
+  col.count <- length(head)
+  col.types <-
+    c(rep(c(
+      "text", "numeric", "skip", "skip", "date", "text", "text"
+    ), 1), rep("numeric", col.count - 7))
+  
+  # Read the data
+  dt.name <- read_excel(full.path, 
+                     skip = 2, 
+                     col_names = head, 
+                     col_types = col.types)
+  
+  # Convert to data.table and return
+  return(as.data.table(dt.name))
+  
+}
+
+# AU data (read excel, tidy up data)  -------------------------------------
+fun.read.excel.data("BlutAU", "AU.data")
+
+# import EP & IFE data--------------------------------------------------
+files <- list.files("/home/olli/R_local/labStat")
+data_path <- "/home/olli/R_local/labStat"
 file_pattern <- "EPIFE"
 file_name <- files[grep(file_pattern, files)]
 full_path <- file.path(data_path, file_name)
@@ -64,9 +99,7 @@ for (col in c("c_Name", "d_Vorname")) {
   set(DT.ep.data, j = col, value = NULL)
 }
 
-
-
-
+# count all values in DT.ep.data$Immunfixation with data.table
 DT.ep.data[, IFix := ifelse(!grepl("SISTIERT", 
                                          Immunfixation_12722 , 
                                          fixed = TRUE) & !is.na(Immunfixation_12722), 1, NA_integer_)]
