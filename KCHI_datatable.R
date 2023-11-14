@@ -20,6 +20,7 @@ DT.tarif <- data.table(DT.tarif)
 for (col in c("R.stelle", "z.Gunsten", "Kunde", "Preis")) {
   set(DT.tarif, j = col, value = NULL)
 }
+DT.tarif <- unique(DT.tarif, by = c("Methode", "Taxpkt."))
 
 # import method data ------------------------------------------------------
 
@@ -46,7 +47,8 @@ DT.salary <- data.table(DT.salary)
 
 # define functions --------------------------------------------------------
 fun.read.excel.data <- function(file.pattern, dt.name) {
-  data.path <- "/home/olli/R_local/labStat"
+  # Define the path and file name
+  data.path <- "C:/R_local/labStat"
   files <- list.files(data.path)
   file.name <- files[grep(file.pattern, files)]
   full.path <- file.path(data.path, file.name)
@@ -58,26 +60,90 @@ fun.read.excel.data <- function(file.pattern, dt.name) {
   head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
   head <- paste0(head2, sep = "_", head1)
   
-  # Define the column types
-  col.count <- length(head)
-  col.types <-
-    c(rep(c(
-      "text", "numeric", "skip", "skip", "date", "text", "text"
-    ), 1), rep("numeric", col.count - 7))
-  
   # Read the data
-  dt.name <- read_excel(full.path, 
-                     skip = 2, 
-                     col_names = head, 
-                     col_types = col.types)
+  dt.name <- read_excel(full.path, skip = 2, col_names = head)
+  setDT(dt.name)
+  for (col in c("c_Name", "d_Vorname")) {
+    set(dt.name, j = col, value = NULL)
+  }
   
-  # Convert to data.table and return
-  return(as.data.table(dt.name))
+  
+  
+  # Define the columns to exclude
+  exclude.cols <- c("a_Tagesnummer", "e_Geb.datum", "f_Geschl.", "g_Auftragg.")
+  
+  # Get the column names to include
+  include.cols <- setdiff(names(dt.name), exclude.cols)
+  
+  # Iterate over the columns and convert to numeric
+  for (col in include.cols) {
+    # Use as.numeric on the column data, not the column name
+    dt.name[, (col) := as.numeric(get(col))]
+  }
+  
+return(dt.name)
   
 }
 
+#----------------------------------------------------------------------------
+
+
+AU.data <- AU.data[
+  !grepl("Tagesnummer", a_Tagesnummer) & !is.na(a_Tagesnummer)
+  ][, Datum := ymd(substr(a_Tagesnummer, 1, 10))
+    ]
+
+# Define the new order of columns
+new.order <- names(AU.data)
+new.order <- c(new.order[1:5], 
+               "Datum", 
+               new.order[7:which(new.order == "Datum") - 1])
+
+# Rearrange the columns
+setcolorder(AU.data, new.order)
+
+# copy column names from AU.data$a_Tagesnummer to AU.data$Datum to id.cols
+id.cols <- names(AU.data)[1:6]
+
+# Melt the data.table
+DT.m1 = melt(
+  AU.data,
+  id.vars = id.cols,
+  variable.name = "Bezeichnung_Methode",
+  value.name = "Werte",
+  na.rm = TRUE
+)
+
+# Split 'Bezeichnung_Methode' into two columns 'Bezeichnung' and 'Methode'
+DT.m1[, c("Bezeichnung", "Methode") := tstrsplit(Bezeichnung_Methode, "_", fixed = TRUE)
+      ][, Bezeichnung_Methode := NULL][, Methode := as.numeric(Methode)]
+
+# calculate the age from DT.m1$Datum and DT.m1$Geb.datum
+DT.m1[, Datum := ymd(Datum)
+][, Geb.datum := ymd(e_Geb.datum)][
+  , Alter := as.numeric(difftime(Datum, ymd(e_Geb.datum), units = "weeks"))/52.25]
+
+# Merge the data.tables DT.m1 and tarif.scales on 'Methode'
+
+DT.tidy <-
+  left_join(
+    DT.m1,
+    DT.tarif,
+    by = c("Methode"),
+    keep = FALSE,
+    multiple = "any"
+  )
+setDT(DT.tidy)
+
+
+
+
+
+
+
+
 # AU data (read excel, tidy up data)  -------------------------------------
-fun.read.excel.data("BlutAU", "AU.data")
+AU.data <- fun.read.excel.data("BlutAU", "AU.data")
 
 # import EP & IFE data--------------------------------------------------
 files <- list.files("/home/olli/R_local/labStat")
@@ -129,31 +195,3 @@ count.Ifix
 
 
 
-# 
-# 
-# # define all columns as.character except b_Fallnummer and e_Geb.datum
-# for (col in names(DT.ep.data)) {
-#   if (col !="b_Fallnummer" & col !="e_Geb.datum") {
-#     set(DT.ep.data, j = col, value = as.character(DT.ep.data[[col]]))
-#   }
-# }
-# # in DT.ep.data from DT.ep.data$Immunfixation to last column change "s.unten". "folgt", "s. unten", "negative", "fraglich", "s.u.", " Nachweis von Chylomikronen", "keine Chylomikronen" to 1
-# DT.ep.data <- DT.ep.data |> 
-#   mutate(across(where(is.character), ~str_replace_all(., c(
-#     "s.unten" = "1", 
-#     "folgt" = "1", 
-#     "s. unten" ="1", 
-#     "negative" = "1",
-#     "positiv" = "1",
-#     "fraglich" = "1", 
-#     "s.u." = "1", 
-#     " Nachweis von Chylomikronen" = "1", 
-#     "keine Chylomikronen" = "1"))))
-# 
-# # define all columns as.numeric except b_Fallnummer and e_Geb.datum
-# for (col in names(DT.ep.data)) {
-#   if (col !="b_Fallnummer" & col !="e_Geb.datum") {
-#     set(DT.ep.data, j = col, value = as.numeric(DT.ep.data[[col]]))
-#   }
-# }
-# 
