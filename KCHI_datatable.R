@@ -87,27 +87,27 @@ return(dt.name)
 
 #----------------------------------------------------------------------------
 
-
-AU.data <- AU.data[
+fun.write.tidy.data<- function(data, tarif, dt_name) {
+data <- data[
   !grepl("Tagesnummer", a_Tagesnummer) & !is.na(a_Tagesnummer)
   ][, Datum := ymd(substr(a_Tagesnummer, 1, 10))
     ]
 
 # Define the new order of columns
-new.order <- names(AU.data)
+new.order <- names(data)
 new.order <- c(new.order[1:5], 
                "Datum", 
                new.order[7:which(new.order == "Datum") - 1])
 
 # Rearrange the columns
-setcolorder(AU.data, new.order)
+setcolorder(data, new.order)
 
 # copy column names from AU.data$a_Tagesnummer to AU.data$Datum to id.cols
-id.cols <- names(AU.data)[1:6]
+id.cols <- names(data)[1:6]
 
 # Melt the data.table
 DT.m1 = melt(
-  AU.data,
+  data,
   id.vars = id.cols,
   variable.name = "Bezeichnung_Methode",
   value.name = "Werte",
@@ -125,25 +125,31 @@ DT.m1[, Datum := ymd(Datum)
 
 # Merge the data.tables DT.m1 and tarif.scales on 'Methode'
 
-DT.tidy <-
+dt_name <-
   left_join(
     DT.m1,
-    DT.tarif,
+    tarif,
     by = c("Methode"),
     keep = FALSE,
     multiple = "any"
   )
-setDT(DT.tidy)
+setDT(dt_name)
 
-
-
-
+dt_name[, c("Bezeichnung.y", "Tagesnummer") := NULL]
+setnames(dt_name, "Bezeichnung.x", "Bezeichnung")
+return(dt_name)
+}
 
 
 
 
 # AU data (read excel, tidy up data)  -------------------------------------
 AU.data <- fun.read.excel.data("BlutAU", "AU.data")
+DT.tidy.AU <- fun.write.tidy.data(AU.data, DT.tarif, "DT.tidy.AU")
+
+# DxI data (read excel, tidy up data)  -------------------------------------
+dxi.data <- fun.read.excel.data("BlutDxI", "dxi.data")
+DT.tidy.dxi <- fun.write.tidy.data(AU.data, DT.tarif, "DT.tidy.dxi")
 
 # import EP & IFE data--------------------------------------------------
 files <- list.files("/home/olli/R_local/labStat")
