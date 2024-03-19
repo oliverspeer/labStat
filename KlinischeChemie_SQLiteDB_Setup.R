@@ -5,6 +5,7 @@ library(readxl)
 library(nephro)
 library(DBI)
 library(RSQLite)
+library(openxlsx)
 
 # set working directory ----------------------------------------------------
 setwd("C:/R_local/labStat")
@@ -641,6 +642,40 @@ query.result <- dbGetQuery(
 print(query.result)
 
 (DT.tidy.lcms[Bezeichnung == "Aripiprazol", .N])
+
+# query presence of device data
+# query for time stamps in device data
+query <- "SELECT m.Gerät, 
+          MIN(a.Datum) AS MinDate, 
+          MAX(a.Datum) AS MaxDate 
+          FROM MeasurementData a JOIN MethodData m 
+          ON a.Methode = m.Methode GROUP BY m.Gerät;"
+
+min_max_dates <- dbGetQuery(con, query)
+min_max_dates$MinDate <- as.Date(min_max_dates$MinDate)
+min_max_dates$MaxDate <- as.Date(min_max_dates$MaxDate)
+
+# write the result into a specific sheet of a specific xlsx file
+library(openxlsx)
+filepath <- "ERDqc.xlsx"
+
+# Load the Excel file)
+wb <- loadWorkbook(filepath)
+
+# Specify the sheet name where you want to write the data. 
+# If the sheet does not exist, it will be created.
+sheet_name <- "Tabelle3"
+
+# Check if the sheet exists, create it if it doesn't
+if(!(sheet_name %in% getSheetNames(wb))) {
+  addWorksheet(wb, sheet_name)
+}
+
+# Write min_max_dates starting at a specific cell, for example, "B2"
+writeData(wb, sheet = sheet_name, min_max_dates, startRow = 34, startCol = 2, colNames = TRUE)
+
+# Save the workbook (this overwrites the existing Excel file with the new data added)
+saveWorkbook(wb, filepath, overwrite = TRUE)
 
 # close the connection
 dbDisconnect(con)
