@@ -657,7 +657,7 @@ min_max_dates$MaxDate <- as.Date(min_max_dates$MaxDate)
 
 # write the result into a specific sheet of a specific xlsx file
 library(openxlsx)
-filepath <- "ERDqc.xlsx"
+filepath <- "ERD.xlsx"
 
 # Load the Excel file)
 wb <- loadWorkbook(filepath)
