@@ -349,7 +349,7 @@ con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
 
 # create new tables in the database
 dbExecute(con, "
-CREATE TABLE MeasurementData (
+CREATE TABLE IF NOT EXISTS MeasurementData (
           Tagesnummer TEXT,
           Probennummer INTEGER DEFAULT NULL,
           Fallnummer INTEGER,
@@ -391,7 +391,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.AU, append = TRUE, row.names = FALS
 dbDisconnect(con)
 
 # DxI data (read excel, tidy up data)  -------------------------------------
-dxi.data <- fun.read.multi.excel.data("BlutDxI_2403", "dxi.data")
+dxi.data <- fun.read.multi.excel.data("BlutDxI", "dxi.data")
 DT.tidy.dxi <- fun.write.tidy.data(dxi.data, 
                                    #DT.tarif, 
                                    "DT.tidy.dxi")
