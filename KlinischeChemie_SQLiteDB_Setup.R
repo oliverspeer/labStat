@@ -21,7 +21,7 @@ setnames(DT.customer, "VAXKUERZEL", "KundenID")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
 dbGetQuery(con, "SELECT name FROM sqlite_master WHERE type='table'")
 
 # create new tables in the database
@@ -76,7 +76,7 @@ DT.tarifZLM <- DT.tarifZLM[
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
 
 # create new tables in the database
 dbExecute(con, "
@@ -103,7 +103,7 @@ setDT(DT.tarif)
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
 
 # create new tables in the database
 dbExecute(con, "
@@ -160,7 +160,7 @@ setnames(DT.unitsRI, "Bezeichnung.x", "Bezeichnung")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
 
 # create new tables in the database
 dbExecute(con, "
@@ -179,6 +179,7 @@ CREATE TABLE MethodData (
 
 # Insert data from TarifData into the measurement.data table in the SQLite database
 dbWriteTable(con, "MethodData", DT.unitsRI, append = TRUE, row.names = FALSE)
+# dbWriteTable(con, "MethodData", DT.unitsRI, append = FALSE, row.names = FALSE, overwrite = TRUE)
 
 (dbGetQuery(con, "SELECT * FROM MethodData LIMIT 5"))
 
