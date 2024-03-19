@@ -643,6 +643,7 @@ print(query.result)
 
 (DT.tidy.lcms[Bezeichnung == "Aripiprazol", .N])
 
+# check and document the min_max_dates into ERD.xlsx----------------------------
 # query presence of device data
 # query for time stamps in device data
 query <- "SELECT m.Gerät, 
@@ -655,9 +656,12 @@ min_max_dates <- dbGetQuery(con, query)
 min_max_dates$MinDate <- as.Date(min_max_dates$MinDate)
 min_max_dates$MaxDate <- as.Date(min_max_dates$MaxDate)
 
+
 # write the result into a specific sheet of a specific xlsx file
 library(openxlsx)
-filepath <- "ERD.xlsx"
+
+
+filepath <- "C:/R_local/labStat/ERD.xlsx"
 
 # Load the Excel file)
 wb <- loadWorkbook(filepath)
@@ -666,13 +670,11 @@ wb <- loadWorkbook(filepath)
 # If the sheet does not exist, it will be created.
 sheet_name <- "Tabelle3"
 
-# Check if the sheet exists, create it if it doesn't
-if(!(sheet_name %in% getSheetNames(wb))) {
-  addWorksheet(wb, sheet_name)
-}
+# Write query execution date & time starting at a specific cell
+writeData(wb, sheet = sheet_name, x = paste("query time:", Sys.time()), startRow = 23, startCol = 2 )
 
-# Write min_max_dates starting at a specific cell, for example, "B2"
-writeData(wb, sheet = sheet_name, min_max_dates, startRow = 34, startCol = 2, colNames = TRUE)
+# Write min_max_dates starting at a specific cell
+writeData(wb, sheet = sheet_name, min_max_dates, startRow = 26, startCol = 2, colNames = TRUE )
 
 # Save the workbook (this overwrites the existing Excel file with the new data added)
 saveWorkbook(wb, filepath, overwrite = TRUE)
