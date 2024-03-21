@@ -31,7 +31,7 @@ if (!is.null(project_directory)) {
 
 
 
-# reading data from excel file ---------------------------------------------
+# reading Customer data from excel file ---------------------------------------------
 DT.customer <- read_excel("ZLM-Auftraggeber-20231110.xlsx")
 
 # creating a data table
@@ -42,7 +42,7 @@ setnames(DT.customer, "VAXKUERZEL", "KundenID")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "/home/olli/R_local/labStat/ClinicalChemistry_test.db")
+con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
 dbGetQuery(con, "SELECT name FROM sqlite_master WHERE type='table'")
 
 # create new tables in the database
@@ -97,7 +97,7 @@ DT.tarifZLM <- DT.tarifZLM[
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), dbname = paste0(getActiveProject(),"/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
@@ -124,7 +124,7 @@ setDT(DT.tarif)
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), dbname = paste0(getActiveProject(),"/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
@@ -225,13 +225,14 @@ DT.salary <- read_excel("Lohn_os_KCH.xlsx")
 DT.salary <- data.table(DT.salary)
 
 # define functions --------------------------------------------------------
-
-# function to read multiple files --------------------------------------
+# function to read multiple files ---------------------
 fun.read.multi.excel.data <- function(file.pattern, dt.name) {
-  data.path <- "C:/R_local/labStat"
+  # project_directory <- rstudioapi::getActiveProject()
+  data.path <- getActiveProject()
   files <- list.files(data.path, pattern = file.pattern)
   all.data <- list()
   
+  # Loop through all files
   for (file.name in files) {
     full.path <- file.path(data.path, file.name)
     
@@ -248,7 +249,10 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
     
     
     # Read the data while skipping the first two rows and using the combined column names
-    dt <- tryCatch( readxl::read_excel(full.path, skip = 2, col_names = head) )
+    dt <- tryCatch( readxl::read_excel(full.path, 
+                                       # skip = 2, 
+                                       col_names = head) )
+    dt <- dt[-c(1, 2), ]
     
     # Removing "a_", "b_", ..., "z_" from the column names
     colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
@@ -366,7 +370,7 @@ DT.tidy.AU <- fun.write.tidy.data(AU.data,
                                   "DT.tidy.AU")
 
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
 
 # create new tables in the database
 dbExecute(con, "
@@ -417,6 +421,9 @@ DT.tidy.dxi <- fun.write.tidy.data(dxi.data,
                                    #DT.tarif, 
                                    "DT.tidy.dxi")
 
+# Create a new SQLite database / open connection to the database
+con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+
 # Insert data from DT.tidy.dxi into the measurement.data table in the SQLite database
 dbWriteTable(con, "MeasurementData", DT.tidy.dxi, append = TRUE, row.names = FALSE)
 
@@ -434,7 +441,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.bn, append = TRUE, row.names = FALS
 # EP & IFE data (read excel, tidy up data) --------------------------------------------------
 # Define the path and file name
 file.pattern <- "EPIFE"
-data.path <- "C:/R_local/labStat"
+data.path <- getActiveProject()
 files <- list.files(data.path, pattern = file.pattern)
 all.data <- list()
 
@@ -442,23 +449,34 @@ for (file.name in files) {
   full.path <- file.path(data.path, file.name)
   
   # Read the header
-  head1 <- readxl::read_excel(full.path, col_names = TRUE) |> names()
-  head2 <- readxl::read_excel(full.path, skip = 1, col_names = TRUE, .name_repair = "minimal") |> names()
-  head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
-  head <- paste0(head2, sep = "_", head1)
+  head <- tryCatch( read_excel(full.path, n_max = 2, col_names = F, 
+                               .name_repair = "minimal") )
   
-  # Read the data
-  dt <- readxl::read_excel(full.path, skip = 2, col_names = head)|> 
-    rename(
-      Tagesnummer = a_Tagesnummer, 
-      Fallnummer = b_Fallnummer, 
-      Name = c_Name, 
-      Vorname = d_Vorname, 
-      Geb.datum = e_Geb.datum, 
-      Geschl. = f_Geschl., 
-      Auftragg. = g_Auftragg.)
+  # Detect NA cells in the second row  , replace them with letters 
+  head[2, which(is.na(head[2, ]))] <- as.list(letters[1:length(which(is.na(head[2, ])))])
   
-  setDT(dt)
+  # Combine the first and second row to create the column names
+  head <- apply(head, 2, function(x) paste(rev(x), collapse = "_"))
+  
+  
+  
+  # Read the data while skipping the first two rows and using the combined column names
+  dt <- tryCatch( readxl::read_excel(full.path, 
+                                     # skip = 2, 
+                                     col_names = head) )
+  dt <- dt[-c(1, 2), ]
+  
+  # Removing "a_", "b_", ..., "z_" from the column names
+  colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
+  
+  # Ensure the "Probennummer" column exists even if it was not in the source file,
+  # filling with NA for rows if it was added manually
+  if (!"Probennummer" %in% colnames(dt)) {
+    dt <- mutate(dt, Probennummer = NA)
+  }
+  
+  # Convert the data.frame to a data.table
+  setDT(dt) 
   
   # Remove specific columns
   dt[, c("Name", "Vorname") := NULL]
@@ -467,9 +485,9 @@ for (file.name in files) {
   
   # Define the new order of columns
   new.order <- names(dt)
-  new.order <- c(new.order[1:5], 
+  new.order <- c(new.order[1:6], 
                  "M-Protein (densitometrisch)_37158", 
-                 new.order[7:which(new.order == "M-Protein (densitometrisch)_37158") - 1])
+                 new.order[8:which(new.order == "M-Protein (densitometrisch)_37158") - 1])
   
   # Rearrange the columns
   setcolorder(dt, new.order)
@@ -544,7 +562,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.hplc, append = TRUE, row.names = FA
 
 
 # LcMSMS Data (read excel, tidy up data) ------------------------------------
-lcms.data <- fun.read.multi.excel.data("LcMSMS", "lcms.data")
+lcms.data <- fun.read.multi.excel.data("MSMS", "lcms.data")
 DT.tidy.lcms <- fun.write.tidy.data(lcms.data, 
                                     # DT.tarif, 
                                     "DT.tidy.lcms")
@@ -555,7 +573,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.lcms, append = TRUE, row.names = FA
 # VH4 Data (read excel, tidy up data) ------------------------------------
 # Define the path and file name
 file.pattern <- "VH4"
-data.path <- "C:/R_local/labStat"
+data.path <- getActiveProject()
 files <- list.files(data.path, pattern = file.pattern)
 all.data <- list()
 
@@ -563,21 +581,31 @@ for (file.name in files) {
   full.path <- file.path(data.path, file.name)
   
   # Read the header
-  head1 <- readxl::read_excel(full.path, col_names = TRUE) |> names()
-  head2 <- readxl::read_excel(full.path, skip = 1, col_names = TRUE, .name_repair = "minimal") |> names()
-  head2[1:7] <- c("a", "b", "c", "d", "e", "f", "g")
-  head <- paste0(head2, sep = "_", head1)
+  head <- tryCatch( read_excel(full.path, n_max = 2, col_names = F, 
+                               .name_repair = "minimal") )
   
-  # Read the data
-  dt <- readxl::read_excel(full.path, skip = 2, col_names = head)|> 
-    rename(
-      Tagesnummer = a_Tagesnummer, 
-      Fallnummer = b_Fallnummer, 
-      Name = c_Name, 
-      Vorname = d_Vorname, 
-      Geb.datum = e_Geb.datum, 
-      Geschl. = f_Geschl., 
-      Auftragg. = g_Auftragg.)
+  # Detect NA cells in the second row  , replace them with letters 
+  head[2, which(is.na(head[2, ]))] <- as.list(letters[1:length(which(is.na(head[2, ])))])
+  
+  # Combine the first and second row to create the column names
+  head <- apply(head, 2, function(x) paste(rev(x), collapse = "_"))
+  
+  
+  
+  # Read the data while skipping the first two rows and using the combined column names
+  dt <- tryCatch( readxl::read_excel(full.path, 
+                                     # skip = 2, 
+                                     col_names = head) )
+  dt <- dt[-c(1, 2), ]
+  
+  # Removing "a_", "b_", ..., "z_" from the column names
+  colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
+  
+  # Ensure the "Probennummer" column exists even if it was not in the source file,
+  # filling with NA for rows if it was added manually
+  if (!"Probennummer" %in% colnames(dt)) {
+    dt <- mutate(dt, Probennummer = NA)
+  }
   
   setDT(dt)
   
@@ -652,6 +680,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.vh, append = TRUE, row.names = FALS
 
 
 # Testing the db----------------------------------------------------------------
+con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
 dbListTables(con)
 (dbGetQuery(con, "PRAGMA table_info(MeasurementData)"))
 (dbGetQuery(con, "SELECT * FROM MeasurementData LIMIT 5"))
@@ -681,7 +710,7 @@ min_max_dates$MaxDate <- as.Date(min_max_dates$MaxDate)
 library(openxlsx)
 
 
-filepath <- "C:/R_local/labStat/ERD.xlsx"
+filepath <- paste0( getActiveProject(), "/ERD.xlsx")
 
 # Load the Excel file)
 wb <- loadWorkbook(filepath)
