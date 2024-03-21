@@ -6,9 +6,29 @@ library(nephro)
 library(DBI)
 library(RSQLite)
 library(openxlsx)
+if (!requireNamespace("rstudioapi", quietly = TRUE)) {
+  install.packages("rstudioapi")
+}
+library(rstudioapi)
 
 # set working directory ----------------------------------------------------
-setwd("C:/R_local/labStat")
+
+# Use rstudioapi to get the path of the current project
+project_directory <- rstudioapi::getActiveProject()
+
+# if running in an RStudio project, set the working directory to the project directory
+# If not running in an RStudio project, print a message
+if (!is.null(project_directory)) {
+  setwd(project_directory)
+} else {
+  print("This R session is not running within an RStudio Project.")
+}
+
+
+# setwd("C:/R_local/labStat")
+# setwd(getwd())
+
+
 
 
 # reading data from excel file ---------------------------------------------
@@ -22,7 +42,7 @@ setnames(DT.customer, "VAXKUERZEL", "KundenID")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = "/home/olli/R_local/labStat/ClinicalChemistry_test.db")
 dbGetQuery(con, "SELECT name FROM sqlite_master WHERE type='table'")
 
 # create new tables in the database
@@ -77,7 +97,7 @@ DT.tarifZLM <- DT.tarifZLM[
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
@@ -104,7 +124,7 @@ setDT(DT.tarif)
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
@@ -161,7 +181,7 @@ setnames(DT.unitsRI, "Bezeichnung.x", "Bezeichnung")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_test.db")
+con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
