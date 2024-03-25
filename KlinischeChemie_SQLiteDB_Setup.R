@@ -1,15 +1,35 @@
 # preparing libraries
-library(data.table)
-library(tidyverse)
-library(readxl)
-library(nephro)
-library(DBI)
-library(RSQLite)
-library(openxlsx)
-if (!requireNamespace("rstudioapi", quietly = TRUE)) {
-  install.packages("rstudioapi")
+# library(data.table)
+# library(tidyverse)
+# library(readxl)
+# library(nephro)
+# library(DBI)
+# library(RSQLite)
+# library(openxlsx)
+
+# Vector of library names
+libraries <- c(
+               "data.table", 
+               "tidyverse", 
+               "readxl", 
+               "nephro", 
+               "DBI", 
+               "RSQLite", 
+               "openxlsx", 
+               "rstudioapi"
+               )
+
+
+# Loop through the vector, check if each library is installed, and load it
+for(lib in libraries) {
+  if (!require(lib, character.only = TRUE)) {
+    install.packages(lib)
+    library(lib, character.only = TRUE)
+  }
 }
-library(rstudioapi)
+
+
+
 
 # set working directory ----------------------------------------------------
 
