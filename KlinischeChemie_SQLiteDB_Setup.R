@@ -228,7 +228,11 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
     
     
     # Read the data while skipping the first two rows and using the combined column names
-    dt <- tryCatch( readxl::read_excel(full.path, skip = 2, col_names = head) )
+    dt <- tryCatch( readxl::read_excel(full.path, skip = 1, col_names = head) )
+    
+    # delete first row
+    dt <- dt[-1, ]
+   
     
     # Removing "a_", "b_", ..., "z_" from the column names
     colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
