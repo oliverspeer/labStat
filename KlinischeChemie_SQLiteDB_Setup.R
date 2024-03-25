@@ -726,7 +726,7 @@ writeData(wb, sheet = sheet_name, x = paste("query time:", Sys.time()), startRow
 writeData(wb, sheet = sheet_name, min_max_dates, startRow = 26, startCol = 2, colNames = TRUE )
 
 # Save the workbook (this overwrites the existing Excel file with the new data added)
-saveWorkbook(wb, filepath, overwrite = TRUE)
+saveWorkbook(wb, filepath, overwrite = T)
 
 # close the connection
 dbDisconnect(con)
