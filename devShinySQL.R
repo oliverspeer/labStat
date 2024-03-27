@@ -1,239 +1,125 @@
-library(shiny)
-library(tidyverse)
-library(ggplot2)
-library(plotly)
-library(shinythemes)
-library(shinyjs)
-library(shinycssloaders)
-library(DT)
-library(memoise)
-library(cachem)
-library(data.table)
-library(DBI)
-library(RSQLite)
-if (!requireNamespace("rstudioapi", quietly = TRUE)) {
-  install.packages("rstudioapi")
+# library(shiny)
+# library(tidyverse)
+# library(ggplot2)
+# library(plotly)
+# library(shinythemes)
+# library(shinyjs)
+# library(shinycssloaders)
+# library(DT)
+# library(memoise)
+# library(cachem)
+# library(data.table)
+# library(DBI)
+# library(RSQLite)
+# if (!requireNamespace("rstudioapi", quietly = TRUE)) {
+#   install.packages("rstudioapi")
+# }
+# library(rstudioapi)
+
+# Vector of libraries
+packages <- c("shiny", "shinythemes", "shinyjs", "shinycssloaders", "DT", "memoise", 
+              "readxl", "data.table", "tidyverse", "zoo", "plotly", "lubridate", 
+              "DBI", "RSQLite", "refineR", "rstudioapi", "flextable", "cachem", "rstudioapi")
+
+# Loop to check if libraries are installed and install them if not and load them
+for (package in packages) {
+  if (!(package %in% installed.packages())) {
+    install.packages(package, dependencies = TRUE)
+  }
+  library(package, character.only = TRUE)
 }
-library(rstudioapi)
+
+# connect to database ------------------------------------------------------
+# Function to detect the operating system and return the corresponding database path
+getDatabasePath <- function() {
+  # Detect operating system
+  os <- Sys.info()["sysname"]
+  
+  # Set the path based on the operating system
+  if (os == "Linux") {
+    # Path for Linux (Ubuntu)
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+  } else if (os == "Windows") {
+    # Path for Windows
+    # Adjust the path as necessary for your Windows setup
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+  } else {
+    stop("Operating system not supported")
+  }
+  
+  return(path)
+}
+
+# set database directory
+db.wd <- getDatabasePath()
+
+# Connect to the database
+db <- dbConnect(SQLite(), dbname = db.wd)
+
+# List the tables in the database
+# dbListTables(con)
+
+
 
 # set working directory ----------------------------------------------------
-setwd("/home/olli/R_local/labStat")
+# Use rstudioapi to get the path of the current project
+project_directory <- rstudioapi::getActiveProject()
+
+# if running in an RStudio project, set the working directory to the project directory
+# If not running in an RStudio project, print a message
+if (!is.null(project_directory)) {
+  setwd(project_directory)
+} else {
+  print("This R session is not running within an RStudio Project.")
+}
 
 
-# import rds data ---------------------------------------------------------
 
-
-combined.data.kc <- readRDS("Combined_Data_KC.rds")
-combined.data.kc <- as.data.table(combined.data.kc)
 
 
 
 # shiny app ----------------------------------------------------------------
 
-shinyOptions(cache = cache_mem(max_size = 5000e6))
-
+# Define UI
 ui <- fluidPage(
-  
-  #themeSelector(),
-  
-  navbarPage(
-    title = div(img(src="logo_pos.png",  
-                         height = 28, 
-                         width = 130, 
-                         style = "margin:1px 3px", "  Klinische Chemie ")
-    ), 
-    theme = shinytheme("paper"), 
-    collapsible = TRUE,
-    fluid = TRUE,
+  titlePanel("Clinical Chemistry Analysis"),
+  selectInput("device", "Choose Device", choices = NULL),
+  selectInput("method", "Choose Method", choices = NULL),
+  selectInput("year", "Choose Year", choices = NULL),
+  tableOutput("analysisTable")
+)
 
-# Taxpunktumsatz tabPanel  ------------------------------------------------
-
-    tabPanel("Taxpunk-Umsatz", "Analysen",
-             sidebarLayout(
-               sidebarPanel(
-                 uiOutput("geräteChoices"),
-                 selectInput("methodenbezeichnung", "Analysen Methode", 
-                             choices = NULL),
-                 selectInput("year", "Jahr", choices = NULL)
-                          ),
-               mainPanel(
-                 fluidRow(
-                   column(12, DTOutput("yearlyAP"))
-                 ),
-                 fluidRow(
-                   column(12, DTOutput("yearly"))
-                 ),
-                 fluidRow(
-                  column(6, withSpinner(plotOutput("plot2"),type = 2, color = "red", color.background = "white",  size = 2, hide.ui = FALSE)), 
-                  column(6, DTOutput("quarterly"))
-                 )
-                 
-               )
-             )
-    )))
-
-
-# server -------------------------------------------------------------------
+# Define server logic
 server <- function(input, output, session) {
-  session$cache <- cache_mem(max_size = 4000e6)
-  db <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
-  sql.gerät <- "SELECT DISTINCT Gerät FROM MethodData"
-  gerät_choices <- dbGetQuery(db, sql.gerät)$Gerät
-  gerät <- reactive({
-    dbGetQuery(db, sql)
-  }) 
+  # Update Device choices based on the database
+  updateSelectInput(session, "device",
+                    choices = dbGetQuery(db, "SELECT DISTINCT Gerät FROM MethodData"))
   
-  output$geräteChoices <- renderUI({
-    selectInput("gerät", "Arbeitsplatz", choices = gerät_choices)
+  # Update Method choices based on selected Device
+  observeEvent(input$device, {
+    req(input$device) # Require a device to be selected
+    methods <- dbGetQuery(db, sprintf("SELECT DISTINCT Bezeichnung FROM MethodData WHERE Gerät = '%s'", input$device))
+    updateSelectInput(session, "method", choices = methods)
   })
   
+  # Update Year choices based on selected Method
+  observeEvent(input$method, {
+    req(input$method) # Require a method to be selected
+    years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
+    updateSelectInput(session, "year", choices = years)
+  })
   
-  # Observe changes in gerät() and update methodenbezeichnung
-  observeEvent(input$gerät, {
-    # SQL to get unique `Bezeichnung` for the selected `Gerät`.
-    sql.bez <- sprintf("SELECT DISTINCT Bezeichnung FROM MethodData WHERE Gerät = '%s'", input$gerät)
-    # Fetch the unique `Bezeichnung` values.
-    bezeichnung_choices <- dbGetQuery(db, sql.bez)$Bezeichnung
-    freezeReactiveValue(input, "methodenbezeichnung")
-    updateSelectInput(inputId = "methodenbezeichnung", choices = bezeichnung_choices) 
-  }) 
-  
-  # Reactive expression for `methode`, getting data based on selected `Bezeichnung`.
-  methode <- reactive({
-    req(input$methodenbezeichnung)  # Ensure that a method description is selected
-    
-    # Prepare a SQL query to select data based on `Bezeichnung`
-    # sql <- sprintf("SELECT DISTINCT m.Jahr
-    #                 FROM MeasurementData m
-    #                 Join MethodData d ON m.Bezeichnung = d.Bezeichnung
-    #                 WHERE d.Bezeichnung = '%s'", input$methodenbezeichnung)
-    # 
-    # Execute the SQL query
-    # dbGetQuery(db, sql)
-  }) |> bindCache(input$methodenbezeichnung, cache = "session")
-  
-  # Cache the reactive for performance
-  # observe({ methode() }) |> 
-  #   bindCache(input$methodenbezeichnung, session = session)
-  
-  # Observe changes in `methode` and update years accordingly.
-   observeEvent(input$methodenbezeichnung, {
-  #   # Prepare a SQL query to get unique `Year` for the selected `Bezeichnung`.
-  #   sql <- sprintf("SELECT DISTINCT Jahr FROM MethodData WHERE Bezeichnung = '%s'", input$methodenbezeichnung)
-  #   
-  # Fetch the unique `Year` values.
-     year_choices <- dbGetQuery(db, sql)$Jahr
-     
-     # Freeze and update the select input for years.
-     freezeReactiveValue(input, "year")
-     updateSelectInput(session, "year", choices = year_choices)
-   })
-  
-  
-
-  
-  
-  output$quarterly <- renderDT({
-    req(input$year, input$methodenbezeichnung)
-    methode() |> 
-      filter(Year == input$year, 
-             Bezeichnung == input$methodenbezeichnung
-             ) |> 
-        summarize(
-        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
-        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        #Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
-        .by = Quarter
-      )|>
-      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
-      )
-      )|>
-      DT::datatable(options = list(hover = TRUE, 
-                                   pageLength = 4, 
-                                   lengthChange = FALSE,
-                                   searching = FALSE,
-                                   paging = FALSE), 
-                    caption = paste("Quartals-Zahlen ", input$year, " pro Methode: ", input$methodenbezeichnung),
-                    rownames = FALSE) 
-  }) 
-  
-  calculate_relative_difference <- function(df, variable) {
-    df |>
-      arrange(Year) |>
-      mutate(
-        !!paste0("%Delta ", variable) :=
-          round((!!sym(variable) - lag(!!sym(variable))) / lag(!!sym(variable)) * 100, 2),
-        Year = as.character(Year)
-      ) |> arrange(desc(Year))
-  }
-  calculate_relative_differencem <- memoise(calculate_relative_difference, 
-                                            cache = session$cache)
-  
-  
-  output$yearly <- renderDT({
-    req(input$year, input$methodenbezeichnung)
-    methode()  |>  
-      filter(Bezeichnung == input$methodenbezeichnung) |>
-      summarize(
-        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
-        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
-        .by = Year
-      ) |> 
-      calculate_relative_differencem("Anz_Aufträge")|>
-      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
-      )
-      )|>
-      DT::datatable(options = list(hover = TRUE, 
-                                   pageLength = 2, 
-                                   lengthChange = FALSE,
-                                   searching = FALSE), 
-                    caption = paste("Jährlicher Umsatz pro Methode: ", input$methodenbezeichnung),
-                    rownames = FALSE)
-    
-  }) 
-  
-  output$yearlyAP <- renderDT({
-    req(input$year, input$gerät)
-    gerät() |>  
-      summarize(
-        TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
-        Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        #Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
-        .by = Year
-      ) |> 
-      calculate_relative_difference("Anz_Aufträge")|>
-      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
-      )
-      )|>
-      DT::datatable(options = list(hover = TRUE, 
-                                   pageLength = 2, 
-                                   lengthChange = FALSE,
-                                   searching = FALSE), 
-                    caption = paste("Jährlicher Umsatz pro Arbeitsplatz: ", input$gerät),
-                    rownames = FALSE)
-    
-  }) |> bindEvent(input$gerät)
-  
-  
-  output$plot2 <- renderPlot({
-    req(input$year, input$methodenbezeichnung)
-    methode() |> 
-      filter(Bezeichnung == input$methodenbezeichnung) |>
-      #group_by(Quarter = quarter(Datum), Year = year(Datum))  |> 
-      summarize(Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-                .by = c(Quarter, Year)) |> 
-      ggplot(aes(x = Quarter, y = Anz_Aufträge, group = Year, fill = as.factor(Year))) + 
-      geom_col(position = "dodge") +
-      #geom_line() +
-      #geom_point()+
-      labs(x = "Quartal", y = "Anzahl Aufträge", 
-           title = paste("Quartalszahlen:", input$methodenbezeichnung)
-      )+
-      guides(fill = guide_legend(title = NULL))
-  })|> bindCache(input$year, input$methodenbezeichnung, methode(), cache = "session") 
-  
-
+  # Generate analysis table based on selections
+  output$analysisTable <- renderTable({
+    req(input$year) # Require a year to be selected
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, COUNT(*) as NumberOfAnalysis, SUM(Txp) as TotalTxp
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Bezeichnung = TarifData.Bezeichnung
+                      WHERE MeasurementData.Bezeichnung = '%s' AND strftime('%%Y', Datum) = '%s'
+                      GROUP BY Year", input$method, input$year)
+    dbGetQuery(db, query)
+  })
 }
 
-shinyApp(ui, server)
+# Run the application
+shinyApp(ui = ui, server = server)
