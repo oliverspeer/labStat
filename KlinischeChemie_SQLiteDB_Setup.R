@@ -299,7 +299,7 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
       dt[, (col) := as.numeric(get(col))]
     }
     
-    
+    dt[, Geb.datum := ymd(Geb.datum)]
     
     # Store the processed data table in a list
     all.data[[file.name]] <- dt
@@ -504,19 +504,19 @@ for (file.name in files) {
  
   
   # Define the new order of columns
-  new.order <- names(dt)
-  new.order <- c(new.order[1:6], 
-                 "M-Protein (densitometrisch)_37158", 
-                 new.order[8:which(new.order == "M-Protein (densitometrisch)_37158") - 1])
-  
-  # Rearrange the columns
-  setcolorder(dt, new.order)
+   new.order <- names(dt)
+   new.order <- c(new.order[1:6], 
+                  " M-Protein (densitometrisch)_37158", 
+                  new.order[8:which(new.order == " M-Protein (densitometrisch)_37158") - 1])
+   
+   # Rearrange the columns
+   setcolorder(dt, new.order)
   
   
   # Define a function to change strings to 1
   apply_logic_to_columns <- function(dt) {
     # Get the column names except the first five
-    cols_to_modify <- names(dt)[7:ncol(dt)]
+    cols_to_modify <- names(dt)[8:ncol(dt)]
     
     # Loop through the columns and apply the logic
     for (col in cols_to_modify) {
@@ -537,7 +537,10 @@ for (file.name in files) {
     dt[, (col) := as.numeric(get(col))]
   }
   
-  dt[, Geb.datum := as.Date(Geb.datum, format = "%d.%m.%Y")]
+  # set Geb.datum to date format
+  dt[, Geb.datum := ymd(Geb.datum)]
+  
+ 
   
   # Store the processed data table in a list
   all.data[[file.name]] <- dt
@@ -665,7 +668,7 @@ for (file.name in files) {
     dt[, (col) := as.numeric(get(col))]
   }
   
-  dt[, Geb.datum := as.POSIXct(Geb.datum, format = "%d.%m.%Y")]
+  dt[, Geb.datum := ymd(Geb.datum)]
   
   # Store the processed data table in a list
   all.data[[file.name]] <- dt
@@ -680,12 +683,12 @@ vh.data$sex <- ifelse(vh.data$Geschl. == "F", 0, 1)
 # calculate the age from dt.name$Datum and dt.name$e_Geb.datum
 vh.data <- vh.data[
   !grepl("Tagesnummer", Tagesnummer) & !is.na(Tagesnummer)
-][, Datum := ymd(substr(Tagesnummer, 1, 10))
-]
+                  ][, Datum := ymd(substr(Tagesnummer, 1, 10))
+                   ]
 
 vh.data[, Datum := ymd(Datum)
-][, Geb.datum := ymd(Geb.datum)
-][, Alter := round(interval(start = Geb.datum, end = Datum) / years(1), 2)]
+       ][, Geb.datum := ymd(Geb.datum)
+        ][, Alter := round(interval(start = Geb.datum, end = Datum) / years(1), 2)]
 
 
 DT.tidy.vh <- fun.write.tidy.data(vh.data, 
