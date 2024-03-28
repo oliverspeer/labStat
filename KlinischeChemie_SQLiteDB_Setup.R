@@ -15,7 +15,7 @@ libraries <- c(
                "nephro", 
                "DBI", 
                "RSQLite", 
-               "openxlsx", 
+               "openxlsx2", 
                "rstudioapi"
                )
 
@@ -257,22 +257,21 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
     full.path <- file.path(data.path, file.name)
     
     # Read the header
-       head <- tryCatch( read_excel(full.path, n_max = 2, col_names = F, 
-                        .name_repair = "minimal") )
+    head <- read_xlsx(full.path, rows = 1:2, colNames = FALSE)
     
-       # Detect NA cells in the second row  , replace them with letters 
+    
+    # Detect NA cells in the second row  , replace them with letters 
     head[2, which(is.na(head[2, ]))] <- as.list(letters[1:length(which(is.na(head[2, ])))])
-  
-      # Combine the first and second row to create the column names
+    
+    # Combine the first and second row to create the column names
     head <- apply(head, 2, function(x) paste(rev(x), collapse = "_"))
     
     
-    
     # Read the data while skipping the first two rows and using the combined column names
-    dt <- tryCatch( readxl::read_excel(full.path, 
-                                       # skip = 2, 
-                                       col_names = head) )
-    dt <- dt[-c(1, 2), ]
+    dt <- read_xlsx(full.path, start_row = 2)
+    colnames(dt) <- head
+    
+    
     
     # Removing "a_", "b_", ..., "z_" from the column names
     colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
@@ -285,7 +284,7 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
     
     # Convert the data.frame to a data.table
     setDT(dt)  
-     
+    
     
     # Remove specific columns to anonymize the data
     dt[, c("Name", "Vorname") := NULL]
@@ -300,8 +299,6 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
       dt[, (col) := as.numeric(get(col))]
     }
     
-   
-    dt[, Geb.datum := as.POSIXct(Geb.datum, format = "%d.%m.%Y")]
     
     
     # Store the processed data table in a list
@@ -322,48 +319,54 @@ fun.read.multi.excel.data <- function(file.pattern, dt.name) {
   
   dt.name[, Datum := ymd(Datum)
   ][, Geb.datum := ymd(Geb.datum)
-  ][, Alter := interval(start = Geb.datum, end = Datum) / years(1)] 
+  ][, Alter := round(interval(start = Geb.datum, end = Datum) / years(1), 2)] 
+  
+  
   
   
   return(dt.name)
 }
 
+
 # function to tidy up data --------------------------------------
 fun.write.tidy.data<- function(data, dt_name) {
 
-# prepare  id.cols that are not to be melted
-id.cols <- names(data)[!grepl("_\\d+", names(data))]
+ # prepare  id.cols that are not to be melted
+ id.cols <- names(data)[!grepl("_\\d+", names(data))]
 
-# Melt the data.table
-DT.m1 = melt(
+ # Melt the data.table
+ DT.m1 = melt(
   data,
   id.vars = id.cols,
   variable.name = "Bezeichnung_Methode",
   value.name = "Werte",
   na.rm = TRUE
-)
+ )
 
-# Split 'Bezeichnung_Methode' into two columns 'Bezeichnung' and 'Methode'
-DT.m1[, c("Bezeichnung", "Methode") := tstrsplit(Bezeichnung_Methode, "_", fixed = TRUE)
+ # Split 'Bezeichnung_Methode' into two columns 'Bezeichnung' and 'Methode'
+ DT.m1[, c("Bezeichnung", "Methode") := tstrsplit(Bezeichnung_Methode, "_", fixed = TRUE)
       ][, Bezeichnung_Methode := NULL][, Methode := as.numeric(Methode)]
 
-dt_name <- setDT(DT.m1)
+ dt_name <- setDT(DT.m1)
 
 
 # change the column names to be SQL compatible
-setnames(dt_name, old = c("Geb.datum", "Geschl.", "Auftragg."), new = c("DOB", "Geschlecht", "KundenID"))
+ setnames(dt_name, old = c("Geb.datum", "Geschl.", "Auftragg."), new = c("DOB", "Geschlecht", "KundenID"))
 
 # change DOB and Datum to numeric
 # dt_name[, DOB := as.numeric(DOB)]
 # dt_name[, Datum := as.numeric(Datum)]
 
 # extract year, quarter, month, week, day from Datum
-dt_name[, Jahr := year(Datum)
+ dt_name[, Jahr := year(Datum)
         ][, Quartal := quarter(Datum)
           ][, Monat := month(Datum)
             ][, Woche := week(Datum)
               ][, Tag := day(Datum)
-                ]
+                ][, DOB := as.character(DOB)
+                  ][, Datum := as.character(Datum)
+                    ]
+
 
 
 return(dt_name)
@@ -390,7 +393,7 @@ DT.tidy.AU <- fun.write.tidy.data(AU.data,
                                   "DT.tidy.AU")
 
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test1.db") )
 
 # create new tables in the database
 dbExecute(con, "
@@ -469,8 +472,7 @@ for (file.name in files) {
   full.path <- file.path(data.path, file.name)
   
   # Read the header
-  head <- tryCatch( read_excel(full.path, n_max = 2, col_names = F, 
-                               .name_repair = "minimal") )
+  head <- read_xlsx(full.path, rows = 1:2, colNames = FALSE)
   
   # Detect NA cells in the second row  , replace them with letters 
   head[2, which(is.na(head[2, ]))] <- as.list(letters[1:length(which(is.na(head[2, ])))])
@@ -481,10 +483,8 @@ for (file.name in files) {
   
   
   # Read the data while skipping the first two rows and using the combined column names
-  dt <- tryCatch( readxl::read_excel(full.path, 
-                                     # skip = 2, 
-                                     col_names = head) )
-  dt <- dt[-c(1, 2), ]
+  dt <- read_xlsx(full.path, start_row = 2)
+  colnames(dt) <- head
   
   # Removing "a_", "b_", ..., "z_" from the column names
   colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
@@ -537,7 +537,7 @@ for (file.name in files) {
     dt[, (col) := as.numeric(get(col))]
   }
   
-  dt[, Geb.datum := as.POSIXct(Geb.datum, format = "%d.%m.%Y")]
+  dt[, Geb.datum := as.Date(Geb.datum, format = "%d.%m.%Y")]
   
   # Store the processed data table in a list
   all.data[[file.name]] <- dt
@@ -557,7 +557,7 @@ ep.data <- ep.data[
 
 ep.data[, Datum := ymd(Datum)
 ][, Geb.datum := ymd(Geb.datum)
-][, Alter := interval(start = Geb.datum, end = Datum) / years(1)]
+][, Alter := round(interval(start = Geb.datum, end = Datum) / years(1), 2)]
 
 
 
@@ -601,8 +601,7 @@ for (file.name in files) {
   full.path <- file.path(data.path, file.name)
   
   # Read the header
-  head <- tryCatch( read_excel(full.path, n_max = 2, col_names = F, 
-                               .name_repair = "minimal") )
+  head <- read_xlsx(full.path, rows = 1:2, colNames = FALSE)
   
   # Detect NA cells in the second row  , replace them with letters 
   head[2, which(is.na(head[2, ]))] <- as.list(letters[1:length(which(is.na(head[2, ])))])
@@ -613,10 +612,9 @@ for (file.name in files) {
   
   
   # Read the data while skipping the first two rows and using the combined column names
-  dt <- tryCatch( readxl::read_excel(full.path, 
-                                     # skip = 2, 
-                                     col_names = head) )
-  dt <- dt[-c(1, 2), ]
+  dt <- read_xlsx(full.path, start_row = 2)
+  colnames(dt) <- head
+  
   
   # Removing "a_", "b_", ..., "z_" from the column names
   colnames(dt) <- gsub("^[a-z]_", "", colnames(dt))
@@ -687,7 +685,7 @@ vh.data <- vh.data[
 
 vh.data[, Datum := ymd(Datum)
 ][, Geb.datum := ymd(Geb.datum)
-][, Alter := interval(start = Geb.datum, end = Datum) / years(1)]
+][, Alter := round(interval(start = Geb.datum, end = Datum) / years(1), 2)]
 
 
 DT.tidy.vh <- fun.write.tidy.data(vh.data, 
@@ -714,7 +712,8 @@ print(query.result)
 
 # check and document the min_max_dates into ERD.xlsx----------------------------
 # query presence of device data
-# query for time stamps in device data
+# and query for time stamps in device data
+con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
 query <- "SELECT m.Gerät, 
           MIN(a.Datum) AS MinDate, 
           MAX(a.Datum) AS MaxDate 
