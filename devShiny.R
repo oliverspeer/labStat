@@ -8,14 +8,17 @@ library(shinycssloaders)
 library(DT)
 library(memoise)
 library(cachem)
+library(data.table) 
 
 # set working directory ----------------------------------------------------
-#setwd("C:/R_local/labStat")
+setwd("C:/R_local/labStat")
 
 
 # import rds data ---------------------------------------------------------
 
-#combined.data.kc <- readRDS("Combined_Data_KC.rds")
+
+combined.data.kc <- readRDS("Combined_Data_KC.rds")
+
 
 
 
@@ -56,7 +59,7 @@ ui <- fluidPage(
                    column(12, DTOutput("yearly"))
                  ),
                  fluidRow(
-                  column(6, withSpinner(plotOutput("plot2"),type = 5, color = "blue", size = 2)), 
+                  column(6, withSpinner(plotOutput("plot2"),type = 2, color = "red", color.background = "white",  size = 2, hide.ui = FALSE)), 
                   column(6, DTOutput("quarterly"))
                  )
                  
@@ -85,7 +88,7 @@ ui <- fluidPage(
               column(6, DTOutput("yearlycosts"))
                     ),
             fluidRow(
-              column(6, DTOutput("yearlyrevenue"))
+              column(6, withSpinner(DTOutput("yearlyrevenue"),type = 2, color = "red", color.background = "white",  size = 2, hide.ui = FALSE))
             ),
             fluidRow(
               column(6, DTOutput("quarterlyReagents"))
@@ -145,10 +148,10 @@ server <- function(input, output, session) {
         summarize(
         TxpUmsatz_KC = sum(Taxpkt., na.rm = TRUE),
         Anz_Aufträge = n_distinct(a_Tagesnummer, na.rm = TRUE),
-        #Anz_Fälle = n_distinct(b_Fallnummer, na.rm = TRUE),
+        # Anz_Auftraege_m = length(Taxpkt., na.rm = TRUE),
         .by = Quarter
       )|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -184,7 +187,7 @@ server <- function(input, output, session) {
         .by = Year
       ) |> 
       calculate_relative_differencem("Anz_Aufträge")|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -206,7 +209,7 @@ server <- function(input, output, session) {
         .by = Year
       ) |> 
       calculate_relative_difference("Anz_Aufträge")|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -272,7 +275,7 @@ server <- function(input, output, session) {
       summarize(
         Reagenzienkosten = sum(Wwgesamtbrutto, na.rm = TRUE),
         .by = Quarter  )|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -294,7 +297,7 @@ server <- function(input, output, session) {
         Lohnkosten = sum(Ges.Lohn, na.rm = TRUE),
         .by = Year
       )|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -317,7 +320,7 @@ server <- function(input, output, session) {
         Sachkosten = sum(WertBWähr, na.rm = TRUE),
         .by = Year
       )|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
@@ -340,7 +343,7 @@ server <- function(input, output, session) {
         Umsatz = sum(Taxpkt., na.rm = TRUE),
         .by = Year
       )|>
-      mutate(across(.cols = is.numeric, .fns = ~ format(., decimal.mark = ".", big.mark = "'")
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")
       )
       )|>
       DT::datatable(options = list(hover = TRUE, 
