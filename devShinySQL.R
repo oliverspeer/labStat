@@ -82,12 +82,31 @@ if (!is.null(project_directory)) {
 
 # Define UI
 ui <- fluidPage(
-  titlePanel("Clinical Chemistry Analysis"),
-  selectInput("device", "Choose Device", choices = NULL),
-  selectInput("method", "Choose Method", choices = NULL),
-  selectInput("year", "Choose Year", choices = NULL),
-  tableOutput("analysisTable")
-)
+  
+  navbarPage(
+    title = div(img(src="logo_pos.png",  
+                    height = 28, 
+                    width = 130, 
+                    style = "margin:1px 3px", "  Klinische Chemie ")
+    ), 
+    theme = shinytheme("paper"), 
+    collapsible = TRUE,
+    fluid = TRUE,
+    
+    sidebarLayout(
+      sidebarPanel(
+  # titlePanel("Clinical Chemistry Analysis"),
+  selectInput("device", "Wähle den Arbeitsplatz", choices = NULL),
+  selectInput("method", "Wähle die Methode", choices = NULL),
+  selectInput("year", "Wähle das Jahr", choices = NULL)),
+      
+      mainPanel(
+        fluidRow(
+          column(12, DTOutput("analysisTable"))
+        )
+      )
+  
+)))
 
 # Define server logic
 server <- function(input, output, session) {
@@ -105,19 +124,39 @@ server <- function(input, output, session) {
   # Update Year choices based on selected Method
   observeEvent(input$method, {
     req(input$method) # Require a method to be selected
-    years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
+    #years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
+    years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
     updateSelectInput(session, "year", choices = years)
   })
   
   # Generate analysis table based on selections
-  output$analysisTable <- renderTable({
+  output$analysisTable <- renderDT({
     req(input$year) # Require a year to be selected
-    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, COUNT(*) as NumberOfAnalysis, SUM(Txp) as TotalTxp
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
                       FROM MeasurementData
                       JOIN TarifData ON MeasurementData.Bezeichnung = TarifData.Bezeichnung
-                      WHERE MeasurementData.Bezeichnung = '%s' AND strftime('%%Y', Datum) = '%s'
-                      GROUP BY Year", input$method, input$year)
-    dbGetQuery(db, query)
+                      WHERE MeasurementData.Bezeichnung = '%s' 
+                      GROUP BY Year", input$method
+                     
+                     )
+    data <- dbGetQuery(db, query)
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    data$`Delta Aufträge [%]` <- diff(data$`Anzahl Aufträge`)/lag(data$`Anzahl Aufträge`)
+    data$`Delta Aufträge [%]`[is.na(data$`Delta Aufträge [%]`)]  <- 0
+    data$`Delta Aufträge [%]` <- scales::percent(data$`Delta Aufträge [%]`)
+    
+    # render the data table
+    datatable(data,options = list(hover = TRUE, 
+                             pageLength = 2, 
+                             lengthChange = FALSE,
+                             searching = FALSE), 
+              caption = paste("Jährlicher Umsatz pro Methode: ", input$method),
+              rownames = FALSE)
+    
   })
 }
 
