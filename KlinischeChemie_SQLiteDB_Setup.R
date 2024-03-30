@@ -393,7 +393,7 @@ DT.tidy.AU <- fun.write.tidy.data(AU.data,
                                   "DT.tidy.AU")
 
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test1.db") )
+con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
 
 # create new tables in the database
 dbExecute(con, "
