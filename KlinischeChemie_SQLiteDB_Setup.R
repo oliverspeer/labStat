@@ -49,6 +49,35 @@ if (!is.null(project_directory)) {
 # setwd(getwd())
 
 
+# connect to database ------------------------------------------------------
+# Function to detect the operating system 
+# and return the corresponding database path
+
+getDatabasePath <- function() {
+  # Detect operating system
+  os <- Sys.info()["sysname"]
+  
+  # Set the path based on the operating system
+  if (os == "Linux") {
+    # Path for Ubuntu
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+  } else if (os == "Windows") {
+    
+    # Path for Windows
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+  } else {
+    stop("Operating system not supported")
+  }
+  
+  return(path)
+}
+
+# set database directory
+db.wd <- getDatabasePath()
+
+# Connect to the database
+con <- dbConnect(SQLite(), dbname = db.wd)
+
 
 
 # reading Customer data from excel file ---------------------------------------------
@@ -57,7 +86,7 @@ DT.customer <- read_excel("ZLM-Auftraggeber-20231110.xlsx")
 # creating a data table
 DT.customer <- data.table(DT.customer)
 
-# rename column VAXKUERZEL to g_Auftragg
+# rename column VAXKUERZEL to KundenID
 setnames(DT.customer, "VAXKUERZEL", "KundenID")
 
 # import into SQLite db
@@ -91,7 +120,7 @@ dbWriteTable(con, "CustomerData", DT.customer, append = TRUE, row.names = FALSE)
 # dbExecute(con, "DROP TABLE IF EXISTS MeasurementData")
 
 # close the connection
-dbDisconnect(con)
+# dbDisconnect(con)
 
 # import tariff data ------------------------------------------------------
 
@@ -117,7 +146,9 @@ DT.tarifZLM <- DT.tarifZLM[
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0(getActiveProject(),"/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), 
+                 dbname = paste0(getActiveProject(),
+                                 "/ClinicalChemistry_test.db"))
 
 # create new tables in the database
 dbExecute(con, "
