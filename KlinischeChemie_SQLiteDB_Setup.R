@@ -224,11 +224,19 @@ setnames(DT.unitsRI, c("NUMMER",
                        "REF_H_W"
                        ))
 
-DT.unitsRI <- left_join(DT.unitsRI, DT.method, by = "Methode")
+# compare DT.unitsRI and DT.method, add missing rows from DT.method to DT.unitsRI by Methode
+# Perform a left join to find missing values
+setDT(DT.unitsRI)
+setDT(DT.method)
+DT.unitsRI <- merge(x = DT.method, y = DT.unitsRI, by = c("Methode", "Bezeichnung"), all.x = TRUE, all.y = TRUE, id = TRUE)
+
+#DT.unitsRI <- left_join(DT.unitsRI, DT.method, by = "Methode")
+
+
 
 #delete column Bezeichnung.y
-DT.unitsRI <- DT.unitsRI[ , !"Bezeichnung.y", with = F]
-setnames(DT.unitsRI, "Bezeichnung.x", "Bezeichnung")
+# DT.unitsRI <- DT.unitsRI[ , !"Bezeichnung.y", with = F]
+# setnames(DT.unitsRI, "Bezeichnung.x", "Bezeichnung")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
