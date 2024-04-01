@@ -17,16 +17,34 @@
 # library(rstudioapi)
 
 # Vector of libraries
-packages <- c("shiny", "shinythemes", "shinyjs", "shinycssloaders", "DT", "memoise", 
-              "readxl", "data.table", "tidyverse", "zoo", "plotly", "lubridate", 
-              "DBI", "RSQLite", "refineR", "rstudioapi", "flextable", "cachem", "rstudioapi")
+packages <- c(
+              "shiny", 
+              "shinythemes", 
+              "shinyjs", 
+              "shinycssloaders", 
+              "DT", 
+              "memoise", 
+              "readxl", 
+              "data.table", 
+              "tidyverse", 
+              "zoo", 
+              "plotly", 
+              "lubridate", 
+              "DBI", 
+              "RSQLite", 
+              "refineR", 
+              "rstudioapi", 
+              "flextable", 
+              "cachem", 
+              "scales"
+              )
 
 # Loop to check if libraries are installed and install them if not and load them
 for (package in packages) {
-  if (!(package %in% installed.packages())) {
+  if (! require(package, character.only = TRUE)) {
     install.packages(package, dependencies = TRUE)
+    library(package, character.only = TRUE)
   }
-  library(package, character.only = TRUE)
 }
 
 # connect to database ------------------------------------------------------
@@ -37,11 +55,10 @@ getDatabasePath <- function() {
   
   # Set the path based on the operating system
   if (os == "Linux") {
-    # Path for Linux (Ubuntu)
+    # Path for Ubuntu
     path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
   } else if (os == "Windows") {
     # Path for Windows
-    # Adjust the path as necessary for your Windows setup
     path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
   } else {
     stop("Operating system not supported")
@@ -55,9 +72,6 @@ db.wd <- getDatabasePath()
 
 # Connect to the database
 db <- dbConnect(SQLite(), dbname = db.wd)
-
-# List the tables in the database
-# dbListTables(con)
 
 
 
@@ -80,7 +94,7 @@ if (!is.null(project_directory)) {
 
 # shiny app ----------------------------------------------------------------
 
-# Define UI
+# Define UI------------------------------------------------------------------
 ui <- fluidPage(
   
   navbarPage(
@@ -98,7 +112,8 @@ ui <- fluidPage(
   # titlePanel("Clinical Chemistry Analysis"),
   selectInput("device", "Wähle den Arbeitsplatz", choices = NULL),
   selectInput("method", "Wähle die Methode", choices = NULL),
-  selectInput("year", "Wähle das Jahr", choices = NULL)),
+  # selectInput("year", "Wähle das Jahr", choices = NULL)
+  ),
       
       mainPanel(
         fluidRow(
@@ -111,11 +126,14 @@ ui <- fluidPage(
   
 )))
 
-# Define server logic
+# Define server logic---------------------------------------------------------------------
+
 server <- function(input, output, session) {
   # Update Device choices based on the database
   updateSelectInput(session, "device",
-                    choices = dbGetQuery(db, "SELECT DISTINCT Gerät FROM MethodData"))
+                    choices = dbGetQuery(db, "SELECT DISTINCT Gerät FROM MethodData 
+                                         WHERE Gerät IS NOT NULL 
+                                         ORDER BY Gerät ASC"))
   
   # Update Method choices based on selected Device
   observeEvent(input$device, {
@@ -125,12 +143,13 @@ server <- function(input, output, session) {
   })
   
   # Update Year choices based on selected Method
-  observeEvent(input$method, {
-    req(input$method) # Require a method to be selected
+   observeEvent(input$method, {
+     req(input$method) # Require a method to be selected
     #years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
-    years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
-    updateSelectInput(session, "year", choices = years)
-  })
+     # years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MethodData WHERE Bezeichnung = '%s'", input$method))
+     # updateSelectInput(session, "year", choices = years)
+   })
+   
     # Generate table with yearly data for the selected device
   output$yearlyDevice <- renderDT({
     req(input$device) # Require a device to be selected
@@ -142,23 +161,38 @@ server <- function(input, output, session) {
                       JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                       JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
                       WHERE MethodData.Gerät = '%s' 
-                      GROUP BY Year", input$device)
-    data.dvice <- dbGetQuery(db, query)
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(db, query)
+    
+    # Initialize new column
+    data.device$'Delta Aufträge' <- NA
     
     # Convert the data to a data frame and calculate the year-over-year percentage change
-    data.dvice$`Delta Aufträge [%]` <- diff(data.dvice$`Anzahl Aufträge`)/lag(data.dvice$`Anzahl Aufträge`)
-    data.dvice$`Delta Aufträge [%]` <- round(data.dvice$`Delta Aufträge [%]` * 100, 2)
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
+    }
     
     # render the data table
-    datatable(data.dvice, rownames = FALSE, options = list(pageLength = 5))
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength = 10, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", input$device),
+              rownames = FALSE)
     
   })
     
     
 
-    # Generate table with yearly data for the selected method
+ # Generate table with yearly data for the selected method
   output$yearlyMethod <- renderDT({
-    req(input$year) # Require a year to be selected
+    req(input$method) # Require a method to be selected
     query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
                        SUM(Txp) as 'Txp Umsatz', 
                        COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
@@ -166,21 +200,31 @@ server <- function(input, output, session) {
                       FROM MeasurementData
                       JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                       WHERE MeasurementData.Bezeichnung = '%s' 
-                      GROUP BY Year", input$method
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$method
                      
                      )
-    data <- dbGetQuery(db, query)
+    data.method <- dbGetQuery(db, query)
+    
+    # initialize a new column
+    data.method$'Delta Aufträge' <- NA
     
     # Convert the data to a data frame and calculate the year-over-year percentage change
-    data$`Delta Aufträge [%]` <- diff(data$`Anzahl Aufträge`)/lag(data$`Anzahl Aufträge`)
-    data$`Delta Aufträge [%]`[is.na(data$`Delta Aufträge [%]`)]  <- 0
-    data$`Delta Aufträge [%]` <- scales::percent(data$`Delta Aufträge [%]`)
+    if(nrow(data.method) > 1)   {
+      data.method$`Delta Aufträge`[-1] <- percent(diff(data.method$`Anzahl Aufträge`)/head(data.method$`Anzahl Aufträge`, -1))
+      
+      
+    }
     
     # render the data table
-    datatable(data,options = list(hover = TRUE, 
-                             pageLength = 2, 
-                             lengthChange = FALSE,
-                             searching = FALSE), 
+    datatable(data.method, options = list(
+                            hover = TRUE, 
+                            pageLength = 10, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                            ), 
               caption = paste("Jährlicher Umsatz pro Methode: ", input$method),
               rownames = FALSE)
     
