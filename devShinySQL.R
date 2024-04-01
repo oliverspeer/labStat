@@ -102,8 +102,11 @@ ui <- fluidPage(
       
       mainPanel(
         fluidRow(
-          column(12, DTOutput("analysisTable"))
-        )
+          column(12, DTOutput("yearlyDevice"))
+        ),
+        fluidRow(
+          column(12, DTOutput("yearlyMethod"))
+        ),
       )
   
 )))
@@ -128,16 +131,40 @@ server <- function(input, output, session) {
     years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
     updateSelectInput(session, "year", choices = years)
   })
-  
-  # Generate analysis table based on selections
-  output$analysisTable <- renderDT({
+    # Generate table with yearly data for the selected device
+  output$yearlyDevice <- renderDT({
+    req(input$device) # Require a device to be selected
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s' 
+                      GROUP BY Year", input$device)
+    data.dvice <- dbGetQuery(db, query)
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    data.dvice$`Delta Aufträge [%]` <- diff(data.dvice$`Anzahl Aufträge`)/lag(data.dvice$`Anzahl Aufträge`)
+    data.dvice$`Delta Aufträge [%]` <- round(data.dvice$`Delta Aufträge [%]` * 100, 2)
+    
+    # render the data table
+    datatable(data.dvice, rownames = FALSE, options = list(pageLength = 5))
+    
+  })
+    
+    
+
+    # Generate table with yearly data for the selected method
+  output$yearlyMethod <- renderDT({
     req(input$year) # Require a year to be selected
     query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
                        SUM(Txp) as 'Txp Umsatz', 
                        COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
                        COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
                       FROM MeasurementData
-                      JOIN TarifData ON MeasurementData.Bezeichnung = TarifData.Bezeichnung
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                       WHERE MeasurementData.Bezeichnung = '%s' 
                       GROUP BY Year", input$method
                      
