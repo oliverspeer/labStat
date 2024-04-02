@@ -120,6 +120,12 @@ ui <- fluidPage(
           column(12, DTOutput("yearlyDevice"))
         ),
         fluidRow(
+          column(6, plotOutput("yearlyDevicePlot"))
+        ),
+        # fluidRow(
+        #   column(6, DTOutput("yearlyMethodPlot"))
+        # ),
+        fluidRow(
           column(12, DTOutput("yearlyMethod"))
         ),
       )
@@ -138,17 +144,21 @@ server <- function(input, output, session) {
   # Update Method choices based on selected Device
   observeEvent(input$device, {
     req(input$device) # Require a device to be selected
-    methods <- dbGetQuery(db, sprintf("SELECT DISTINCT Bezeichnung FROM MethodData WHERE Gerät = '%s'", input$device))
+    methods <- dbGetQuery(db, sprintf("SELECT DISTINCT MeasurementData.Bezeichnung 
+                                      FROM MeasurementData 
+                                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                                      WHERE MethodData.Gerät = '%s'
+                                      ORDER BY MeasurementData.Bezeichnung ASC", input$device))
     updateSelectInput(session, "method", choices = methods)
   })
   
   # Update Year choices based on selected Method
-   observeEvent(input$method, {
-     req(input$method) # Require a method to be selected
-    #years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
-     # years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MethodData WHERE Bezeichnung = '%s'", input$method))
-     # updateSelectInput(session, "year", choices = years)
-   })
+   # observeEvent(input$method, {
+   #   req(input$method) # Require a method to be selected
+   #  #years <- dbGetQuery(db, sprintf("SELECT DISTINCT strftime('%%Y', Datum) as Year FROM MeasurementData WHERE Bezeichnung = '%s'", input$method))
+   #   # years <- dbGetQuery(db, sprintf("SELECT DISTINCT Jahr FROM MethodData WHERE Bezeichnung = '%s'", input$method))
+   #   # updateSelectInput(session, "year", choices = years)
+   # })
    
     # Generate table with yearly data for the selected device
   output$yearlyDevice <- renderDT({
@@ -174,10 +184,12 @@ server <- function(input, output, session) {
       # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
     }
     
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
     # render the data table
     datatable(data.device, options = list(
                             hover = TRUE, 
-                            pageLength = 10, 
+                            pageLength = 5, 
                             lengthChange = TRUE,
                             searching = FALSE,
                             ordering = TRUE,
@@ -187,7 +199,50 @@ server <- function(input, output, session) {
               rownames = FALSE)
     
   })
-    
+  
+  # Generate plot with yearly data for the selected device
+   output$yearlyDevicePlot <- renderPlot({
+     req(input$device) 
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       Quartal AS Quarter, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  GROUP BY MeasurementData.Jahr, Quartal
+                  ORDER BY MeasurementData.Jahr ASC, Quartal ASC", input$device)
+     data.device.Q <- dbGetQuery(db, query)
+     
+     # Initialize new column
+     data.device.Q$'Delta Aufträge' <- 0
+     
+     # Convert the data to a data frame and calculate the year-over-year percentage change
+     if(nrow(data.device.Q) > 1)   {
+       data.device.Q$`Delta Aufträge`[-1] <- diff(data.device.Q$`Anzahl Aufträge`)/head(data.device.Q$`Anzahl Aufträge`, -1)
+       # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
+       
+       data.device.Q$YearQuarter <- with(data.device.Q, paste(Year, Quarter, sep = "-Q"))
+       data.device.Q$YearQuarter <- factor(data.device.Q$YearQuarter, levels = unique(data.device.Q$YearQuarter))
+       
+     }
+     
+  #   # Plot the data
+     ggplot(data.device.Q, aes(x = Year)) +
+       # geom_line(aes(y = `Txp Umsatz`, group = 1), color = 'blue') +
+       geom_point(aes(y = `Txp Umsatz`, group = 1), color = 'blue') +
+       geom_smooth(aes(y = `Txp Umsatz`, group = 1), method = 'loess', span = 0.2, se = TRUE, color = 'blue') +
+       # geom_line(aes(y = `Delta Aufträge`, group = 1), color = 'red') +
+       # scale_y_continuous(sec.axis = sec_axis(~ . *1000000, name = "Delta Aufträge [%]", labels = percent_format())) +
+       labs(x = "Jahr", y = "Txp Umsatz", title = "jährlicher Txp Umsatz") +
+       theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'))
+       
+   }) 
+  #   
     
 
  # Generate table with yearly data for the selected method
@@ -216,10 +271,12 @@ server <- function(input, output, session) {
       
     }
     
+    data.method <- data.method |>
+      mutate(across(.cols = where(is.numeric), .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
     # render the data table
     datatable(data.method, options = list(
                             hover = TRUE, 
-                            pageLength = 10, 
+                            pageLength = 5, 
                             lengthChange = TRUE,
                             searching = FALSE,
                             ordering = TRUE,
