@@ -1,0 +1,1891 @@
+ABTEILUNG;NUMMER;CODE;NAME;EINHEIT;REF_UNTEN M;REF_OBEN M;REF_UNTEN W;REF_OBEN W
+BLUT-CHEMIE;177;***;Liquor/Serum-Albumin;·100;;;;
+BLUT-CHEMIE;176;***;Liquor/Serum-IgG;·1000;;;;
+BLUT-CHEMIE;10632;***;Liquor/Serum-IgM;·1000;;;;
+BLUT-CHEMIE;10631;***;Liquor/Serum-IgA;·1000;;;;
+BLUT-CHEMIE;181;***;Liquor-Immunglob.-Index;;<;0.5;<;0.5
+BLUT-CHEMIE;141;AAG;a-1-Glycoprotein;g/l;0.4;1.3;0.4;1.3
+BLUT-CHEMIE;113;A-A1;Apolipoprotein A-I;g/l;1;2;1.3;2
+BLUT-CHEMIE;114;A-A2;Apolipoprotein A-II;g/l;0.2;0.5;0.2;0.5
+BLUT-CHEMIE;115;A-B;Apolipoprotein B;g/l;0.6;1.1;0.6;1.1
+BLUT-CHEMIE;38650;AcB12;active B12 (holo-TC);pmol/l;>;35;>;35
+BLUT-CHEMIE;38653;ACE;ACE;U/l;20;70;20;70
+BLUT-CHEMIE;30032;ACE;ACE;U/l;29;112;29;112
+BLUT-CHEMIE;10663;ACE;ACE;U/l;9;90;9;90
+BLUT-CHEMIE;152;ACE;ACE;U/l;18;55;18;55
+BLUT-CHEMIE;213;A-CII;Apolipoprot. C-II;mg/l;21.5;46.7;21.5;46.7
+BLUT-CHEMIE;214;A-CIII;Apolipoprot. C-III;mg/l;45.2;104.6;45.2;104.6
+BLUT-CHEMIE;37759;ACTH;ACTH;ng/l;3.6;60.5;3.6;60.5
+BLUT-CHEMIE;90;ACTH;ACTH;ng/l;9;52;9;52
+BLUT-CHEMIE;35195;ACTH-L;ACTH (links);ng/l;9;52;9;52
+BLUT-CHEMIE;35309;ACTH-R;ACTH (rechts);ng/l;9;52;9;52
+BLUT-CHEMIE;35310;ACTH-Z;ACTH (zentral);ng/l;9;52;9;52
+BLUT-CHEMIE;11539;ACTS;Acetyl Salicylsre.;mmol/l;0.4;2.2;0.4;2.2
+BLUT-CHEMIE;37659;Adali;Adalimumab Talspiegel;µg/ml;;;;
+BLUT-CHEMIE;37660;Adali;Adalimumab-Antikörper;ng/ml;;;;
+BLUT-CHEMIE;12626;ADH;Antidiuretisches Hormon;pmol/l;1;4.2;1;4.2
+BLUT-CHEMIE;30022;ADH;Antidiuretisches Hormon;pmol/l;<;7.4;<;7.4
+BLUT-CHEMIE;29995;Adrenalin; Adrenalin;nmol/l;0.02;1.23;0.02;1.23
+BLUT-CHEMIE;116;A-E;Apolipoprotein E;mg/l;30;50;30;50
+BLUT-CHEMIE;163;AEP;Apo-E-Phänotyp;;;;;
+BLUT-CHEMIE;14097;AFP-DXI;a-Fetoprotein;µg/l;<;13;<;13
+BLUT-CHEMIE;43018;AFP-DXI 0-4M;a-Fetoprotein;µg/l;;;;
+BLUT-CHEMIE;43019;AFP-DXI 4-9M;a-Fetoprotein;µg/l;<;113;<;113
+BLUT-CHEMIE;43020;AFP-DXI 9M-2.5J;a-Fetoprotein;µg/l;<;40;<;40
+BLUT-CHEMIE;22334;Agom;Agomelatin;µg/l;7;300;7;300
+BLUT-CHEMIE;277;Al;Aluminium;µmol/l;<;0.37;<;0.37
+BLUT-CHEMIE;13764;Al;Aluminium;µmol/l;<;0.3;<;0.3
+BLUT-CHEMIE;14598;Alb-AU;Albumin (chem.);g/l;34;48;34;48
+BLUT-CHEMIE;29675;Albenda;Albendazolsulfoxid;µmol/l;>;1;>;1
+BLUT-CHEMIE;100;ALBU;Albumin (INA);g/l;37;53;37;53
+BLUT-CHEMIE;11051;ALBU-H0;Albumin (chem.);g/l;28;44;28;44
+BLUT-CHEMIE;11052;ALBU-H14;Albumin (chem.);g/l;38;54;38;54
+BLUT-CHEMIE;11053;ALBU-H18;Albumin (chem.);g/l;32;45;32;45
+BLUT-CHEMIE;104;ALBU-L;Albumin Liquor;g/l;0.06;0.24;0.06;0.24
+BLUT-CHEMIE;189;Aldo;Aldosteron:;pmol/l;;;;
+BLUT-CHEMIE;11585;Aldo;Aldosteron;pmol/l;140;4850;140;4850
+BLUT-CHEMIE;30103;Aldo;Aldosteron;pmol/l;;;;
+BLUT-CHEMIE;10603;Aldo;Aldosteron;pmol/l;140;2490;140;2490
+BLUT-CHEMIE;11584;Aldo;Aldosteron;pmol/l;190;5100;190;5100
+BLUT-CHEMIE;10604;Aldo;Aldosteron;pmol/l;190;1500;190;1500
+BLUT-CHEMIE;21444;Aldo liegend; liegend;pmol/l;27;444;27;444
+BLUT-CHEMIE;30105;Aldo liegend; liegend;pmol/l;48.7;642.6;48.7;642.6
+BLUT-CHEMIE;13788;Aldo ohne Ang.; ohne Angabe;pmol/l;;;;
+BLUT-CHEMIE;30106;Aldo stehend; stehend;pmol/l;69.8;1085.8;69.8;1085.8
+BLUT-CHEMIE;21445;Aldo stehend; stehend;pmol/l;111;860;111;860
+BLUT-CHEMIE;29833;Aldo-Eval;Aldosteron (Liaison Eval.);pmol/l;;;;
+BLUT-CHEMIE;257;Aldolase;Aldolase;U/l;2.2;8.5;2.2;8.5
+BLUT-CHEMIE;10743;Aldolase 16;Aldolase;U/l;<;9;<;9
+BLUT-CHEMIE;10742;Aldolase 2;Aldolase;U/l;<;12;<;12
+BLUT-CHEMIE;37888;Aldo-240;Aldosteron nach 240;;;;;
+BLUT-CHEMIE;38520;ALP-AU;ALP;U/l;30;120;;
+BLUT-CHEMIE;38751;ALPAU0-14T;ALP;U/l;76;233;76;233
+BLUT-CHEMIE;38754;ALPAU10-12;ALP;U/l;119;393;119;393
+BLUT-CHEMIE;38753;ALPAU1-10;ALP;U/l;132;315;132;315
+BLUT-CHEMIE;38755;ALPAU12-14;ALP;U/l;107;442;52;239
+BLUT-CHEMIE;38756;ALPAU14-16;ALP;U/l;75;312;45;108
+BLUT-CHEMIE;38752;ALPAU15-1J;ALP;U/l;113;443;113;443
+BLUT-CHEMIE;38757;ALPAU16-18;ALP;U/l;49;139;40;80
+BLUT-CHEMIE;38525;ALPAU18;ALP;U/l;30;120;30;120
+BLUT-CHEMIE;14537;ALT-AU;ALT;U/l;<;55;<;55
+BLUT-CHEMIE;27358;AMH2;Anti-Müller-Hormon;pmol/l;9.3;106;<;90
+BLUT-CHEMIE;33969;AMH3;Anti-Müller-Hormon;pmol/l;;;;
+BLUT-CHEMIE;37451;AMH3 m;Anti-Müller-Hormon ;pmol/l;;;;
+BLUT-CHEMIE;33971;AMH3-M18;Anti-Müller-Hormon;pmol/l;5.2;114.6;;
+BLUT-CHEMIE;33972;AMH3-W18;Anti-Müller-Hormon;pmol/l;;;6.82;95.22
+BLUT-CHEMIE;33973;AMH3-W26;Anti-Müller-Hormon;pmol/l;;;1.22;52.66
+BLUT-CHEMIE;33977;AMH3-W31;Anti-Müller-Hormon;pmol/l;;;0.53;52.48
+BLUT-CHEMIE;33974;AMH3-W36;Anti-Müller-Hormon;pmol/l;;;0.2;51.03
+BLUT-CHEMIE;33975;AMH3-W41;Anti-Müller-Hormon;pmol/l;;;<;23.35
+BLUT-CHEMIE;33976;AMH3-W45;Anti-Müller-Hormon;pmol/l;;;<;8.19
+BLUT-CHEMIE;33970;AMH3-60;Anti-Müller-Hormon;pmol/l;107.9;1903;<;24.19
+BLUT-CHEMIE;33978;AMH3-60-18;Anti-Müller-Hormon;pmol/l;;;;
+BLUT-CHEMIE;10860;Ami;Amitriptylin;µg/l;120;250;120;250
+BLUT-CHEMIE;20928;#NAME?;Amikacin;mg/l;;;;
+BLUT-CHEMIE;25835;Ami+Nort;Amitriptylin+Nortryptylin;µmol/l;0.27;0.68;0.27;0.68
+BLUT-CHEMIE;13929;Ami+Nort;Amitriptylin+Nortryptylin;µmol/l;0.62;1.47;0.62;1.47
+BLUT-CHEMIE;35348;Amiod;Amiodaron;µmol/l;1.5;3;1.5;3
+BLUT-CHEMIE;22184;Amis;Amisulprid;nmol/l;270;867;270;867
+BLUT-CHEMIE;21610;Ammoniak;Ammoniak;µmol/l;<;55;<;48
+BLUT-CHEMIE;36018;Ammoniak;Ammoniak;µmol/l;<;30;<;30
+BLUT-CHEMIE;33916;Ammoniak;Ammoniak;µmol/l;9;30;9;30
+BLUT-CHEMIE;10854;Ammoniak;Ammoniak;µg/l;250;940;;
+BLUT-CHEMIE;13162;Ammoniak;Ammoniak;µg/l;270;900;270;900
+BLUT-CHEMIE;36019;Ammoniak-1;Ammoniak;µmol/l;;;;
+BLUT-CHEMIE;11468;Amyloid;Amyloid;mg/l;<;6.8;<;6.8
+BLUT-CHEMIE;22098;Amyloid A;Serum-Amyloid A;mg/l;<;6.8;<;6.8
+BLUT-CHEMIE;22084;Amyloid A;Serum-Amyloid A;mg/l;<;10;<;10
+BLUT-CHEMIE;41807;andro;Androstendion;nmol/l;1.4;12.2;1;8.4
+BLUT-CHEMIE;12717;ANDRO;Androstendion;nmol/l;2.1;10.8;1;11.5
+BLUT-CHEMIE;29961;ANDRO;Androstendion;nmol/l;1.4;12.2;1;8.4
+BLUT-CHEMIE;11587;ANDRO012;Androstendion;nmol/l;0.2;2.4;0.2;2.4
+BLUT-CHEMIE;11586;ANDRO07;Androstendion;nmol/l;0.7;10.1;0.7;10.1
+BLUT-CHEMIE;10770;ANDRO10;Androstendion;nmol/l;0.3;1;0.7;1.7
+BLUT-CHEMIE;10771;ANDRO12;Androstendion;nmol/l;1;2.4;1.4;3.5
+BLUT-CHEMIE;10772;ANDRO14;Androstendion;nmol/l;1.7;3.5;2.8;6.6
+BLUT-CHEMIE;10768;ANDRO6;Androstendion;nmol/l;0.3;0.7;0.3;0.7
+BLUT-CHEMIE;10769;ANDRO8;Androstendion;nmol/l;0.3;1;0.3;1
+BLUT-CHEMIE;40568;ANP;MR-proANP;pmol/L;<;85.2;<;85.2
+BLUT-CHEMIE;38124;Anti-C1q;C1q-Antikörper;E/ml;<;20;<;20
+BLUT-CHEMIE;227;ANTID;Tricycl.Antidepr.;µg/l;;;;
+BLUT-CHEMIE;11043;ANTI-NEBENNIERE;Anti-Nebennierenrinden AK;Titer;<;01:02;<;01:02
+BLUT-CHEMIE;11045;ANTI-OVARIAL;Anti-Ovarialgewebe AK;Titer;neg.;;neg.;
+BLUT-CHEMIE;11418;ANTI-PANK;Anti-Pank. Inselzellen;Titer;<;01:02;<;01:02
+BLUT-CHEMIE;78;Antitrypsin;a-1-Antitrypsin;g/l;0.92;2;0.92;2
+BLUT-CHEMIE;11044;ANTI-21HYDROX;Anti-21-Hydroxylase;U/ml;<;1;<;1
+BLUT-CHEMIE;14599;AP-DXC;ALP;U/l;53;128;42;98
+BLUT-CHEMIE;188;APK;Knochen-AP;U/l;<;150;<;120
+BLUT-CHEMIE;12832;AP-1J;ALP;U/l;<;462;<;462
+BLUT-CHEMIE;12829;AP-1Tag;ALP;U/l;<;250;<;250
+BLUT-CHEMIE;12835;AP-12J;ALP;U/l;<;300;<;300
+BLUT-CHEMIE;12836;AP-17J;ALP;U/l;<;390;<;187
+BLUT-CHEMIE;12833;AP-3J;ALP;U/l;<;281;<;281
+BLUT-CHEMIE;12830;AP-5Tage;ALP;U/l;<;231;<;231
+BLUT-CHEMIE;12834;AP-6J;ALP;U/l;<;269;<;269
+BLUT-CHEMIE;12831;AP-6Mon;ALP;U/l;<;449;<;449
+BLUT-CHEMIE;37764;Aripi+dehydro; Arip.+Dehydroarip;µmol/l;0.33;1.12;0.33;1.12
+BLUT-CHEMIE;17945;Aripiprazol;Aripiprazol;µmol/l;0.22;0.67;0.22;0.67
+BLUT-CHEMIE;38295;Aripiprazol;Aripiprazol:;;;;;
+BLUT-CHEMIE;36522;Aripiprazol;Aripiprazol;µmol/l;;;;
+BLUT-CHEMIE;22421;Aripiprazol;Aripiprazol;µmol/l;0.33;1.12;0.33;1.12
+BLUT-CHEMIE;10779;Arsen;Arsen Serum;µmol/l;<;0.13;<;0.13
+BLUT-CHEMIE;10780;ArsenEDTA;Arsen EDTA;µmol/l;0.03;0.3;0.03;0.3
+BLUT-CHEMIE;29977;Asena;Asenapin;µg/l;2;5;2;5
+BLUT-CHEMIE;38518;AST-AU;AST;U/l;;;;
+BLUT-CHEMIE;38759;ASTAU0-14T;AST;U/l;<;75;<;75
+BLUT-CHEMIE;38758;ASTAU1;AST;U/l;<;55;<;55
+BLUT-CHEMIE;38760;ASTAU15-1J;AST;U/l;<;60;<;60
+BLUT-CHEMIE;14539;AST-DXC;AST;U/l;<;40;<;40
+BLUT-CHEMIE;14828;ATG (KRYPTOR);Anti-TG (KRYPTOR);U/ml;<;30;<;30
+BLUT-CHEMIE;14827;ATPO (KRYPTOR);Anti-TPO (KRYPTOR);U/ml;<;60;<;60
+BLUT-CHEMIE;210;A2MG;a-2-Macroglobulin;g/l;1.3;3;1.1;2.5
+BLUT-CHEMIE;10534;BENZODIA;Benzodiazepine ql.;;;;;
+BLUT-CHEMIE;30216;beta-Car;ß-Carotin;µmol/l;0.28;2.33;0.28;2.33
+BLUT-CHEMIE;21807;beta-Car;ß-Carotin;µmol/l;0.76;3.34;0.76;3.34
+BLUT-CHEMIE;38509;b-HCG-5;ß-hCG (hCG5);IU/l;<;5;;
+BLUT-CHEMIE;30003;b-HCG-5;ß-hCG (hCG5);IU/l;<;5;;
+BLUT-CHEMIE;18910;B-HYDROXY;ß-Hydroxybutyrat;µmol/l;<;300;<;300
+BLUT-CHEMIE;14576;Bili-AU;Bilirubin gesamt;µmol/l;<;20;<;20
+BLUT-CHEMIE;41959;Bili-AU 0-15t;Bilirubin gesamt;µmol/l;<;253;<;253
+BLUT-CHEMIE;41960;Bili-AU 15t-999j;Bilirubin gesamt;µmol/l;<;20;<;20
+BLUT-CHEMIE;14575;BiliDir-AU;Bilirubin direkt;µmol/l;<;5;<;5
+BLUT-CHEMIE;41957;BiliDir-AU 0-15t;Bilirubin direkt;µmol/l;<;12;<;12
+BLUT-CHEMIE;41958;BiliDir-AU 15t-999j;Bilirubin direkt;µmol/l;<;5;<;5
+BLUT-CHEMIE;27169;Biperiden;Biperiden;nmol/l;16;321;16;321
+BLUT-CHEMIE;11123;Biperiden;Biperiden;µg/l;10;100;10;100
+BLUT-CHEMIE;37701;Blei;Blei;µmol/l;<;0.43;<;0.34
+BLUT-CHEMIE;37702;Blei;Blei;µmol/l;<;0.17;<;0.17
+BLUT-CHEMIE;10751;Blei;Blei;µmol/l;<;0.58;<;0.43
+BLUT-CHEMIE;21387;Blei;Blei;µmol/l;<;0.29;<;0.29
+BLUT-CHEMIE;100130;BLR;Bilirubinoide (Abrechnung);;;;;
+BLUT-CHEMIE;37316;BMG;ß-2-Microglobulin;mg/l;0.9;2;0.9;2
+BLUT-CHEMIE;22144;BNP;BNP ;ng/l;<;37;<;37
+BLUT-CHEMIE;36881;BNP-07h;BNP ;ng/l;<;37;<;37
+BLUT-CHEMIE;41961;Brivar;Brivaracetam;µg/ml;0.5;0.9;0.5;0.9
+BLUT-CHEMIE;27356;Bromazepam;Bromazepam;µmol/l;0.16;0.63;0.16;0.63
+BLUT-CHEMIE;35315;BSSPS -10;Bilaterales Sinus petrosus sampling;;;;;
+BLUT-CHEMIE;35314;BSSPS -15;Bilaterales Sinus petrosus sampling;;;;;
+BLUT-CHEMIE;18533;BTP-NASAL;ß-Trace-Protein;;;;;
+BLUT-CHEMIE;18532;BTP-PKT;ß-Trace-Protein;;;;;
+BLUT-CHEMIE;30303;Bupr;2OH Bupropion;µg/l;800;1200;800;1200
+BLUT-CHEMIE;31217;Bupr; Bupropion;µg/l;;;;
+BLUT-CHEMIE;30301;Bupr;Bupropion;µg/l;<;70;<;70
+BLUT-CHEMIE;31218;Bupr; OH Bupropion;µg/l;;;;
+BLUT-CHEMIE;38523;Bupro+OHBupro; Bupropion+OH-Bupr;µg/l;850;1500;850;1500
+BLUT-CHEMIE;38522;Bupropion-Titel;Bupropion:;;;;;
+BLUT-CHEMIE;12075;B1;Vitamin B1;µg/l;28;85;28;85
+BLUT-CHEMIE;14006;B12A-DXI;Vitamin B12;ng/l;180;900;180;900
+BLUT-CHEMIE;12076;B2;Vitamin B2;µg/l;137;370;137;370
+BLUT-CHEMIE;145;B2T;ß-2-Traf;;;;;
+BLUT-CHEMIE;14831;B3;Vitamin. B3, Nicotinamid;µg/l;8;52;8;52
+BLUT-CHEMIE;12077;B6;Vitamin B6;µg/l;8.7;27.2;8.7;27.2
+BLUT-CHEMIE;29954;Ca-Alb;Calcium (Albumin korr.);mmol/l;2;2.6;2;2.6
+BLUT-CHEMIE;14577;Ca-AU;Calcium;mmol/l;2;2.6;2;2.6
+BLUT-CHEMIE;14792;Carba;Carbamazepin;mg/l;4;10;4;10
+BLUT-CHEMIE;38211;Carba-AU;Carbamazepin;mg/l;4;10;4;10
+BLUT-CHEMIE;33914;Carn;Carnitin gesamt;µmol/l;25;69;25;69
+BLUT-CHEMIE;29998;CATAM-PR;Catecholamine (Preis);;;;;
+BLUT-CHEMIE;228;CA125-AXSYM;CA 125 (alt);kU/l;<;35;<;35
+BLUT-CHEMIE;14103;CA125-DXI;CA 125;kU/l;<;35;<;35
+BLUT-CHEMIE;197;CA153-AXSYM;CA 15-3 (alt);kU/l;<;27;<;27
+BLUT-CHEMIE;14102;CA153-DXI;CA 15-3;kU/l;<;27;<;27
+BLUT-CHEMIE;147;CA199-AXSYM;CA 19-9 (alt);kU/l;<;37;<;37
+BLUT-CHEMIE;14101;CA199-DXI;CA 19-9;kU/l;<;35;<;35
+BLUT-CHEMIE;186;CA50;CA 50;kU/l;<;25;<;25
+BLUT-CHEMIE;151;CA72;CA 72-4;kU/l;<;6;<;6
+BLUT-CHEMIE;31232;CA72-4 Cobas;CA 72-4;kU/l;<;6.9;<;6.9
+BLUT-CHEMIE;17713;CA72-4 Elecsys;CA 72-4;kU/l;5.6;8.2;5.6;8.2
+BLUT-CHEMIE;24453;CA72-4 Elecsys;CA 72-4;kU/l;<;6.9;<;6.9
+BLUT-CHEMIE;13765;CA72-4 Versand;CA 72-4;kU/l;<;4;<;4
+BLUT-CHEMIE;12254;CCL;Crea-Clearance;ml/min;70;150;70;150
+BLUT-CHEMIE;13095;CCL;CCL;;100;140;75;105
+BLUT-CHEMIE;21920;CC3c;Komplement C3c;g/l;0.9;1.8;0.9;1.8
+BLUT-CHEMIE;42144;CC3c;Komplement C3c;g/l;0.82;1.85;0.83;1.93
+BLUT-CHEMIE;42146;CC3c 1-14j;Komplement C3c;g/l;0.8;1.7;0.82;1.73
+BLUT-CHEMIE;123;CC4;Komplement C4;g/l;0.1;0.34;0.1;0.34
+BLUT-CHEMIE;42145;CC4;Komplement C4 ;g/l;0.15;0.53;0.15;0.57
+BLUT-CHEMIE;42148;CC4 1-14j;Komplement C4;g/l;0.14;0.44;0.13;0.46
+BLUT-CHEMIE;248;CC5;Komplement C5;mg/l;115;150;115;150
+BLUT-CHEMIE;193;CC6;Komplement C6;mg/l;45;96;45;96
+BLUT-CHEMIE;194;CC7;Komplement C7;mg/l;55;85;55;85
+BLUT-CHEMIE;215;CC8;Komplement C8;mg/l;112;172;112;172
+BLUT-CHEMIE;216;CC9;Komplement C9;mg/l;125;265;125;265
+BLUT-CHEMIE;30019;CDT;CDT;%;<;1.6;<;1.6
+BLUT-CHEMIE;46;CEA-AXSYM;CEA (alt);µg/l;<;3;<;3
+BLUT-CHEMIE;14100;CEA-DXI;CEA;µg/l;<;3;<;3
+BLUT-CHEMIE;37674;Certoli;Certolizumab Talspiegel;µg/ml;;;;
+BLUT-CHEMIE;37675;Certoli;Certolizumab-Antikörper;UA/ml;<;5;;
+BLUT-CHEMIE;31534;CGAII;Chromogranin A;µg/l;<;102;<;102
+BLUT-CHEMIE;29552;ChE;ChE;U/l;5320;12920;5320;12920
+BLUT-CHEMIE;29553;ChE16;ChE;U/l;5320;12920;4260;11250
+BLUT-CHEMIE;29620;Chin;Chinidin;µmol/l;6.2;15.4;6.2;15.4
+BLUT-CHEMIE;11056;Chloropropamid; Chlorpropamid;;;;;
+BLUT-CHEMIE;15280;Chlorprothixen;Chlorprothixen;nmol/l;63;633;63;633
+BLUT-CHEMIE;22423;Chlorprothixen;Chlorprothixen;nmol/l;63;951;63;951
+BLUT-CHEMIE;14579;Chol-AU;Cholesterin;mmol/l;<;5;<;5
+BLUT-CHEMIE;179;CHOL/HDL;Cholesterin/HDL;;<;5;<;5
+BLUT-CHEMIE;12069;Chr. A;Chromogranin A;µg/l;19.4;98.1;19.4;98.1
+BLUT-CHEMIE;22243;Chr. A;Chromogranin A alt;µg/l;<;85;<;85
+BLUT-CHEMIE;29619;Chrom;Chrom;µg/l;<;0.4;<;0.4
+BLUT-CHEMIE;38637;Chrom;Chrom;µg/l;<;0.7;<;0.7
+BLUT-CHEMIE;30302;Chrom;Chrom;µg/l;<;3.7;<;3.7
+BLUT-CHEMIE;29936;Chrom;Chrom;µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;195;CH100A;Kompl. gesamt, altern.;%;66;129;66;129
+BLUT-CHEMIE;281;CH50;Kompl. gesamt, klass.;U/ml;>;36;>;36
+BLUT-CHEMIE;33979;CH50 SPAplus;Kompl. gesamt, klass.;U/ml;>;41.7;>;41.7
+BLUT-CHEMIE;24986;CH50-DxC;Kompl. gesamt, klass.;U/ml;>;36;>;36
+BLUT-CHEMIE;32641;CH50-SPAPlus;Kompl. gesamt, klass.;U/ml;41.7;95.1;41.7;95.1
+BLUT-CHEMIE;10633;CICLO;Ciclosp. mcl. (Ax);µg/l;80;160;80;160
+BLUT-CHEMIE;14845;Ciclo-AU;Ciclosporin;µg/l;80;160;80;160
+BLUT-CHEMIE;15544;Ciclo-Automate;Ciclosporin Automate;µg/l;80;160;80;160
+BLUT-CHEMIE;14846;CicloH-AU;Ciclosporin;µg/l;80;160;80;160
+BLUT-CHEMIE;124;CIH;C1-Esterase Inh. (immunol.);g/l;0.1;0.3;0.1;0.3
+BLUT-CHEMIE;11515;Cita;Citalopram;nmol/l;100;500;100;500
+BLUT-CHEMIE;22479;Cita; Citalopram;nmol/l;154;339;154;339
+BLUT-CHEMIE;38362;Citalopram;Citalopram:;;;;;
+BLUT-CHEMIE;14597;CK-AU;CK;U/l;<;170;<;145
+BLUT-CHEMIE;237;CKMB%;CK-MB;% CK;<;6;<;6
+BLUT-CHEMIE;14574;CKMB-Ma-DXI;CK-MB Masse;µg/l;0.6;6.3;0.6;6.3
+BLUT-CHEMIE;15351;CKMB-Ma-Se-DXI;CK-MB Masse (Serum);µg/l;0.6;6.3;0.6;6.3
+BLUT-CHEMIE;14578;Cl-AU;Chlorid;mmol/l;95;113;95;113
+BLUT-CHEMIE;30908;Cloba;Clobazam;µmol/l;0.1;1;0.1;1
+BLUT-CHEMIE;27462;Cloba;Clobazam;µmol/l;0.38;0.96;0.38;0.96
+BLUT-CHEMIE;38770;Cloba-Titel;Clobazam:;;;;;
+BLUT-CHEMIE;13883;Clom;Clomipramin;nmol/l;550;1430;550;1430
+BLUT-CHEMIE;30311;Clom; Clomipr+Desm.-Clomipr;nmol/l;730;1430;730;1430
+BLUT-CHEMIE;43066;Clomipramin;Clomipramin;nmol/l;;;;
+BLUT-CHEMIE;11469;Clonazepam;Clonazepam;nmol/l;63;222;63;222
+BLUT-CHEMIE;15361;CLOZAPIN;Clozapin;µmol/l;1.07;2.48;1.07;2.48
+BLUT-CHEMIE;22332;CLOZAPIN;Clozapin;µmol/l;1.07;1.84;1.07;1.84
+BLUT-CHEMIE;38263;Clozapin-Titel;Clozapin:;;;;;
+BLUT-CHEMIE;38446;CLT;Calcitonin;ng/l;<;11.8;<;4.8
+BLUT-CHEMIE;20174;CLT0;Calcitonin 0min;ng/l;<;8.4;<;5
+BLUT-CHEMIE;20175;CLT2;Calcitonin 2min;ng/l;<;8.4;<;5
+BLUT-CHEMIE;20176;CLT3;Calcitonin 5min;ng/l;<;8.4;<;5
+BLUT-CHEMIE;33630;CoEQ10;Coenzym Q10; µg/l;600;1000;600;1000
+BLUT-CHEMIE;29615;CoEQ10;Coenzym Q10;mg/l;0.4;1.2;0.4;1.2
+BLUT-CHEMIE;261;Coffein;Coffein;mmol/l;;;;
+BLUT-CHEMIE;12507;COMP;COMP;µg/ml;0.99;2.54;0.99;2.54
+BLUT-CHEMIE;37947;Copept;Copeptin;pmol/l;1;13.8;;
+BLUT-CHEMIE;40591;Copept;Copeptin;pmol/l;1.2;16.4;1.2;16.4
+BLUT-CHEMIE;12283;CORT SPEICHEL;Cortisol im Speichel;nmol/l;;;;
+BLUT-CHEMIE;13939;CORT-DXI;Cortisol;nmol/l;;;;
+BLUT-CHEMIE;18408;CORT-NACH-DXI;Cortisol nach 60;nmol/l;;;;
+BLUT-CHEMIE;37887;CORT-NACH-20;Cortisol nach 20;nmol/l;;;;
+BLUT-CHEMIE;29831;CORT-NACH-30;Cortisol nach 30;nmol/l;;;;
+BLUT-CHEMIE;38765;CORT-R-DXI;Cortisol rapid;nmol/l;;;;
+BLUT-CHEMIE;14435;Cotinin;Cotinin+Hydrocotinin;µg/l;<;20;<;20
+BLUT-CHEMIE;15067;Cotinin;Cotinin;µg/l;;;;
+BLUT-CHEMIE;40514;CPEP;C-Peptid;pmol/l;;;;
+BLUT-CHEMIE;18347;CPEP;C-Peptid;pmol/l;320;780;320;780
+BLUT-CHEMIE;37449;CPEP;C-Peptid;pmol/l;265;1390;265;1390
+BLUT-CHEMIE;11979;CPEP;C-Peptid;pmol/l;320;780;320;780
+BLUT-CHEMIE;11980;CPEP/GLUC;C-Pep./Gluc.;pmol/mmol;65;125;65;125
+BLUT-CHEMIE;232;CPEP/GLUC;C-Pep./Gluc.;pmol/mmol;50;100;50;100
+BLUT-CHEMIE;28;CPL;Caeruloplasmin;g/l;0.2;0.6;0.2;0.6
+BLUT-CHEMIE;14581;Crea-AU;Creatinin;µmol/l;<;115;<;95
+BLUT-CHEMIE;14608;Crea-AU-Di;Crea (Dialysat);µmol/l;;;;
+BLUT-CHEMIE;13001;CreaEnz;Creatinin enz.;µmol/l;<;105;<;80
+BLUT-CHEMIE;14839;CreaEnz-H902;Creatinin enzym.;µmol/l;<;105;<;80
+BLUT-CHEMIE;12248;Crea11J;Creatinin;µmol/l;34;65;34;65
+BLUT-CHEMIE;12243;Crea12M;Creatinin;µmol/l;15;37;15;37
+BLUT-CHEMIE;12249;Crea13J;Creatinin;µmol/l;46;70;46;70
+BLUT-CHEMIE;12250;Crea15J;Creatinin;µmol/l;50;77;50;77
+BLUT-CHEMIE;12242;Crea2M;Creatinin;µmol/l;;;;
+BLUT-CHEMIE;12244;Crea3J;Creatinin;µmol/l;21;36;21;36
+BLUT-CHEMIE;12245;Crea5J;Creatinin;µmol/l;27;42;27;42
+BLUT-CHEMIE;12246;Crea7J;Creatinin;µmol/l;28;52;28;52
+BLUT-CHEMIE;12247;Crea9J;Creatinin;µmol/l;35;53;35;53
+BLUT-CHEMIE;12501;CROSSLAPS;Beta-Crosslaps;pg/ml;<;584;<;573
+BLUT-CHEMIE;14580;CRP-AU;CRP;mg/l;<;8;<;8
+BLUT-CHEMIE;38506;CTSD;Cathepsin D;µg/l;124;1009;124;1009
+BLUT-CHEMIE;109;CUV;Urinvolumen;ml/24h;;;;
+BLUT-CHEMIE;38246;CYFRA;CYFRA 21-1;µg/l;<;1.1;<;1.1
+BLUT-CHEMIE;184;CYFRA;CYFRA 21-1;µg/l;<;3.3;<;3.3
+BLUT-CHEMIE;11417;CYSTA;Cystatin C;mg/l;0.74;1.55;0.74;1.55
+BLUT-CHEMIE;12074;CYSTA;Cystatin C;mg/l;0.53;0.95;0.53;0.95
+BLUT-CHEMIE;192;C1F;C1-Esterase Inh. (funkt.);%;70;130;70;130
+BLUT-CHEMIE;125;C1Q;C1q;g/l;0.1;0.25;0.1;0.25
+BLUT-CHEMIE;21451;C1QBdg;C1q-bindende Immunkomplexe;% Bdg;<;2;<;2
+BLUT-CHEMIE;24452;C1Q-Imm;C1q-Immunkomplexe;µg/ml;<;55;<;55
+BLUT-CHEMIE;10744;C2;Komplement C2;mg/l;14;25;14;25
+BLUT-CHEMIE;21454;C3dIgG;Immunkomplex IgG (-C3d) qn;mg/l;1;10;1;10
+BLUT-CHEMIE;29530;C3dIgG;Immunkomplex IgG (-C3d) qn;µg/ml;<;40;<;40
+BLUT-CHEMIE;175;C3DIGG;C3d-IgG Imnkpl.;µgHAIgG/ml;<;8;<;8
+BLUT-CHEMIE;30073;DAO;Diaminooxidase;U/ml;>;10;>;10
+BLUT-CHEMIE;30074;Dapto;Daptomycin;mg/l;;;;
+BLUT-CHEMIE;111;DBZ;Dibucainzahl;;60;90;60;90
+BLUT-CHEMIE;17896;DBZ;Dibucainzahl;;>;0.75;>;0.75
+BLUT-CHEMIE;37763;Dehydroaripi; Dehydroaripiprazol;µmol/l;;;;
+BLUT-CHEMIE;35349;DESE;Desethylamiodaron;µmol/l;;;;
+BLUT-CHEMIE;21283;DESE;Desethylamiodaron;µmol/l;0.5;3.5;0.5;3.5
+BLUT-CHEMIE;11519;Desipramin;Desipramin;µmol/l;;;;
+BLUT-CHEMIE;10872;Desipramin;Desipramin;µg/l;150;300;150;300
+BLUT-CHEMIE;41835;Desm; N-Desmethylsertralin;µmol/l;;;;
+BLUT-CHEMIE;30162;Desm; Desmethylsertralin;µmol/l;;;;
+BLUT-CHEMIE;38258;Desmethyl; Desmethylmirtazapin;nmol/l;;;;
+BLUT-CHEMIE;41832;Desmethyl; N-Desmethylmirtazapin;nmol/l;;;;
+BLUT-CHEMIE;43067;Desmethylclo; Desmethyl-Clomipramin;nmol/l;;;;
+BLUT-CHEMIE;38226;Desmethylescit; Desmethylescitalopram;nmol/l;;;;
+BLUT-CHEMIE;38135;Desmethylolanzapin; Desmethylolanzapin;nmol/l;;;;
+BLUT-CHEMIE;36510;DHEA;DHEA;µg/l;0.52;5.18;0.36;7.82
+BLUT-CHEMIE;38207;DHEA;DHEA;nmol/l;4.9;43.3;2.8;36.4
+BLUT-CHEMIE;23110;DHEA;DHEA;µg/l;0.1;1.7;0.1;1.5
+BLUT-CHEMIE;21919;DHEA;DHEA;ng/ml;1.8;12.5;1.3;9.8
+BLUT-CHEMIE;15357;DHEAS-DXI;DHEA-S;µmol/l;;;;
+BLUT-CHEMIE;15358;DHEAS<10;DHEA-S;µmol/l;<;1.4;<;1.4
+BLUT-CHEMIE;15359;DHEAS<50;DHEA-S;µmol/l;<;17.4;;
+BLUT-CHEMIE;15360;DHEAS>50;DHEA-S;µmol/l;<;6.4;;
+BLUT-CHEMIE;23111;DHEA0-10;DHEA;µg/l;0.3;3.5;0.3;3.5
+BLUT-CHEMIE;23112;DHEA11-20;DHEA;µg/l;0.3;7;0.3;7
+BLUT-CHEMIE;23113;DHEA21-30;DHEA;µg/l;1;7.3;1;7
+BLUT-CHEMIE;23114;DHEA31-40;DHEA;µg/l;0.75;5.1;0.55;5
+BLUT-CHEMIE;23115;DHEA41-50;DHEA;µg/l;0.7;4.6;0.4;3.6
+BLUT-CHEMIE;23116;DHEA51-60;DHEA;µg/l;0.55;4.6;0.3;2.8
+BLUT-CHEMIE;23117;DHEA61-70;DHEA;µg/l;0.4;2.1;0.1;1.8
+BLUT-CHEMIE;11692;DHT;Dihydrotestosteron;nmol/l;;;;
+BLUT-CHEMIE;42778;DHT_F_19-99;Dihydrotestosteron;nmol/l;;;<;0.7
+BLUT-CHEMIE;42777;DHT_M_19-99;Dihydrotestosteron;nmol/l;0.9;3.4;;
+BLUT-CHEMIE;42772;DHT_2;Dihydrotestosteron;nmol/l;;;;
+BLUT-CHEMIE;21383;Diazepam;Diazepam;ng/ml;;;;
+BLUT-CHEMIE;38142;Diaz+Meta;Diazepam+Metabolite;ng/ml;100;2500;100;2500
+BLUT-CHEMIE;14835;Dibenzepin;Dibenzepin (Noveril);µmol/l;0.08;0.85;0.08;0.85
+BLUT-CHEMIE;18271;Diclo;Diclofenac;µmol/l;0.17;8.44;0.17;8.44
+BLUT-CHEMIE;37820;DIGITOX;Digitoxin;µg/l;10;30;10;30
+BLUT-CHEMIE;11555;DIGITOX;Digitoxin;nmol/l;13.1;39.3;13.1;39.3
+BLUT-CHEMIE;280;DIGOX;Digoxin;µg/l;0.8;2;0.8;2
+BLUT-CHEMIE;14790;Digox-DXI;Digoxin;µg/l;1;2;1;2
+BLUT-CHEMIE;21504;Digox-DXI;Digoxin;µg/l;0.5;0.8;0.5;0.8
+BLUT-CHEMIE;38363;Dmcitalo; Desmethylcitalopram;nmol/l;;;;
+BLUT-CHEMIE;29997;Dopamin; Dopamin;nmol/l;0.01;0.38;0.01;0.38
+BLUT-CHEMIE;13884;Doxepin;Doxepin+Nordoxp.;nmol/l;180;540;180;540
+BLUT-CHEMIE;10864;Doxepin;Doxepin;µg/l;20;150;20;150
+BLUT-CHEMIE;21627;Doxy;Doxycyclin;mg/l;1;5;1;5
+BLUT-CHEMIE;22236;Dulo;Duloxetin;nmol/l;101;400;101;400
+BLUT-CHEMIE;18227;Dulo;Duloxetin;nmol/l;200;400;200;400
+BLUT-CHEMIE;10776;D3;25-OH-Vitamin D3;µg/l;9;45;9;45
+BLUT-CHEMIE;17735;D3-1,25-OH;1,25-OH-Vitamin D3;ng/l;20;135;20;135
+BLUT-CHEMIE;12003;D3-1,25-OH;1,25-OH-Vitamin D3;ng/l;20;63;20;63
+BLUT-CHEMIE;29918;D3-1,25-OH;1,25-OH-Vitamin D3;ng/l;23;93;23;93
+BLUT-CHEMIE;35180;D3-1,25-OH;1,25-OH-Vitamin D3;pmol/l;36.5;216.2;36.5;216.2
+BLUT-CHEMIE;31265;D3-1,25-OH;1,25-OH-Vitamin D3;ng/l;22;111;22;111
+BLUT-CHEMIE;35181;D3-1,25-OH 0-2;1,25-OH-Vitamin D3;pmol/l;60;370;60;370
+BLUT-CHEMIE;35186;D3-1,25-OH 11-12;1,25-OH-Vitamin D3;pmol/l;36;173;36;173
+BLUT-CHEMIE;35187;D3-1,25-OH 13-14;1,25-OH-Vitamin D3;pmol/l;41;226;41;226
+BLUT-CHEMIE;35188;D3-1,25-OH 15-16;1,25-OH-Vitamin D3;pmol/l;77;211;77;211
+BLUT-CHEMIE;35189;D3-1,25-OH 17-18;1,25-OH-Vitamin D3;pmol/l;67;197;67;197
+BLUT-CHEMIE;35182;D3-1,25-OH 3-4;1,25-OH-Vitamin D3;pmol/l;53;374;53;374
+BLUT-CHEMIE;35183;D3-1,25-OH 5-6;1,25-OH-Vitamin D3;pmol/l;43;262;43;262
+BLUT-CHEMIE;35184;D3-1,25-OH 7-8;1,25-OH-Vitamin D3;pmol/l;43;192;43;192
+BLUT-CHEMIE;35185;D3-1,25-OH 9-10;1,25-OH-Vitamin D3;pmol/l;36;214;36;214
+BLUT-CHEMIE;29919;D3-1,25-OH-0-2;1,25-OH-Vitamin D3;ng/l;25;154;25;154
+BLUT-CHEMIE;29924;D3-1,25-OH-11-12;1,25-OH-Vitamin D3;ng/l;15;72;15;72
+BLUT-CHEMIE;29925;D3-1,25-OH-13-14;1,25-OH-Vitamin D3;ng/l;17;94;17;94
+BLUT-CHEMIE;29926;D3-1,25-OH-15-16;1,25-OH-Vitamin D3;ng/l;32;88;32;88
+BLUT-CHEMIE;29927;D3-1,25-OH-17-18;1,25-OH-Vitamin D3;ng/l;28;82;28;82
+BLUT-CHEMIE;29920;D3-1,25-OH-3-4;1,25-OH-Vitamin D3;ng/l;22;156;22;156
+BLUT-CHEMIE;29921;D3-1,25-OH-5-6;1,25-OH-Vitamin D3;ng/l;18;109;18;109
+BLUT-CHEMIE;29922;D3-1,25-OH-7-8;1,25-OH-Vitamin D3;ng/l;18;80;18;80
+BLUT-CHEMIE;29923;D3-1,25-OH-9-10;1,25-OH-Vitamin D3;ng/l;15;89;15;89
+BLUT-CHEMIE;22089;D3-25-OH;25-OH-Vitamin D (C.);nmol/l;75;250;75;250
+BLUT-CHEMIE;22211;D3-25-OH-Arch;25-OH-Vitamin D (A.);nmol/l;75;250;75;250
+BLUT-CHEMIE;30372;D3-25-OH-Dxl;25-OH-Vitamin D Total;nmol/l;75;250;75;250
+BLUT-CHEMIE;43167;D3-25-OH-Dxl NP;25-OH-Vitamin D T. NP;nmol/l;75;250;75;250
+BLUT-CHEMIE;18490;ECP;ECP;µg/l;<;13.3;<;13.3
+BLUT-CHEMIE;106;ECP;ECP;µg/l;2.3;16;2.3;16
+BLUT-CHEMIE;13766;ECP;ECP;µg/l;<;24;<;24
+BLUT-CHEMIE;37688;eGFR;GFR (Cyst.);ml/min/1.73 m²;>;60;>;60
+BLUT-CHEMIE;22125;eGFR;GFR(CKD-EPI);ml/min/1.73m²;>;60;>;60
+BLUT-CHEMIE;14582;EISEN-AU;Eisen;µmol/l;10;27;10;27
+BLUT-CHEMIE;258;EndomisiumAK;Endomisium AK;;;;;
+BLUT-CHEMIE;13777;Endomysin IgA;Endomysin IgA;U/ml;<;20;<;20
+BLUT-CHEMIE;13778;Endomysin IgG;Endomysin IgG;U/ml;<;20;<;20
+BLUT-CHEMIE;10591;EP-AMY;Enzym-EP (Amy);;;;;
+BLUT-CHEMIE;10592;EP-AP;Enzym-EP (ALP);;;;;
+BLUT-CHEMIE;10593;EP-CK;Enzym-EP (CK);;;;;
+BLUT-CHEMIE;10594;EP-LDH;Enzym-EP (LDH);;;;;
+BLUT-CHEMIE;287;EPO;Erythropoietin;U/l;1.6;34;1.6;34
+BLUT-CHEMIE;14813;EPO-DXI;Erythropoietin;U/l;1.6;34;1.6;34
+BLUT-CHEMIE;100179;epo-1;EPO-1;;;;;
+BLUT-CHEMIE;100180;epo-2;EPO-2;;;;;
+BLUT-CHEMIE;100181;epo-3;EPO-3;;;;;
+BLUT-CHEMIE;100182;epo-4;EPO-4;;;;;
+BLUT-CHEMIE;21553;e-PTH;PTH (Entnahme + Laboretikette );ng/l;15;65;15;65
+BLUT-CHEMIE;13700;Escitalopram;Escitalopram;nmol/l;20;125;20;125
+BLUT-CHEMIE;22249;Escitalopram;Escitalopram;nmol/l;46;247;46;247
+BLUT-CHEMIE;38225;EscitalopramTitel;Escitalopram;;;;;
+BLUT-CHEMIE;273;Estrad;Estradiol (E2);pg/ml;<;50;;
+BLUT-CHEMIE;10972;Estrad;Estradiol (E2);pg/ml;;;;
+BLUT-CHEMIE;13961;Estrad-DXI;Estradiol (E2);ng/l;;;;
+BLUT-CHEMIE;16049;Estrad-DXI-Männer;Estradiol (E2);ng/l;<;88;;
+BLUT-CHEMIE;15363;Estrad-I2000;Estradiol (E2);ng/l;;;;
+BLUT-CHEMIE;13113;Estriol;Estriol (E3) frei;nmol/l;;;;
+BLUT-CHEMIE;101;Estriol;Estriol;µg/l;;;;
+BLUT-CHEMIE;42046;Estriol;Estriol (E3) frei;nmol/l;<;0.4;<;0.2
+BLUT-CHEMIE;27432;ETHAMB;Ethambutol;mg/l;;;;
+BLUT-CHEMIE;20674;ETHO;Ethosuximid;µmol/l;280;700;280;700
+BLUT-CHEMIE;40;ETHO;Ethosuximid;mg/l;40;100;40;100
+BLUT-CHEMIE;15645;ETT Preis;Trimestertest (Estriol-Preis);;;;;
+BLUT-CHEMIE;15563;ETT-2;PAPP-A;;;;16;
+BLUT-CHEMIE;14573;Evrs;Everolimus;µg/l;;;;
+BLUT-CHEMIE;21502;EvrsZH;Everolimus;µg/l;;;;
+BLUT-CHEMIE;40585;E02-SDS;E02 SDS Jahreskontrolle (Chemie);;;;;
+BLUT-CHEMIE;32559;E1;Estron (E1);ng/l;10;60;;
+BLUT-CHEMIE;32680;FAI;FAI;; ; ;;
+BLUT-CHEMIE;10792;FAI;FAI;;14.8;94.8;;
+BLUT-CHEMIE;217;FaktorB;Faktor B;mg/l;191;382;191;382
+BLUT-CHEMIE;255;FaktorD;Faktor D;mg/l;0.4;9.7;0.4;9.7
+BLUT-CHEMIE;254;FaktorH;Faktor H;mg/l;345;590;345;590
+BLUT-CHEMIE;37319;fbhCG; freies ß-hCG;IU/l;;;;
+BLUT-CHEMIE;21653;Fent;Fentanyl;µg/l;;;;
+BLUT-CHEMIE;37274;Fer-DXI;Ferritin;µg/l;30;330;30;300
+BLUT-CHEMIE;13946;Fer-DXI;Ferritin;µg/l;25;330;10;300
+BLUT-CHEMIE;20885;FFS;Freie Fettsäuren;µmol/l;100;600;100;450
+BLUT-CHEMIE;242;FFS;FFS;µmol/l;300;1000;300;1000
+BLUT-CHEMIE;43007;FFS 0-1Jmf;Freie Fettsäuren;µmol/l;130;1600;130;1600
+BLUT-CHEMIE;43008;FFS 1-18Jmf;Freie Fettsäuren;µmol/l;100;770;100;770
+BLUT-CHEMIE;42446;FGF23;FGF23 intact;ng/l;23.2;95.4;23.2;95.4
+BLUT-CHEMIE;21747;Fl;Fluorid;µmol/l;<;1.58;<;1.58
+BLUT-CHEMIE;11356;Fl;Fluorid;µmol/l;<;13;<;13
+BLUT-CHEMIE;21278;Flec;Flecainid;µmol/l;0.48;2.42;0.48;2.42
+BLUT-CHEMIE;18668;FLK;Freie Leichtkette Kappa;mg/l;3.3;19.4;3.3;19.4
+BLUT-CHEMIE;22474;FLL;Kappa/Lambda - Quotient;;0.26;1.65;0.26;1.65
+BLUT-CHEMIE;18667;FLL;Freie Leichtkette Lambda;mg/l;5.7;26.3;5.7;26.3
+BLUT-CHEMIE;18089;Fluc;Fluconazol;mg/l;1;15;1;15
+BLUT-CHEMIE;27447;Fluni;Flunitrazepam;nmol/l;16;48;16;48
+BLUT-CHEMIE;10865;Fluoxetin;Fluoxetin;µmol/l;;;;
+BLUT-CHEMIE;38294;Fluoxetin;Fluoxetin:;;;;;
+BLUT-CHEMIE;15349;Flupentixol;Flupentixol;nmol/l;2.3;34.5;2.3;34.5
+BLUT-CHEMIE;22379;Flupentixol;Flupentixol;nmol/l;2.3;23;2.3;23
+BLUT-CHEMIE;11122;Fluphenazin;Fluphenazin;µg/l;1;10;1;10
+BLUT-CHEMIE;13779;Fluphenazin;Fluphenazin;µg/l;0.2;4;0.2;4
+BLUT-CHEMIE;15640;Fluphenazin;Fluphenazin;µg/l;1.14;4.57;1.14;4.57
+BLUT-CHEMIE;13885;Fluvoxamin;Fluvoxamin;µmol/l;0.47;0.94;0.47;0.94
+BLUT-CHEMIE;23120;Fluvoxamin;Fluvoxamin;µmol/l;0.19;0.72;0.19;0.72
+BLUT-CHEMIE;22181;FLuxNorflux; Fluox.+Norfluox.;µmol/l;0.39;1.62;0.39;1.62
+BLUT-CHEMIE;22174;Fols-DXI;Folsäure (Serum);µg/l;3;20;3;20
+BLUT-CHEMIE;12202;FolsE;Folsäure Ec-Haemolysat;µg/l;;;;
+BLUT-CHEMIE;29542;Fols-EC;EC-Folsäure;µg/l;439;1071;439;1071
+BLUT-CHEMIE;13351;Fols-EC;EC-Folsäure;µg/l;>;164;>;164
+BLUT-CHEMIE;12201;FolsKonz;EC-Folsäure;µg/l;140;628;140;628
+BLUT-CHEMIE;221;FPHENY;Freies Phenytoin;%;6;12;6;12
+BLUT-CHEMIE;56;FRHB;Freies Hämoglobin;mg/l;<;50;<;50
+BLUT-CHEMIE;14583;FRUC-AU;Fructosamine;µmol/l;205;285;205;285
+BLUT-CHEMIE;42017;FRUK-AU;Fruktosamin;µmol/l;205;285;205;285
+BLUT-CHEMIE;13941;FSH-DXI;FSH;U/l;;;;
+BLUT-CHEMIE;40578;FSH-DXI-F-0-19;FSH;U/l;;;;
+BLUT-CHEMIE;40579;FSH-DXI-F-19-999;FSH;U/l;;;;
+BLUT-CHEMIE;40577;FSH-DXI-M-0-19;FSH;U/l;;;;
+BLUT-CHEMIE;16047;FSH-DXI-M-19-999;FSH;U/l;1;9;;
+BLUT-CHEMIE;10575;FSH-Knaben;FSH;U/l;;;;
+BLUT-CHEMIE;10578;FSH-Mädchen;FSH;U/l;;;;
+BLUT-CHEMIE;32506;FTesto berech.;Testo. frei berechn.;pmol/l;;;;
+BLUT-CHEMIE;33353;FTesto berechnet;Testo. frei berechnet;pmol/l;;;;
+BLUT-CHEMIE;30159;FTesto berechnet;Testo. frei berechn.;pmol/l;;;;
+BLUT-CHEMIE;32507;FTesto f 20-46;Testo. frei berechn.;pmol/l; ; ;6;55
+BLUT-CHEMIE;32508;FTesto f 47;Testo. frei berechn.;pmol/l; ; ;2;33
+BLUT-CHEMIE;32509;FTesto m 20-49;Testo. frei berechn.;pmol/l;174;672; ; 
+BLUT-CHEMIE;32510;FTesto m 50;Testo. frei berechn.;pmol/l;129;567; ; 
+BLUT-CHEMIE;30160;FTesto 20-49;Testo. frei berechn.;pmol/l;174;672;1;34
+BLUT-CHEMIE;30161;FTesto 50;Testo. frei berechn.;pmol/l;129;567;1;22
+BLUT-CHEMIE;10971;FTesto0;Testost. frei;pmol/l;;;;
+BLUT-CHEMIE;10559;FTesto11;Testost. frei;pmol/l;<;3.7;0.7;3.4
+BLUT-CHEMIE;10560;FTesto14;Testost. frei;pmol/l;0.9;101;0.7;3.4
+BLUT-CHEMIE;10561;FTesto17;Testost. frei;pmol/l;52;103;0.7;3.4
+BLUT-CHEMIE;11953;FTesto3;Testost. frei;pmol/l;2.2.;14.4;2.6;10.5
+BLUT-CHEMIE;11951;FTesto5;Testost. frei;pmol/l;0.5;9.2;<;0.7
+BLUT-CHEMIE;11952;FTesto7;Testost. frei;pmol/l;<;3.1;<;0.5
+BLUT-CHEMIE;10558;FTesto9;Testost. frei;pmol/l;<;2.1;<;0.6
+BLUT-CHEMIE;11048;FT3 4Tage;T3 frei;pmol/l;4;7.4;4;7.4
+BLUT-CHEMIE;15383;FT3-AxSYM;T3 frei (AxSYM);pmol/l;2.2.;5.7;2.2;5.7
+BLUT-CHEMIE;13957;FT3-DXI;T3 frei (DxI);pmol/l;3.2;6;3.2;6
+BLUT-CHEMIE;35779;FT3-DXI;T3 frei (DxI);pmol/l;3.5;6.4;3.5;6.4
+BLUT-CHEMIE;37891;FT3-DXI<3J;T3 frei (DxI);pmol/l;;;;
+BLUT-CHEMIE;15365;FT3-I2000;T3 frei;pmol/l;2.8;6.5;2.8;6.5
+BLUT-CHEMIE;11046;FT4 4Tage;T4 frei;pmol/l;28;68;28;68
+BLUT-CHEMIE;15384;FT4-AxSYM;T4 frei (AxSYM);pmol/l;9;24;9;24
+BLUT-CHEMIE;13956;FT4-DXI;T4 frei (DxI);pmol/l;6.8;18;6.8;18
+BLUT-CHEMIE;37889;FT4-DXI < 3J;T4 frei (DxI);pmol/l;;;;
+BLUT-CHEMIE;15366;FT4-I2000;T4 frei;pmol/l;10.3;24.4;10.3;24.4
+BLUT-CHEMIE;23121;GAB;Gabapentin;µmol/l;12;117;12;117
+BLUT-CHEMIE;21554;GAB;Gabapentin;µmol/l;12;120;12;120
+BLUT-CHEMIE;12073;GAB;Gabapentin;µmol/l;>12.0;;;
+BLUT-CHEMIE;11077;GAD;GAD-Auto-AK;mGAD-U/ml;<;70;<;70
+BLUT-CHEMIE;30889;Gallensre;Gallensäuren;µmol/l;<;10;<;10
+BLUT-CHEMIE;40675;Gallensre;Gallensäuren;µmol/l;1;6;1;6
+BLUT-CHEMIE;21419;Gallensre;Gallensäuren;µmol/l;<;10;<;10
+BLUT-CHEMIE;35776;GAMY-AU;a-Amylase, gesamt;U/l;<;100;<;100
+BLUT-CHEMIE;13767;Gastrin;Gastrin;pmol/l;12;53;12;53
+BLUT-CHEMIE;199;Gastrin;Gastrin;pmol/l;;;;
+BLUT-CHEMIE;29543;Gastrin;Gastrin;pmol/l;;;;
+BLUT-CHEMIE;20182;Gastrinm0;Gastrin Basalwert +/- 0min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20181;Gastrinm15;Gastrin Basalwert -15min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20185;Gastrinp10;Gastrin 10min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20186;Gastrinp15;Gastrin 15min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20183;Gastrinp2;Gastrin 2min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20187;Gastrinp30;Gastrin 30min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20188;Gastrinp45;Gastrin 45min;pmol/l;12;53;12;53
+BLUT-CHEMIE;20184;Gastrinp5;Gastrin 5min;pmol/l;12;53;12;53
+BLUT-CHEMIE;22082;GA1;Anti-Asialo GM1 (GA1);%;<;50;<;50
+BLUT-CHEMIE;33690;Genta-AU;Gentamycin;mg/l;<;1;<;1
+BLUT-CHEMIE;14805;Genta-AU-nach;Gentamycin (nach);mg/l;5;10;5;10
+BLUT-CHEMIE;14793;Genta-DXC;Gentamycin;mg/l;<;2;<;2
+BLUT-CHEMIE;21246;GFR;GFR(CKD-EPI);ml/min/1.73m²;>;60;>;60
+BLUT-CHEMIE;14535;GGT-AU;GGT;U/l;<;65;<;35
+BLUT-CHEMIE;29993;GLDH;GLDH;U/l;<;6.4;<;4.8
+BLUT-CHEMIE;13780;Gliadin AK IgA;Gliadin AK IgA;U/ml;<;20;<;20
+BLUT-CHEMIE;259;Gliadin AK IgA;Gliadin AK IgA;MOC;<;1;<;1
+BLUT-CHEMIE;260;Gliadin AK IgG;Gliadin AK IgG;MOC;<;1;<;1
+BLUT-CHEMIE;13781;Gliadin AK IgG;Gliadin AK IgG;U/ml;<;30;<;30
+BLUT-CHEMIE;11061;Glibenclamid; Glibenclamid;;;;;
+BLUT-CHEMIE;11060;Glibornurid; Glibornurid;;;;;
+BLUT-CHEMIE;11059;Gliclazid; Gliclazid;;;;;
+BLUT-CHEMIE;11062;Glimepirid; Glimepirid;;;;;
+BLUT-CHEMIE;11058;Glipizid; Glipizid;;;;;
+BLUT-CHEMIE;11954;GLUC;Glucose Liquor;mmol/l;2.5;4.4;2.5;4.4
+BLUT-CHEMIE;14584;Gluc-AU;Glucose (nü);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;14611;Gluc-AU-Dia;Glucose (Dialysat);mmol/l;;;;
+BLUT-CHEMIE;40904;Gluc-DXC;Glucose 1h NaF;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;40905;Gluc-DXC;Glucose 2h NaF;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21745;Gluc-DXC;Glucose (nach 50g Glucosepulver);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21396;Gluc-DXC;Glucose 06 Uhr 30;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21397;Gluc-DXC;Glucose 10 Uhr 30;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21398;Gluc-DXC;Glucose 16 Uhr 30;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21399;Gluc-DXC;Glucose 22 Uhr 00;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21400;Gluc-DXC;Glucose 02 Uhr 00;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21401;Gluc-DXC;Glucose 1h;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21402;Gluc-DXC;Glucose 2h;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;42170;Gluc-DXC;Glucose (nü) NaF;mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21582;Gluc-HK;Glucose (nü);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21746;Gluc-HK;Glucose (nü);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;21584;Gluc-HK-Dia;Glucose (Dialysat);mmol/l;;;;
+BLUT-CHEMIE;72;Gluc-Kap;Glucose kap.;mmol/l;;;;
+BLUT-CHEMIE;15350;GlucNaF-AU;Glucose (NaF);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;37885;GlucNaF-DXC-120;Glucose (NaF) nach 120;;;;;
+BLUT-CHEMIE;37884;GlucNaF-DXC-60;Glucose (NaF) nach 60;;;;;
+BLUT-CHEMIE;21586;GlucNaF-HK;Glucose (NaF);mmol/l;3.9;5.6;3.9;5.6
+BLUT-CHEMIE;10806;GLUC120;Glucose (120 min);mmol/l;<;7.8;<;7.8
+BLUT-CHEMIE;11119;Glukagon;Glukagon;ng/l;60;150;60;150
+BLUT-CHEMIE;18439;Glukagon;Glukagon;pmol/l;17;51;17;51
+BLUT-CHEMIE;11677;Glukagon;Glukagon;ng/l;60;177;60;177
+BLUT-CHEMIE;38975;Glukagon;Glukagon;pmol/l;<;18;<;18
+BLUT-CHEMIE;11592;GM1;Anti-Gangliosid GM1;;<;1;<;1
+BLUT-CHEMIE;37667;Goli;Golimumab Talspiegel;µg/ml;;;;
+BLUT-CHEMIE;37668;Goli;Golimumab-Antikörper;ng/ml;<;5;<;5
+BLUT-CHEMIE;29917;G6PDH;Gluc-6-Phos-DH;mU/Ec;221;570;221;570
+BLUT-CHEMIE;30167;G6PDH;Gluc-6-Phos-DH;U/g Hb;7;20.5;7;20.5
+BLUT-CHEMIE;74;Haemoglobin-EP;Hämoglobin-EP;;;;;
+BLUT-CHEMIE;27357;Haldol;Haloperidol;nmol/l;2.66;26.6;2.66;26.6
+BLUT-CHEMIE;14777;Hapto-AU;Haptoglobin;g/l;0.3;2;0.3;2
+BLUT-CHEMIE;22351;HBA1C;Hb-A 1c (HPLC) Adams;%;4;5.7;4;5.7
+BLUT-CHEMIE;22175;HBA1C;Hb-A 1c (HPLC) Loyola Studie;%;;;;
+BLUT-CHEMIE;38739;HBA1C;HbA1c (Kombiniert mit Häma);%;4;5.7;4;5.7
+BLUT-CHEMIE;293;HBA1C;Hb-A 1c (HPLC);%;4;5.7;4;5.7
+BLUT-CHEMIE;32636;HBA1C;HbA1c;%;4;5.7;4;5.7
+BLUT-CHEMIE;86;HCG-AXSYM;ß-HCG (alt);U/l;<;5;;
+BLUT-CHEMIE;256;HCS;Homocystein;µmol/l;<;15;<;15
+BLUT-CHEMIE;14587;HDL-AU;HDL-Cholesterin;mmol/l;>;1;>;1
+BLUT-CHEMIE;32606;HDL-AU;HDL-Cholesterin;mmol/l;>;1;>;1
+BLUT-CHEMIE;12427;HDL-STUDIE;HDL-Cholesterin (Studie);mmol/l;>;1;>;1
+BLUT-CHEMIE;37676;hGH;hGH (Somatotropin);µg/l;<;2;<;8.3
+BLUT-CHEMIE;10543;HGH;HGH (Somatotropin);pmol/l;<;228;<;319
+BLUT-CHEMIE;10540;HGH;HGH (Somatotropin);pmol/l;96;828;96;828
+BLUT-CHEMIE;10542;HGH;HGH (Somatotropin);pmol/l;18;246;18;273
+BLUT-CHEMIE;10541;HGH;HGH (Somatotropin);pmol/l;68;619;68;619
+BLUT-CHEMIE;10539;HGH;HGH (Somatotropin);pmol/l;309;1219;309;1219
+BLUT-CHEMIE;15282;HGH;HGH (Somatotropin);pmol/l;<;45.5;<;455
+BLUT-CHEMIE;20882;HGH;HGH (Somatotropin);µg/l;<;10;<;10
+BLUT-CHEMIE;21972;HGH;HGH (Somatotropin);µg/l;<;3;<;8
+BLUT-CHEMIE;21382;HGH;HGH (Somatotropin);µg/l;<;0.8;<;8
+BLUT-CHEMIE;15407;HGH 0-7T;HGH (Somatotropin);pmol/l;53.6;1228.5;109.2;1092
+BLUT-CHEMIE;15413;HGH 11J-12J;HGH (Somatotropin);pmol/l;3.6;213.8;5.4;313.9
+BLUT-CHEMIE;15414;HGH 12J-13J;HGH (Somatotropin);pmol/l;5.4;404.9;6.3;509.6
+BLUT-CHEMIE;15415;HGH 13J-14J;HGH (Somatotropin);pmol/l;4.5;359.4;9.5;809.9
+BLUT-CHEMIE;15416;HGH 14J-15J;HGH (Somatotropin);pmol/l;4;323;6.3;450.4
+BLUT-CHEMIE;15417;HGH 15J-16J;HGH (Somatotropin);pmol/l;4.5;354.9;10.9;455
+BLUT-CHEMIE;15418;HGH 16J-17J;HGH (Somatotropin);pmol/l;3.6;518.7;11.8;532.3
+BLUT-CHEMIE;15409;HGH 16T-3J;HGH (Somatotropin);pmol/l;19.5;109.2;22.7;159.2
+BLUT-CHEMIE;15419;HGH 17J-18J;HGH (Somatotropin);pmol/l;10;555.1;13.6;491.4
+BLUT-CHEMIE;15420;HGH 18J-19J;HGH (Somatotropin);pmol/l;44.1;213.8;10.9;195.6
+BLUT-CHEMIE;15406;HGH >20J;HGH (Somatotropin);pmol/l;<;45.5;<;455
+BLUT-CHEMIE;18064;HGH >20J;HGH (Somatotropin);pmol/l;<;182;<;409.5
+BLUT-CHEMIE;15410;HGH 4J-6J;HGH (Somatotropin);pmol/l;4;113.7;4.5;100.1
+BLUT-CHEMIE;15411;HGH 7J-8J;HGH (Somatotropin);pmol/l;6.8;145.6;7.2;245.7
+BLUT-CHEMIE;15408;HGH 8-15T;HGH (Somatotropin);pmol/l;31.3;787.1;48.6;800.8
+BLUT-CHEMIE;15412;HGH 9J-10J;HGH (Somatotropin);pmol/l;4;88.7;3.6;141
+BLUT-CHEMIE;37677;hGH-KInd;HGH (Somatotropin);µg/l;<;7.7;<;7.7
+BLUT-CHEMIE;40516;hGH-01;HGH (Somatotropin);µg/l;;;;
+BLUT-CHEMIE;22177;HIV;HIV-Schnelltest GEBS;;;;;
+BLUT-CHEMIE;24648;HoloTC;Active-B12 (holoTC);pmol/l;>;35;>;35
+BLUT-CHEMIE;37876;HoloTC;Active-B12 (holoTC);pmol/l;>;35;>;35
+BLUT-CHEMIE;21956;HOLOTC;Holo-TC;;;;;
+BLUT-CHEMIE;29311;HOMA;HOMA-Index ;;;;;
+BLUT-CHEMIE;37882;HPG;17-a-HPG (LCMS) nach 60;nmol/l;;;;
+BLUT-CHEMIE;32807;HPG;17-a-HPG (LCMS);nmol/l;;;;
+BLUT-CHEMIE;21494;HP-ST;Heparinplasma holen;Tage;5;;;
+BLUT-CHEMIE;19399;HP-5;Plasmathek (Heparin-Plasma);Tage;5;;;
+BLUT-CHEMIE;11542;hsCRP;CRP (hoch sensitiv);mg/l;<;1.7;<;1.7
+BLUT-CHEMIE;36716;hsTnI;hs Troponin I (DxI);ng/l;<;18;<;18
+BLUT-CHEMIE;37266;hsTnI (Serum);hs Troponin I (DxI, Se);ng/l;<;18;<;18
+BLUT-CHEMIE;43364;hsTnT;hs Troponin T (Cobas);ng/l;<;14;<;14
+BLUT-CHEMIE;22179;hvk4-GEBS;HIV-1/2 Ak u Ag, (EIA) ;Index;;;;
+BLUT-CHEMIE;30299;HyChloro;Hydroxychloroquin;µg/l;96;192;96;192
+BLUT-CHEMIE;17776;IBU;Ibuprofen;µmol/l;73;146;73;146
+BLUT-CHEMIE;21654;ICA;Insulin-Auto-AK;E/ml;<;0.4;<;0.4
+BLUT-CHEMIE;102;IEF (SE);Oligoklonale IgG Banden;;<;2;<;2
+BLUT-CHEMIE;22973;IFN;IFN-Gamma;ng/l;<;15;<;15
+BLUT-CHEMIE;202;IFN;Interferon;pg/ml;<;0.1;<;0.1
+BLUT-CHEMIE;85;IgA;IgA Serum;g/l;0.7;4.1;0.7;4.1
+BLUT-CHEMIE;10690;IgA <1;IgA Serum;g/l;;;;
+BLUT-CHEMIE;10693;IgA <12;IgA Serum;g/l;0.3;1.4;0.3;1.4
+BLUT-CHEMIE;10696;IgA <132;IgA Serum;g/l;0.6;2.2;0.6;2.2
+BLUT-CHEMIE;10697;IgA <156;IgA Serum;g/l;0.9;2.8;0.9;2.8
+BLUT-CHEMIE;10691;IgA <3;IgA Serum;g/l;0.1;0.5;0.1;0.5
+BLUT-CHEMIE;10694;IgA <36;IgA Serum;g/l;0.3;1.4;0.3;1.4
+BLUT-CHEMIE;10692;IgA <6;IgA Serum;g/l;0.1;0.8;0.1;0.8
+BLUT-CHEMIE;10695;IgA <72;IgA Serum;g/l;0.4;1.8;0.4;1.8
+BLUT-CHEMIE;235;IgA-L;IgA Liquor;g/l;0.009;0.034;0.009;0.034
+BLUT-CHEMIE;13782;IGD;IgD;U/ml;<;100;<;100
+BLUT-CHEMIE;33628;IGD;IgD;mg/l;<;132.1;<;132.1
+BLUT-CHEMIE;10008;IGE;IgE;kUA/l;<;200;<;200
+BLUT-CHEMIE;10003;IGE;IgE;kUA/l;<;70;<;70
+BLUT-CHEMIE;10001;IGE;IgE;kUA/l;<;15;<;15
+BLUT-CHEMIE;10002;IGE;IgE;kUA/l;<;20;<;20
+BLUT-CHEMIE;118;IGE;IgE Serum;kUA/l;;;;
+BLUT-CHEMIE;10005;IGE;IgE;kUA/l;<;240;<;240
+BLUT-CHEMIE;10004;IGE;IgE;kUA/l;<;118;<;118
+BLUT-CHEMIE;10000;IGE;IgE;kUA/l;<;1.5;<;1.5
+BLUT-CHEMIE;10006;IGE;IgE;kUA/l;<;200;<;200
+BLUT-CHEMIE;34939;IgE-CAP;IgE ;kU/l;<;200;<;200
+BLUT-CHEMIE;34940;IgE-CAP-NG;IgE ;kU/l;<;2;<;2
+BLUT-CHEMIE;34943;IgE-CAP-1-3J;IgE ;kU/l;<;70;<;70
+BLUT-CHEMIE;34941;IgE-CAP-1-6M;IgE ;kU/l;<;15;<;15
+BLUT-CHEMIE;34944;IgE-CAP-4-6J;IgE;kU/l;<;118;<;118
+BLUT-CHEMIE;34942;IgE-CAP-7-12M;IgE;kU/l;<;20;<;20
+BLUT-CHEMIE;34945;IgE-CAP-7-14J;IgE;kU/l;<;240;<;240
+BLUT-CHEMIE;13974;IGE-DXI;IgE total, qn;kUA/l;;;;
+BLUT-CHEMIE;16043;IGE-DXI;IgE Serum;kUA/l;<;200;<;200
+BLUT-CHEMIE;30284;IGFBP-3;IGF-Binding Protein 3;mg/l;3.2;6.4;3.2;6.4
+BLUT-CHEMIE;15646;IGFBP-3;IGF-Binding Protein 3;mg/l;3.4;6.6;3.4;6.6
+BLUT-CHEMIE;31999;IGFBP-3;IGF-Binding Protein 3;mg/l;;;;
+BLUT-CHEMIE;27333;IGF-1;IGF-1;nmol/l;;;;
+BLUT-CHEMIE;21552;IGF-1;IGF-1;nmol/l;;;;
+BLUT-CHEMIE;21602;IGF-1;IGF-1 (Entnahme + Laboretikette );nmol/l;;;;
+BLUT-CHEMIE;30080;IGF-1;IGF-1;nmol/l;;;;
+BLUT-CHEMIE;11756;IGF-1 bis 12J;IGF-1;nmol/l;14.3;73.8;15.2;100.7
+BLUT-CHEMIE;11757;IGF-1 bis 16J;IGF-1;nmol/l;26.4;125;34.1;143.2
+BLUT-CHEMIE;11758;IGF-1 bis 20J;IGF-1;nmol/l;23.6;109.9;24;94.8
+BLUT-CHEMIE;11759;IGF-1 bis 40J;IGF-1;nmol/l;10.8;49.4;14.6;58.8
+BLUT-CHEMIE;11754;IGF-1 bis 6J;IGF-1;nmol/l;2.6;33.9;2.6;33.9
+BLUT-CHEMIE;11755;IGF-1 bis 9J;IGF-1;nmol/l;10;57.1;16.9;62
+BLUT-CHEMIE;30081;IGF-1 (0);IGF-1;nmol/l;1.43;15.6;1.04;18.98
+BLUT-CHEMIE;12795;IGF-1 (0);IGF-1;nmol/l;<;5.3;<;5.3
+BLUT-CHEMIE;27334;IGF-1 (0);IGF-1;nmol/l;4.36;22.33;3.56;14.76
+BLUT-CHEMIE;30082;IGF-1 (1);IGF-1;nmol/l;1.69;26;1.43;28.08
+BLUT-CHEMIE;12796;IGF-1 (1);IGF-1;nmol/l;7.15;42.5;7.15;42.5
+BLUT-CHEMIE;27335;IGF-1 (1);IGF-1;nmol/l;10.37;31.72;7.14;26.83
+BLUT-CHEMIE;30092;IGF-1 (10);IGF-1;nmol/l;2.34;31.98;2.34;31.72
+BLUT-CHEMIE;12799;IGF-1 (10);IGF-1;nmol/l;11.44;58.8;11.44;58.8
+BLUT-CHEMIE;30093;IGF-1 (11);IGF-1;nmol/l;1.95;23.4;2.34;25.09
+BLUT-CHEMIE;12800;IGF-1 (12);IGF-1;nmol/l;18.59;90.1;18.59;90.1
+BLUT-CHEMIE;12801;IGF-1 (14);IGF-1;nmol/l;28.6;126.4;28.6;126.4
+BLUT-CHEMIE;12802;IGF-1 (16);IGF-1;nmol/l;29.38;117.4;29.38;117.4
+BLUT-CHEMIE;12803;IGF-1 (18);IGF-1;nmol/l;21.19;75.92;21.19;75.92
+BLUT-CHEMIE;27336;IGF-1 (2);IGF-1;nmol/l;11.36;51.91;11.08;32.34
+BLUT-CHEMIE;30083;IGF-1 (2);IGF-1;nmol/l;2.08;39.91;2.47;44.46
+BLUT-CHEMIE;12804;IGF-1 (20);IGF-1;nmol/l;16.51;75.92;16.51;75.92
+BLUT-CHEMIE;12805;IGF-1 (25);IGF-1;nmol/l;15.08;46.54;15.08;46.54
+BLUT-CHEMIE;27337;IGF-1 (3);IGF-1;nmol/l;24.49;66.29;15;64.77
+BLUT-CHEMIE;30084;IGF-1 (3);IGF-1;nmol/l;2.6;55.12;5.07;65.52
+BLUT-CHEMIE;12806;IGF-1 (30);IGF-1;nmol/l;15.21;42.77;15.21;42.77
+BLUT-CHEMIE;12807;IGF-1 (35);IGF-1;nmol/l;14.95;39.91;14.95;39.91
+BLUT-CHEMIE;30085;IGF-1 (4);IGF-1;nmol/l;4.81;67.47;9.88;77.48
+BLUT-CHEMIE;27338;IGF-1 (4);IGF-1;nmol/l;34.78;61.2;32.15;62.62
+BLUT-CHEMIE;12808;IGF-1 (40);IGF-1;nmol/l;14.17;36.92;14.17;36.92
+BLUT-CHEMIE;12809;IGF-1 (45);IGF-1;nmol/l;13.13;34.71;13.13;34.71
+BLUT-CHEMIE;30086;IGF-1 (5);IGF-1;nmol/l;10.79;67.6;14.95;76.83
+BLUT-CHEMIE;27339;IGF-1 (5);IGF-1;nmol/l;19.38;43.2;24.43;52
+BLUT-CHEMIE;12810;IGF-1 (50);IGF-1;nmol/l;12.22;32.76;12.22;32.76
+BLUT-CHEMIE;30087;IGF-1 (6);IGF-1;nmol/l;17.03;63.7;14.69;62.27
+BLUT-CHEMIE;27340;IGF-1 (6);IGF-1;nmol/l;14.01;32.07;12.53;29.61
+BLUT-CHEMIE;12797;IGF-1 (6);IGF-1;nmol/l;6.76;38.6;6.76;38.6
+BLUT-CHEMIE;12811;IGF-1 (60);IGF-1;nmol/l;10.53;29.25;10.53;29.25
+BLUT-CHEMIE;27341;IGF-1 (7);IGF-1;nmol/l;12.05;31.8;11.48;27.29
+BLUT-CHEMIE;30089;IGF-1 (7);IGF-1;nmol/l;12.87;51.35;13;48.36
+BLUT-CHEMIE;12812;IGF-1 (70);IGF-1;nmol/l;8.97;26;8.97;26
+BLUT-CHEMIE;30090;IGF-1 (8);IGF-1;nmol/l;10.66;35.23;9.88;39.65
+BLUT-CHEMIE;27342;IGF-1 (8);IGF-1;nmol/l;7.02;26.57;7.1;24.14
+BLUT-CHEMIE;12813;IGF-1 (80);IGF-1;nmol/l;7.67;23.01;7.67;23.01
+BLUT-CHEMIE;12814;IGF-1 (85);IGF-1;nmol/l;7.15;21.58;7.15;21.58
+BLUT-CHEMIE;30091;IGF-1 (9);IGF-1;nmol/l;6.89;30.68;5.59;34.74
+BLUT-CHEMIE;12798;IGF-1 (9);IGF-1;nmol/l;9.62;50.4;9.62;50.4
+BLUT-CHEMIE;27320;IGF-1-Liaison;IGF-1 nur für Testaufträge;nmol/l;;;;
+BLUT-CHEMIE;66;IgG;IgG Serum;g/l;6.9;14;6.9;14
+BLUT-CHEMIE;10544;IgG <1;IgG Serum;g/l;6.4;12.8;6.4;12.8
+BLUT-CHEMIE;10551;IgG <108;IgG Serum;g/l;6.2;11.5;6.2;11.5
+BLUT-CHEMIE;10547;IgG <12;IgG Serum;g/l;3;10;3;10
+BLUT-CHEMIE;10552;IgG <132;IgG Serum;g/l;6.5;12.8;6.5;12.8
+BLUT-CHEMIE;10553;IgG <216;IgG Serum;g/l;6.9;14;6.9;14
+BLUT-CHEMIE;10545;IgG <3;IgG Serum;g/l;2.3;6.6;2.3;6.6
+BLUT-CHEMIE;10548;IgG <36;IgG Serum;g/l;4.3;11.6;4.3;11.6
+BLUT-CHEMIE;10546;IgG <6;IgG Serum;g/l;1.6;7.3;1.6;7.3
+BLUT-CHEMIE;10549;IgG <72;IgG Serum;g/l;4.6;12.2;4.6;12.2
+BLUT-CHEMIE;10550;IgG <96;IgG Serum;g/l;4.8;12;4.8;12
+BLUT-CHEMIE;103;IgG-L;IgG Liquor;g/l;0.01;0.04;0.01;0.04
+BLUT-CHEMIE;166;IgG1;IgG 1;%;46;67;46;67
+BLUT-CHEMIE;10710;IgG1 <1095;IgG 1;%;46.3;69.1;46.3;69.1
+BLUT-CHEMIE;10708;IgG1 <186;IgG 1;%;81.4;94.7;81.4;94.7
+BLUT-CHEMIE;10711;IgG1 <2190;IgG 1;%;68.5;69.4;68.5;69.4
+BLUT-CHEMIE;10712;IgG1 <2920;IgG 1;%;70.2;76.6;70.2;76.6
+BLUT-CHEMIE;10706;IgG1 <31;IgG 1;%;32;70.7;32;70.7
+BLUT-CHEMIE;10709;IgG1 <365;IgG 1;%;57.1;65.3;57.1;65.3
+BLUT-CHEMIE;10713;IgG1 <4015;IgG 1;%;54.8;85.2;54.8;85.2
+BLUT-CHEMIE;10714;IgG1 <6570;IgG 1;%;48.1;75.5;48.1;75.5
+BLUT-CHEMIE;10707;IgG1 <93;IgG 1;%;66.7;85.9;66.7;85.9
+BLUT-CHEMIE;167;IgG2;IgG 2;%;19.5;33.5;19.5;33.5
+BLUT-CHEMIE;10719;IgG2 <1095;IgG 2;%;7;22.1;7;22.1
+BLUT-CHEMIE;10717;IgG2 <186;IgG 2;%;17.9;24.4;17.9;24.4
+BLUT-CHEMIE;10720;IgG2 <2190;IgG 2;%;13.3;23.6;13.3;23.6
+BLUT-CHEMIE;10721;IgG2 <2920;IgG 2;%;14.9;29.1;14.9;29.1
+BLUT-CHEMIE;10715;IgG2 <31;IgG 2;%;11.6;27.3;11.6;27.3
+BLUT-CHEMIE;10718;IgG2 <365;IgG 2;%;9.7;19.5;9.7;19.5
+BLUT-CHEMIE;10722;IgG2 <4015;IgG 2;%;13.4;35.6;13.4;35.6
+BLUT-CHEMIE;10723;IgG2 <6570;IgG 2;%;13.8;40.4;13.8;40.4
+BLUT-CHEMIE;10716;IgG2 <93;IgG 2;%;14.1;26.9;14.1;26.9
+BLUT-CHEMIE;168;IgG3;IgG 3;%;2.3;8.3;2.3;8.3
+BLUT-CHEMIE;10728;IgG3 <1095;IgG 3;%;2.4;9.3;2.4;9.3
+BLUT-CHEMIE;10726;IgG3 <186;IgG 3;%;7.9;9.3;7.9;9.3
+BLUT-CHEMIE;10729;IgG3 <2190;IgG 3;%;2.4;9.2;2.4;9.2
+BLUT-CHEMIE;10730;IgG3 <2920;IgG 3;%;2.3;10.1;2.3;10.1
+BLUT-CHEMIE;10724;IgG3 <31;IgG 3;%;1.9;3.7;1.9;3.7
+BLUT-CHEMIE;10727;IgG3 <365;IgG 3;%;4.3;8.2;4.3;8.2
+BLUT-CHEMIE;10731;IgG3 <4015;IgG 3;%;2.1;11;2.1;11
+BLUT-CHEMIE;10732;IgG3 <6570;IgG 3;%;2.3;10.8;2.3;10.8
+BLUT-CHEMIE;10725;IgG3 <93;IgG 3;%;5.2;9;5.2;9
+BLUT-CHEMIE;169;IgG4;IgG 4;%;2.5;5.9;2.5;5.9
+BLUT-CHEMIE;10737;IgG4 <1095;IgG 4;%;0.6;9.3;0.6;9.3
+BLUT-CHEMIE;10735;IgG4 <186;IgG 4;%;1.6;2.7;1.6;2.7
+BLUT-CHEMIE;10738;IgG4 <2190;IgG 4;%;0.6;11;0.6;11
+BLUT-CHEMIE;10739;IgG4 <2920;IgG 4;%;0.5;13.4;0.5;13.4
+BLUT-CHEMIE;10733;IgG4 <31;IgG 4;%;0.5;3.7;0.5;3.7
+BLUT-CHEMIE;10736;IgG4 <365;IgG 4;%;0.9;3.6;0.9;3.6
+BLUT-CHEMIE;10740;IgG4 <4015;IgG 4;%;0.4;15.6;0.4;15.6
+BLUT-CHEMIE;10741;IgG4 <6570;IgG 4;%;0.5;15.2;0.5;15.2
+BLUT-CHEMIE;10734;IgG4 <93;IgG 4;%;1.1;4.6;1.1;4.6
+BLUT-CHEMIE;87;IgM;IgM Serum;g/l;0.4;2.4;0.3;2.1
+BLUT-CHEMIE;10698;IgM <1;IgM Serum;g/l;0.1;0.3;0.1;0.3
+BLUT-CHEMIE;10701;IgM <12;IgM Serum;g/l;0.3;0.7;0.3;0.7
+BLUT-CHEMIE;10704;IgM <132;IgM Serum;g/l;0.4;1.1;0.4;1.1
+BLUT-CHEMIE;10705;IgM <156;IgM Serum;g/l;0.5;1;0.5;1
+BLUT-CHEMIE;10699;IgM <3;IgM Serum;g/l;0.1;0.6;0.1;0.6
+BLUT-CHEMIE;10700;IgM <6;IgM Serum;g/l;0.2;0.8;0.2;0.8
+BLUT-CHEMIE;10702;IgM <72;IgM Serum;g/l;0.4;1.3;0.4;1.3
+BLUT-CHEMIE;10703;IgM <96;IgM Serum;g/l;0.4;1.2;0.4;1.2
+BLUT-CHEMIE;236;IgM-L;IgM Liquor;g/l;0.009;0.034;0.009;0.034
+BLUT-CHEMIE;35276;IHT 0;Insulin-Hypoglykämie-Test ( 0 );;;;;
+BLUT-CHEMIE;34796;IHT -30;Insulin-Hypoglykämie-Test (-30 );;;;;
+BLUT-CHEMIE;42298;IL1;IL-1 beta;ng/l;<;2;<;2
+BLUT-CHEMIE;204;IL1;IL-1 beta;ng/l;<;3.9;<;3.9
+BLUT-CHEMIE;205;IL-2;IL-2;ng/l;<;10;<;10
+BLUT-CHEMIE;22183;IL-2R;IL-2 Rezeptor;IU/ml;<;800;<;800
+BLUT-CHEMIE;206;IL-2R;IL-2 Rezeptor;ng/l;<;477;<;477
+BLUT-CHEMIE;32827;IL6;IL-6;ng/l;<;3.1;<;3.1
+BLUT-CHEMIE;38827;IL6;IL-6;ng/l;<;7;<;7
+BLUT-CHEMIE;10689;IL6;IL-6;fmol/l;<;120;<;120
+BLUT-CHEMIE;13984;IL6;IL-6;ng/l;<;3.1;<;3.1
+BLUT-CHEMIE;10871;Imipramin;Imipramin;µg/l;150;300;150;300
+BLUT-CHEMIE;11518;Imipramin;Imipramin;µmol/l;;;;
+BLUT-CHEMIE;58;Immun-EP;Immun-EP;;;;;
+BLUT-CHEMIE;37693;IMMUN-EP;Immunfixation modifiziert;;;;;
+BLUT-CHEMIE;12722;IMMUN-EP;Immunfixation;;;;;
+BLUT-CHEMIE;13114;IMMUN-EP-KURVE; Immunfixation;;;;;
+BLUT-CHEMIE;32644;Inflix;#NAME?;µg/ml;;;;
+BLUT-CHEMIE;38031;Inflix;Infliximab Talspiegel;mg/l;3.5;7;3.5;7
+BLUT-CHEMIE;32643;Inflix;#NAME?;pg/ml;<;10;<;10
+BLUT-CHEMIE;37651;Inflix;Infliximab Talspiegel;µg/ml;3.8;7;3.8;7
+BLUT-CHEMIE;37652;Inflix;Infliximab-Antikörper;µg/l;;;;
+BLUT-CHEMIE;32645;Inflix;#NAME?;ng/ml;<;10;<;10
+BLUT-CHEMIE;21563;Inhibb;Inhibin B;ng/l;;;;
+BLUT-CHEMIE;13922;INS-DXI;Insulin;mU/l;<;10;<;10
+BLUT-CHEMIE;40515;INS01;Insulin;mU/l;;;;
+BLUT-CHEMIE;13923;INS12;Insulin;mU/l;<;8;<;8
+BLUT-CHEMIE;27430;ISONIA;Isoniazid;mg/l;;;;
+BLUT-CHEMIE;19722;ISONIA;Isoniazid;µmol/l;7.3;14.6;7.3;14.6
+BLUT-CHEMIE;19292;itra;Itraconazol + OH-Itraconazol;mg/l;>;1;>;1
+BLUT-CHEMIE;14588;K-AU;Kalium;mmol/l;3.5;5.1;3.5;5.1
+BLUT-CHEMIE;4065;KGB;Kryoglobulin ql.;;;;;
+BLUT-CHEMIE;42673;KGBTYP;Kryoglobulin Typisierung;;;;;
+BLUT-CHEMIE;12508;KNAP;KnAP;U/L;15;41.3;11.6;29.6
+BLUT-CHEMIE;30214;Kobalt;Kobalt;µg/l;0.5;3.9;0.5;3.9
+BLUT-CHEMIE;29937;Kobalt;Kobalt;µg/l;<;0.9;<;0.9
+BLUT-CHEMIE;11134;Kobalt;Kobalt;nmol/l;1.9;7.6;1.9;7.6
+BLUT-CHEMIE;21717;Kobalt;Kobalt;µg/l;<;0.4;<;0.4
+BLUT-CHEMIE;13768;Kupfer;Kupfer;µmol/l;13;22;13;22
+BLUT-CHEMIE;20095;Kupfer-AAS;Kupfer;µmol/l;11;22;10.7;26.6
+BLUT-CHEMIE;20096;Kupfer0-4;Kupfer;µmol/l;1.4;7.2;1.4;7.2
+BLUT-CHEMIE;20101;Kupfer10-13;Kupfer;µmol/l;12.6;19;12.6;19
+BLUT-CHEMIE;20102;Kupfer14-19;Kupfer;µmol/l;10.1;18.4;10.1;18.4
+BLUT-CHEMIE;20099;Kupfer1-5;Kupfer;µmol/l;12.6;23.6;12.6;23.6
+BLUT-CHEMIE;20097;Kupfer4-6;Kupfer;µmol/l;3.9;17.3;3.9;17.3
+BLUT-CHEMIE;20100;Kupfer6-9;Kupfer;µmol/l;13.2;21.4;13.2;21.4
+BLUT-CHEMIE;20098;Kupfer7-12;Kupfer;µmol/l;7.9;20.5;7.9;20.5
+BLUT-CHEMIE;14311;LAC-AU;Lactat;mmol/l;0.5;2.2;0.5;2.2
+BLUT-CHEMIE;22451;Laco;Lacosamid;mg/l;1;10;1;10
+BLUT-CHEMIE;13769;LAMO;Lamotrigin;mg/l;0.5;10;0.5;10
+BLUT-CHEMIE;22073;LAMO;Lamotrigin;mg/l;3;14;3;14
+BLUT-CHEMIE;13387;LAMO;Lamotrigin;µmol/l;9;58;9;58
+BLUT-CHEMIE;54;LAP;LAP;U/l;25;79;25;79
+BLUT-CHEMIE;14589;LDH-AU;LDH;U/l;<;265;<;265
+BLUT-CHEMIE;38761;LDH-AU0-14T;LDH;U/l;256;1017;256;1017
+BLUT-CHEMIE;38762;LDH-AU15-1J;LDH;U/l;135;375;135;375
+BLUT-CHEMIE;38763;LDH-AU1-999;LDH;U/l;<;265;<;265
+BLUT-CHEMIE;11474;LDHDia;LDH (Dialysat);U/l;;;;
+BLUT-CHEMIE;14590;LDL-AU;LDL-Cholesterin;mmol/l;<;2.6;<;2.6
+BLUT-CHEMIE;11323;LEP;Leptin;µg/l;<;18;<;18
+BLUT-CHEMIE;42312;LEP;Leptin;µg/l;;;;
+BLUT-CHEMIE;42350;LEP0-8jmf;Leptin;µg/l;;;;
+BLUT-CHEMIE;42455;LEP20-999jmf;Leptin;µg/l;0.3;9.6;2.1;28
+BLUT-CHEMIE;42315;LEP8-20jf;Leptin;µg/l;;;;
+BLUT-CHEMIE;42314;LEP8-20jm;Leptin;µg/l;;;;
+BLUT-CHEMIE;22080;Levetiracetam;Levetiracetam;µmol/l;118;235;118;235
+BLUT-CHEMIE;43153;Levetiracetam;Levetiracetam;µmol/l;59;235;59;235
+BLUT-CHEMIE;30170;Levodo;Levodopa;mg/l;0.2;4;0.2;4
+BLUT-CHEMIE;21505;Levodo;Levodopa;mg/l;0.2;2.5;0.2;2.5
+BLUT-CHEMIE;30314;Levodo;Levodopa;mg/l;0.2;4;0.2;4
+BLUT-CHEMIE;21628;Levofl;Levofloxacin;;;;;
+BLUT-CHEMIE;29787;Levomep;Levomepromazin;µmol/l;0.09;0.49;0.09;0.49
+BLUT-CHEMIE;13940;LH-DXI;LH;U/l;;;;
+BLUT-CHEMIE;40575;LH-DXI-F-0-19;LH;U/l;;;;
+BLUT-CHEMIE;40576;LH-DXI-F-19-999;LH;U/l;;;;
+BLUT-CHEMIE;40574;LH-DXI-M-0-19;LH;U/l;;;;
+BLUT-CHEMIE;16048;LH-DXI-M-19-999;LH;U/l;1;9;;
+BLUT-CHEMIE;10576;LH-Knaben;LH;U/l;;;;
+BLUT-CHEMIE;10577;LH-Mädchen;LH;U/l;;;;
+BLUT-CHEMIE;22475;Li-AU;Lithium;mmol/l;0.6;1.2;0.6;1.2
+BLUT-CHEMIE;80;LIGI;LIGI;;;;;
+BLUT-CHEMIE;14591;LIP-AU;Lipase;U/l;<;50;<;50
+BLUT-CHEMIE;38746;LIP-AU;Lipase;;;;;
+BLUT-CHEMIE;38750;LIP-AU1;Lipase;U/l;<;8;<;8
+BLUT-CHEMIE;38748;LIP-AU10-18;Lipase;U/l;<;39;<;39
+BLUT-CHEMIE;38749;LIP-AU1-10;Lipase;U/l;<;31;<;31
+BLUT-CHEMIE;38747;LIP-AU18;Lipase;U/l;<;67;<;67
+BLUT-CHEMIE;12630;Lipid-EP;Lipid-EP (HYRYS2);;;;;
+BLUT-CHEMIE;12631;LIPO-EP-A; Alpha;%;10;45;10;45
+BLUT-CHEMIE;12633;LIPO-EP-B; Beta;%;40;55;40;55
+BLUT-CHEMIE;12632;LIPO-EP-CH; Chylomikronen;0.00%;;0;;0
+BLUT-CHEMIE;12668;LIPO-EP-GEL;Gel;;;;;
+BLUT-CHEMIE;12666;LIPO-EP-K; Lipid-EP Kommentar;;;;;
+BLUT-CHEMIE;12667;LIPO-EP-KURVE; Lipid-EP Kurve;;;;;
+BLUT-CHEMIE;12634;LIPO-EP-P; Prebeta;%;5;25;5;25
+BLUT-CHEMIE;75;Lithium;Lithium;mmol/l;0.6;1.2;0.6;1.2
+BLUT-CHEMIE;165;LKK;Kappa-Kette;g/l;0.35;11.4;0.35;11.4
+BLUT-CHEMIE;164;LKL;Lambda-Kette;g/l;0.19;6.2;0.19;6.2
+BLUT-CHEMIE;15621;Lora;Lorazepam;µmol/l;0.16;0.75;0.16;0.75
+BLUT-CHEMIE;23127;Lora;Lorazepam;nmol/l;31;47;31;47
+BLUT-CHEMIE;36521;Lora;Lorazepam;nmol/l;93;312;93;312
+BLUT-CHEMIE;239;Lpa;Lp(a) INA;mg/l;<;300;<;300
+BLUT-CHEMIE;35700;Mangan;Mangan;nmol/l;5;20;5;20
+BLUT-CHEMIE;18540;Mangan;Mangan;nmol/l;<;200;<;200
+BLUT-CHEMIE;30285;Mangan;Mangan;nmol/l;5.5;16;5.5;16
+BLUT-CHEMIE;13886;Maprotilin;Maprotilin;µmol/l;0.45;0.72;0.45;0.72
+BLUT-CHEMIE;30163;Maprotilin;Maprotilin;µmol/l;0.27;0.47;0.27;0.47
+BLUT-CHEMIE;10873;Maprotilin;Maprotilin;µg/l;55;250;55;250
+BLUT-CHEMIE;10562;MBG;Mittl. Blutzuckerwert;mmol/l;3;7;3;7
+BLUT-CHEMIE;21934;MBG;Mittl. Blutzuckerwert;mmol/l;;;;
+BLUT-CHEMIE;11027;MCA;MCA;U/ml;<;11;<;11
+BLUT-CHEMIE;36709;m-CPP; m-CPP;µmol/l;0.02;0.25;0.02;0.25
+BLUT-CHEMIE;10973;MEBENZ;Mebendazol;nmol/l;>;250;>;250
+BLUT-CHEMIE;21500;Mesux;Mesuximid;;;;;
+BLUT-CHEMIE;38643;metbq;metabolischer Quotient;;;;;
+BLUT-CHEMIE;67;METHO;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;10845;Methyl;Methylmalonsäure;nmol/l;50;300;50;300
+BLUT-CHEMIE;21279;Methyl;Methylmalonsäure;nmol/l;<;271;<;271
+BLUT-CHEMIE;19282;Methylphenidat;Methylphenidat;nmol/l;43;257;43;257
+BLUT-CHEMIE;15508;Methylphenidat;Methylphenidat;µg/l;15;60;15;60
+BLUT-CHEMIE;33647;Methylphenidat;Methylphenidat;nmol/l;;;;
+BLUT-CHEMIE;30065;Methylphenidat;Methylphenidat;nmol/l;56;94;56;94
+BLUT-CHEMIE;38296;MetQuoAripi; Quotient Dehydroa./Aripiprazol;;0.3;0.5;0.3;0.5
+BLUT-CHEMIE;38524;MetQuoBupro; metabolischer Quotient;;6,3;25,9;6,3;25,9
+BLUT-CHEMIE;38364;MetQuoCitalo; metabolischer Quotient;;0.31;0.6;0.31;0.6
+BLUT-CHEMIE;38255;MetQuoCloz;  Quotient Norc./Clozapin;;0.45;0.79;0.45;0.79
+BLUT-CHEMIE;38227;MetQuoEscit; Quotient Desmethylesc./Escital.;;0.3;1;0.3;1
+BLUT-CHEMIE;38293;MetQuoFluox; Quotient Norfluoxetin/Fluoxetin;;0.7;1.9;0.7;1.9
+BLUT-CHEMIE;38224;MetQuoOlanz; metab. Quotient;;0.1;0.3;0.1;0.3
+BLUT-CHEMIE;38231;MetQuoquet; Quotient Norq./Quetiapin;;0.54;3.1;0.54;3.1
+BLUT-CHEMIE;38771;MetQuotClob; metabolischer Quotient;;2;10;2;10
+BLUT-CHEMIE;43068;MetQuotClom; Quotient DesmClomi/Clomi;;0.8;2.6;0.8;2.6
+BLUT-CHEMIE;41833;MetQuotMirta; Quotient N-Desmethylm./Mirta.;;0.2;1.2;0.2;1.2
+BLUT-CHEMIE;38259;MetQuotMirta; metabolischer Quotient;;0.2;1.2;0.2;1.2
+BLUT-CHEMIE;38229;MetQuoTraz; metab. Quotient ;;0.04;0.22;0.04;0.22
+BLUT-CHEMIE;38256;MetQuotSer; metabolischer Quotient;;1.7;3.4;1.7;3.4
+BLUT-CHEMIE;41836;MetQuotSer; Quotient N-Desmethyls./Sert.;;1.7;3.4;1.7;3.4
+BLUT-CHEMIE;38257;MetQuotVenla; Quotient Desmethylv./Venlaf.;;2.7;7.7;2.7;7.7
+BLUT-CHEMIE;21630;Metro;Metronidazol;µmol/l;58;175;58;175
+BLUT-CHEMIE;14312;Mg-AU;Magnesium;mmol/l;0.7;1.1;0.7;1.1
+BLUT-CHEMIE;21503;MgE;Mg erythrozytär;mmol/lEc;1.65;2.65;1.65;2.65
+BLUT-CHEMIE;13959;MgE;Mg erythrozytär;mmol/l;1.6;2.65;1.6;2.65
+BLUT-CHEMIE;10874;Mianserin;Mianserin;µg/l;15;70;15;70
+BLUT-CHEMIE;11521;Mianserin;Mianserin;µmol/l;0.06;0.27;0.06;0.27
+BLUT-CHEMIE;41831;MIRTAZ;Mirtazapin;nmol/l;113;300;113;300
+BLUT-CHEMIE;13887;MIRTAZ;Mirtazepin;nmol/l;150;300;150;300
+BLUT-CHEMIE;22186;MIRTAZ; Mirtazapin;nmol/l;113;300;113;300
+BLUT-CHEMIE;41838;MIRTAZ-Titel;Mirtazapin:;;;;;
+BLUT-CHEMIE;38260;MIRTAZ-Titel;Mirtazapin:;;;;;
+BLUT-CHEMIE;15726;MN frei;Metanephrin frei;nmol/l;0.03;0.85;0.03;0.85
+BLUT-CHEMIE;15727;MN total;Metanephrin total;nmol/l;0.47;9.61;0.47;9.61
+BLUT-CHEMIE;30067;MN total;Metanephrin total;nmol/l;0.66;13.45;0.66;13.45
+BLUT-CHEMIE;13888;Moclobemid;Moclobemid;µmol/l;1.1;3.72;1.1;3.72
+BLUT-CHEMIE;19348;MODA;Modafinil;mg/l;2;3;2;3
+BLUT-CHEMIE;22185;MONOHYDRO;10-OH-Carbamazepin;mg/l;;;;
+BLUT-CHEMIE;21374;MONOHYDRO;Monohydroxycarbamazepin;mg/l;10;30;10;30
+BLUT-CHEMIE;13969;MPA;Mycophenolat (HPLC);mg/l;<;5;<;5
+BLUT-CHEMIE;37158;M-Protein; M-Protein (densitometrisch);g/l;;;;
+BLUT-CHEMIE;29999;MT frei;Methoxytyramine frei;nmol/l;<;0.06;<;0.06
+BLUT-CHEMIE;30000;MT total;Methoxytyramine total;nmol/l;0.42;2.99;0.42;2.99
+BLUT-CHEMIE;30069;MT total;Methoxytyramine total;nmol/l;0.59;4.19;0.59;4.19
+BLUT-CHEMIE;30347;MTX;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;38536;MTX;Methotrexat ;µmol/l;;;;
+BLUT-CHEMIE;37879;MTX20uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;30348;MTX20uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;37880;MTX400uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;30349;MTX400uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;37881;MTX8000uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;30350;MTX8000uM;Methotrexat;µmol/l;;;;
+BLUT-CHEMIE;11559;Mycophenolat;Mycophenolat;mg/l;2;4.5;2;4.5
+BLUT-CHEMIE;14453;MYOGLB-Q-DXI;Myoglobin quant.;µg/l;<;105;<;65
+BLUT-CHEMIE;14592;Na-AU;Natrium;mmol/l;136;144;136;144
+BLUT-CHEMIE;22480;Na-AU-Di;Natrium (Dialysat);mmol/l;;;;
+BLUT-CHEMIE;92;N-AMIKA;Amikacin (nach);mg/l;20;30;20;30
+BLUT-CHEMIE;30909;N-Cloba;N-Desmeth.-Clobaz. ;µmol/l;1.05;10.5;1.05;10.5
+BLUT-CHEMIE;21501;N-Des;N-Desmethylmethsuximid;mg/l;10;40;10;40
+BLUT-CHEMIE;10876;Nefazodon;Nefazodon;µg/l;50;1000;50;1000
+BLUT-CHEMIE;43069;Neopt 0-18;Neopterin;ng/ml;<;4;<;4
+BLUT-CHEMIE;43070;Neopt 18-75;Neopterin;ng/ml;<;2.5;<;2.5
+BLUT-CHEMIE;43071;Neopt 75-999;Neopterin;ng/ml;<;5.5;<;5.5
+BLUT-CHEMIE;21449;Neopterin;Neopterin;ng/ml;;;;
+BLUT-CHEMIE;37696;NH3-Pl;Ammoniak (Plasma);µmol/l;<;48;<;48
+BLUT-CHEMIE;11752;Nickel;Nickel;µg/l;;5;;5
+BLUT-CHEMIE;15728;NMN frei;Normetanephrin frei;nmol/l;0.04;1.39;0.04;1.39
+BLUT-CHEMIE;15729;NMN total;Normetanephrin total;nmol/l;1.53;26.2;1.53;26.2
+BLUT-CHEMIE;30068;NMN total;Normetanephrin total;nmol/l;2.14;36.65;2.14;36.65
+BLUT-CHEMIE;91;N-NETIL;Netilmycin (nach);mg/l;6;12;6;12
+BLUT-CHEMIE;29996;Noradre; Noradrenalin;nmol/l;0.64;6.55;0.64;6.55
+BLUT-CHEMIE;32453;Norclozapin; Norclozapin;µmol/l;;;;
+BLUT-CHEMIE;38139;Nordazepam;Nordazepam;ng/ml;20;800;20;800
+BLUT-CHEMIE;10866;Norfluoxetin; Norfluoxetin;µmol/l;;;;
+BLUT-CHEMIE;37762;NORQUET; Norquetiapin;nmol/l;339;848;339;848
+BLUT-CHEMIE;10861;Nortr;Nortriptylin;µg/l;50;150;50;150
+BLUT-CHEMIE;30317;Nortr;Nortriptylin;µmol/l;0.27;0.65;0.27;0.65
+BLUT-CHEMIE;11523;Nortr;Nortriptylin;µmol/l;0.19;0.57;0.19;0.57
+BLUT-CHEMIE;10877;Nortriptylin;Nortriptylin;µg/l;50;150;50;150
+BLUT-CHEMIE;82;NSE;NSE;µg/l;<;12.5;<;12.5
+BLUT-CHEMIE;10747;NSE1;NSE;µg/l;<;25;<;25
+BLUT-CHEMIE;10748;NSE5;NSE;µg/l;<;20;<;20
+BLUT-CHEMIE;10749;NSE8;NSE;µg/l;<;18;<;18
+BLUT-CHEMIE;32014;NT-pro BNP;NT-pro BNP;pg/ml;;;;
+BLUT-CHEMIE;22394;O-DESMETH; O-Desmethylvenlafaxin;µmol/l;;;;
+BLUT-CHEMIE;13895;Olanzapin; Olanzapin;nmol/l;64;256;64;256
+BLUT-CHEMIE;38223;OlanzapinTitel;Olanzapin;;;;;
+BLUT-CHEMIE;12503;OPG;OPG;;;;;
+BLUT-CHEMIE;10878;Opipramol;Opipramol;µg/l;50;200;50;200
+BLUT-CHEMIE;11524;Opipramol;Opipramol;µmol/l;0.14;0.56;0.14;0.56
+BLUT-CHEMIE;29;OSMO;Osmolalität;mOsm/kg;280;295;280;295
+BLUT-CHEMIE;11942;Ospolot;Ospolot;mg/l;6;10;6;10
+BLUT-CHEMIE;12257;OSTA;Ostase;µg/l;<;20.2;;
+BLUT-CHEMIE;22383;OSTA;Ostase;µg/l;5.7;32.9;4.7;27.1
+BLUT-CHEMIE;41849;OSTA;Ostase;µg/l;;;;
+BLUT-CHEMIE;41853;OSTA0-4;Ostase;µg/l;24.3;83.8;24.4;63.5
+BLUT-CHEMIE;22384;OSTA0-4;Ostase;µg/l;37.2;127.7;37.4;96.8
+BLUT-CHEMIE;41857;OSTA11-12;Ostase;µg/l;34.9;103;15.7;87.5
+BLUT-CHEMIE;22389;OSTA11-12;Ostase;µg/l;53.3;156.8;24.2;133.3
+BLUT-CHEMIE;41858;OSTA13-14;Ostase;µg/l;50.8;111.5;12.8;60.8
+BLUT-CHEMIE;22390;OSTA13-14;Ostase;µg/l;77.5;169.8;19.8;92.7
+BLUT-CHEMIE;22391;OSTA15-16;Ostase;µg/l;26.8;173.4;11.2;30.2
+BLUT-CHEMIE;41859;OSTA15-16;Ostase;µg/l;17.4;113.9;7.2;19.7
+BLUT-CHEMIE;22392;OSTA17-18;Ostase;µg/l;15.4;69.8;8.8;29
+BLUT-CHEMIE;41860;OSTA17-18;Ostase;µg/l;9.9;45.7;5.6;18.9
+BLUT-CHEMIE;41851;OSTA18+;Ostase;µg/l;5.5;24.6;5.5;24.6
+BLUT-CHEMIE;29891;OSTA19-20;Ostase;µg/l;12.2;36.6;7.7;16.8
+BLUT-CHEMIE;22385;OSTA5-6;Ostase;µg/l;42;104.2;31.4;100.8
+BLUT-CHEMIE;41854;OSTA5-6;Ostase;µg/l;27.4;68.4;20.5;66.1
+BLUT-CHEMIE;22387;OSTA7-8;Ostase;µg/l;59;101.3;44;135.8
+BLUT-CHEMIE;41855;OSTA7-8;Ostase;µg/l;38.6;66.5;28.8;89.1
+BLUT-CHEMIE;22388;OSTA9-10;Ostase;µg/l;50.4;133;47.9;150.8
+BLUT-CHEMIE;41856;OSTA9-10;Ostase;µg/l;33;87.3;31.3;99
+BLUT-CHEMIE;10745;OSTC;Osteocalcin;µg/l;3;14;3;14
+BLUT-CHEMIE;10750;OSTC;Osteocalcin;µg/l;2.8;41;2.8;41
+BLUT-CHEMIE;18088;OSTC;Osteocalcin;µg/l;<;11;<;11
+BLUT-CHEMIE;29951;OSTCmid;Osteocalcin;µg/l;4.6;65.4;;
+BLUT-CHEMIE;38140;Oxazepam;Oxazepam;ng/ml;200;1500;200;1500
+BLUT-CHEMIE;294;OXCARBA;Oxcarbazepin;mg/l;5;30;5;30
+BLUT-CHEMIE;13388;OXCARBA;Oxcarbazepin;µmol/l;49;140;49;140
+BLUT-CHEMIE;21272;OXCARBA;Oxcarbazepin;mg/l;;;;
+BLUT-CHEMIE;13791;OXCARBA;Oxcarbazepin;;;;;
+BLUT-CHEMIE;36860;OXCARMONO;Oxcarba+10-OH-Carba;mg/l;10;35;10;35
+BLUT-CHEMIE;21609;Palip;Paliperidon;nmol/l;50;150;50;150
+BLUT-CHEMIE;36520;Palip;Paliperidon (9-OH-Risp.);nmol/l;47;141;47;141
+BLUT-CHEMIE;32666;Palip;Paliperidon (9-OH-Risp.);nmol/l;50;150;50;150
+BLUT-CHEMIE;14593;PAMY-AU;a-Amylase Pancreas;U/l;<;46;<;46
+BLUT-CHEMIE;14225;PA-PP-A;Pregnancy Associated Plasma Protein;mIE/l;<;14;<;14
+BLUT-CHEMIE;37317;PAPP-A; PAPP-A;IU/l;;;;
+BLUT-CHEMIE;35347;PARACET;Paracetamol;mg/l;<;2;<;2
+BLUT-CHEMIE;21384;PARACET;Paracetamol;mg/l;2.5;25;2.5;25
+BLUT-CHEMIE;18341;PARACET;Paracetamol;µmol/l;66;132;66;132
+BLUT-CHEMIE;36523;Paroxetin;Paroxetin;nmol/l;61;198;61;198
+BLUT-CHEMIE;10882;Paroxetin;Paroxetin;µg/l;0.1;150;0.1;150
+BLUT-CHEMIE;22971;Paroxetin;Paroxetin;nmol/l;91;365;91;365
+BLUT-CHEMIE;34946;PBNP;NT-pro BNP;ng/l;;;;
+BLUT-CHEMIE;43017;PCT DxI;Procalcitonin quant. (PCT);µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;12240;PCT quant.;Procalcitonin quant.;µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;42465;PCT quant.;Procalcitonin quant.;µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;37647;PCT quant. 04h;Procalcitonin quant.;µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;11353;PElast;Pankreas-Elastase;µg/l;<;3.5;<;3.5
+BLUT-CHEMIE;41962;Peramp;Perampanel;µg/ml;0.18;0.98;0.18;0.98
+BLUT-CHEMIE;13596;Perphenazin;Perphenazin;mg/l;0.001;0.02;0.001;0.02
+BLUT-CHEMIE;11996;PGN;Progesteron;nmol/l;;;;
+BLUT-CHEMIE;14791;Pheno;Phenobarbital;mg/l;15;40;15;40
+BLUT-CHEMIE;14794;Pheny-AU;Phenytoin;mg/l;10;20;10;20
+BLUT-CHEMIE;14594;Phos-AU;Phosphat;mmol/l;0.8;1.5;0.8;1.5
+BLUT-CHEMIE;14673;Phos-10T;Phosphat;mmol/l;1.5;2.9;1.5;2.9
+BLUT-CHEMIE;14675;Phos-12J;Phosphat;mmol/l;1.4;1.8;1.4;1.8
+BLUT-CHEMIE;14674;Phos-2J;Phosphat;mmol/l;1.5;2.2;1.5;2.2
+BLUT-CHEMIE;12502;PIIINP;PIIINP;U/ml;0.3;0.8;0.3;0.8
+BLUT-CHEMIE;31212;PIIIP;Prokollagen-III Peptid;µg/l;;;;
+BLUT-CHEMIE;31213;PIIIP 0 - 10 Jahre;Prokollagen-III Peptid;µg/l;5.1;91.5;5.1;91.5
+BLUT-CHEMIE;36020;PIIIP 0 - 10 Jahre;Prokollagen-III Peptid;µg/l;2.4;48.8;2.4;48.8
+BLUT-CHEMIE;31214;PIIIP 11 - 15 Jahre;Prokollagen-III Peptid;µg/l;9.6;25.5;9.6;25.5
+BLUT-CHEMIE;36021;PIIIP 11 - 15 Jahre;Prokollagen-III Peptid;µg/l;4.8;13.6;4.8;13.6
+BLUT-CHEMIE;31215;PIIIP 16 - 19 Jahre;Prokollagen-III Peptid;µg/l;5.5;27;5.5;27
+BLUT-CHEMIE;36022;PIIIP 16 - 20 Jahre;Prokollagen-III Peptid;µg/l;3.2;14.4;3.2;14.4
+BLUT-CHEMIE;31216;PIIIP 20 - 99 Jahre;Prokollagen-III Peptid;µg/l;4.5;12;4.5;12
+BLUT-CHEMIE;36023;PIIIP 21 - 99 Jahre;Prokollagen-III Peptid;µg/l;2.4;6.4;2.4;6.4
+BLUT-CHEMIE;21984;Pipa;Pipamperon;µmol/l;0.27;1.06;0.27;1.06
+BLUT-CHEMIE;27170;PLAP;Placenta-Phosphatase alk.;mU/l;<;100;<;100
+BLUT-CHEMIE;36652;PlGF; PlGF;ng/l;;;;
+BLUT-CHEMIE;38507;PMX Score;Proclarix Risk Score;%;<;10;<;10
+BLUT-CHEMIE;33547;Posa;Posaconazol;mg/l;;;;
+BLUT-CHEMIE;12590;PP;Pankr. Polypeptid;pmol/L;<;100;<;100
+BLUT-CHEMIE;19593;PP;Pankr. Polypeptid;pg/ml;<;210;<;210
+BLUT-CHEMIE;22352;PP;Pankr. Polypeptid;pg/ml;<;418;<;418
+BLUT-CHEMIE;121;PPL;Phospholipide;mmol/l;2;3.7;2;3.7
+BLUT-CHEMIE;37681;praetitel;Präeklampsie-Risiko;;;;;
+BLUT-CHEMIE;21647;Prami;Pramipexol;ng/l;;;;
+BLUT-CHEMIE;11488;Präziiptin;Präzipitin;;;;;
+BLUT-CHEMIE;144;PREALB;Präalbumin;g/l;0.21;0.41;0.21;0.41
+BLUT-CHEMIE;20200;PREG;17-OH-Pregnenolon;nmol/l;<;8.4;<;8.4
+BLUT-CHEMIE;20347;Pregaba;Pregabalin   (Lyrica);µmol/l;13;75;;
+BLUT-CHEMIE;29541;Pregaba;Pregabalin  (Lyrica);mg/l;2;5;2;5
+BLUT-CHEMIE;13622;PREG00;17-OH-Pregnenolon;nmol/l;1.5;25;1.5;25
+BLUT-CHEMIE;22148;PREG0-1;17-OH-Pregnenolon;nmol/l;<;24.93;<;24.93
+BLUT-CHEMIE;22149;PREG1-11;17-OH-Pregnenolon;nmol/l;1.08;22.86;1.08;22.86
+BLUT-CHEMIE;22151;PREG16;17-OH-Pregnenolon;nmol/l;0.9;10.53;0.9;10.53
+BLUT-CHEMIE;22150;PREG2-15;17-OH-Pregnenolon;nmol/l;0.45;7.07;0.45;7.07
+BLUT-CHEMIE;13623;PREG8-15;17-OH-Pregnenolon;nmol/l;0.3;5.7;0.3;5.7
+BLUT-CHEMIE;30141;PRIMI;Primidon;µmol/l;23;46;23;46
+BLUT-CHEMIE;39;PRIMI;Primidon;mg/l;5;15;5;15
+BLUT-CHEMIE;20927;PRIMI;Primidon;µmol/l;23;55;23;55
+BLUT-CHEMIE;12185;PRO-BNP;pro BNP;ng/l;<;100;<;150
+BLUT-CHEMIE;12186;PRO-BNP;pro BNP;ng/l;<;200;<;300
+BLUT-CHEMIE;22972;ProInsulin;Proinsulin;pmol/l;<;11;<;11
+BLUT-CHEMIE;17946;ProInsulin;Proinsulin;pmol/l;<;11;<;11
+BLUT-CHEMIE;10627;Prol Knaben;Prolactin (PRL);µg/l;;;;
+BLUT-CHEMIE;10626;Prol Mädchen;Prolactin (PRL);µg/l;;;;
+BLUT-CHEMIE;13942;Prol-DXI;Prolactin (PRL);µg/l;;;;
+BLUT-CHEMIE;14138;Prol-DXI nach;Prolactin nach Stim.;µg/l;;;;
+BLUT-CHEMIE;16117;Prol-DXI-Frauen;Prolactin (PRL);µg/l;<;20;<;20
+BLUT-CHEMIE;16050;Prol-DXI-Männer;Prolactin (PRL);µg/l;<;15;;
+BLUT-CHEMIE;14022;Prol-DXI-PEG;Prolactin nach PEG;%;;;;
+BLUT-CHEMIE;14021;Prol-DXI-PEG;Prolactin nach PEG;µg/l;;;;
+BLUT-CHEMIE;240;ProlN;Prolactin n. Stim.;µg/l;;;;
+BLUT-CHEMIE;20592;Promazin;Promazin;µmol/l;0.35;1.41;0.35;1.41
+BLUT-CHEMIE;11054;PROPYPH;Propyphenazon;µg/l;1.5;12.5;1.5;12.5
+BLUT-CHEMIE;12576;PROT-EP;Protein-EP;;;;;
+BLUT-CHEMIE;36666;PROT-EP;Protein-EP;;;;;
+BLUT-CHEMIE;36654;PROT-EP-ALB; Albumin;%;55.8;66.1;55.8;66.1
+BLUT-CHEMIE;36655;PROT-EP-ALB; Albumin;g/l;40.2;47.6;40.2;47.6
+BLUT-CHEMIE;12616;PROT-EP-ALB; Albumin;g/l;32;53;32;53
+BLUT-CHEMIE;12587;PROT-EP-ALB; Albumin;%;51;80;51;80
+BLUT-CHEMIE;36658;PROT-EP-A1; Alpha-2-Globuline;%;7.1;11.8;7.1;11.8
+BLUT-CHEMIE;36659;PROT-EP-A1; Alpha-2-Globuline;g/l;5.1;8.5;5.1;8.5
+BLUT-CHEMIE;36656;PROT-EP-A1; Alpha-1-Globuline;%;2.9;4.9;2.9;4.9
+BLUT-CHEMIE;36657;PROT-EP-A1; Alpha-1-Globuline;g/l;2.1;3.5;2.1;3.5
+BLUT-CHEMIE;12580;PROT-EP-A1; Alpha 1;g/l;1.9;5.8;1.9;5.8
+BLUT-CHEMIE;12581;PROT-EP-A1; Alpha 1;%;2;7;2;7
+BLUT-CHEMIE;12582;PROT-EP-A2; Alpha 2;%;7;15;7;15
+BLUT-CHEMIE;12583;PROT-EP-A2; Alpha 2;g/l;4.4;12.5;4.4;12.5
+BLUT-CHEMIE;36660;PROT-EP-B; Beta-1-Globuline;%;4.7;7.2;4.7;7.2
+BLUT-CHEMIE;36661;PROT-EP-B; Beta-1-Globuline;g/l;3.4;5.2;3.4;5.2
+BLUT-CHEMIE;36662;PROT-EP-B; Beta-2-Globuline;%;3.2;6.5;3.2;6.5
+BLUT-CHEMIE;36663;PROT-EP-B; Beta-2-Globuline;g/l;2.3;4.7;2.3;4.7
+BLUT-CHEMIE;12584;PROT-EP-B; Beta;%;10;16;10;16
+BLUT-CHEMIE;12585;PROT-EP-B; Beta;g/l;6.3;13.3;6.3;13.3
+BLUT-CHEMIE;36664;PROT-EP-G; Gamma-Globuline;%;11.1;18.8;11.1;18.8
+BLUT-CHEMIE;36665;PROT-EP-G; Gamma-Globuline;g/l;8;13.5;8;13.5
+BLUT-CHEMIE;12615;PROT-EP-G; Gamma;g/l;6.3;14.9;6.3;14.9
+BLUT-CHEMIE;12586;PROT-EP-G; Gamma;%;10;18;10;18
+BLUT-CHEMIE;12577;PROT-EP-GEL; Gel;;;;;
+BLUT-CHEMIE;12617;PROT-EP-K; Kommentar Protein-EP;;;;;
+BLUT-CHEMIE;12578;PROT-EP-KURVE; Densitogramm;;;;;
+BLUT-CHEMIE;252;PSA-AXSYM;PSA alt;µg/l;<;2;<;2
+BLUT-CHEMIE;14099;PSA-DXI;PSA;µg/l;<;2;<;2
+BLUT-CHEMIE;16041;PSA-DXI;PSA;µg/l;<;5;<;5
+BLUT-CHEMIE;233;PSAF-AXSYM;PSA frei (AxSYM);µg/l;;;;
+BLUT-CHEMIE;14098;PSAF-DXI;PSA frei;µg/l;;;;
+BLUT-CHEMIE;14195;PSAF/PSA-DXI;PSA frei/PSA;;>;0.26;;
+BLUT-CHEMIE;11031;PSAF/PSA<4;PSA frei/PSA (AxSYM);;>;0.1;;
+BLUT-CHEMIE;11032;PSAF/PSA>4;PSA frei/PSA;;>;0.26;;
+BLUT-CHEMIE;14209;PSAF/PSA<4-DXI;PSA frei/PSA;;>;0.1;;
+BLUT-CHEMIE;14210;PSAF/PSA>4-DXI;PSA frei/PSA;;>;0.26;;
+BLUT-CHEMIE;12203;PTH;PTH intact;ng/l;15;65;15;65
+BLUT-CHEMIE;21587;PTH;PTH (Entnahme + Laboretikette );ng/l;15;65;15;65
+BLUT-CHEMIE;17763;PTH-DXI;PTH intact;ng/l;15;65;15;65
+BLUT-CHEMIE;37634;PTH-DXI-8h;PTH intact;ng/l;15;65;15;65
+BLUT-CHEMIE;30418;PTHrp;PTH related peptide;pmol/l;<;1.3;<;1.3
+BLUT-CHEMIE;27433;PYRAZIN;Pyrazinamid;mg/l;;;;
+BLUT-CHEMIE;33915;PYRUK;Pyruvatkinase;U/l Ec;1400;10900;1400;10900
+BLUT-CHEMIE;15643;PYRUK;Pyruvatkinase;U/l Ec;1800;11900;1800;11900
+BLUT-CHEMIE;11476;PYRUK;Pyruvatkinase;U/l Ec;3100;5500;3100;5500
+BLUT-CHEMIE;31075;P1NP;Prokollagen Typ 1 (P1NP);µg/l;15;59;15;59
+BLUT-CHEMIE;29603;P1NP;Prokollagen Typ 1 (P1NP);µg/l;21;78;19;102
+BLUT-CHEMIE;27312;P1NP;Prokollagen Typ 1 (P1NP);µg/l;19;102;19;102
+BLUT-CHEMIE;14534;Quecksilber;Quecksilber;nmol/l;<;10;<;10
+BLUT-CHEMIE;22182;QUET;Quetiapin;nmol/l;261;1305;261;1305
+BLUT-CHEMIE;38230;QUETTitel;Quetiapin:;;;;;
+BLUT-CHEMIE;162;RBP;RBP;mg/l;30;60;30;60
+BLUT-CHEMIE;36509;Rebox;Reboxetin;nmol/l;192;1118;192;1118
+BLUT-CHEMIE;21559;Rebox;Reboxetin;nmol/l;32;320;32;320
+BLUT-CHEMIE;30104;Renin;Renin, direkt;mlU/l;;;;
+BLUT-CHEMIE;21603;Renin;Renin direkt (Entnahme + Laboretikette );mU/l;;;;
+BLUT-CHEMIE;21944;Renin;Renin, aktives:;ng/l;;;;
+BLUT-CHEMIE;11493;Renin;Renin direkt:;mU/l;;;;
+BLUT-CHEMIE;13784;Renin liegend; liegend;ng/ml/h;0.51;2.64;0.51;2.64
+BLUT-CHEMIE;12194;Renin liegend; liegend;mU/l;2.4;29;2.4;29
+BLUT-CHEMIE;30107;Renin liegend; liegend;mlU/l;2.8;39.9;2.8;39.9
+BLUT-CHEMIE;21946;Renin nach Bel; nach Belastung;ng/l;4.2;46;4.2;46
+BLUT-CHEMIE;21945;Renin nach Ruhe; nach Ruhe;ng/l;3;28;3;28
+BLUT-CHEMIE;13789;Renin ohne; ohne Angabe;ng/ml/h;;;;
+BLUT-CHEMIE;13790;Renin ohne; ohne Angabe;mU/l;;;;
+BLUT-CHEMIE;30108;Renin stehend; stehend;mlU/l;4.4;46.1;4.4;46.1
+BLUT-CHEMIE;13785;Renin stehend; stehend;ng/ml/h;0.98;4.18;0.98;4.18
+BLUT-CHEMIE;12195;Renin stehend; stehend;mU/l;3.3;41;3.3;41
+BLUT-CHEMIE;29832;Renin-Eval;Renin (Liaison Eval.);ng/l;;;;
+BLUT-CHEMIE;21876;Riba;Ribavirin;mg/l;;;;
+BLUT-CHEMIE;27434;RIFAMP;Rifampicin + Metaboliten;mg/l;;;;
+BLUT-CHEMIE;15354;Risperidon;Risperidon;nmol/l;;;;
+BLUT-CHEMIE;38644;Risperi-Titel;Risperidon:;;;;;
+BLUT-CHEMIE;29825;Risp+9-OH;Risperidon+9-OH-Risp.;nmol/l;50;150;50;150
+BLUT-CHEMIE;37612;rmet;Risikomarker 1. Trimester;;;;;
+BLUT-CHEMIE;22117;RPT;PTH rapid;ng/l;15;65;15;65
+BLUT-CHEMIE;20599;RST;RST Röhrchen;Tage;;;;
+BLUT-CHEMIE;35358;Rufinamid;Rufinamid;mg/l;5;30;5;30
+BLUT-CHEMIE;21273;SC;Salicylat;mmol/l;0.2;2.2;0.2;2.2
+BLUT-CHEMIE;20767;SCC;SCC;µg/l;<;1.5;<;1.5
+BLUT-CHEMIE;15595;ß-CTx;ß-CrossLaps (ß-CTx);µg/l;;;;
+BLUT-CHEMIE;41845;ß-CTx;ß-CrossLaps (ß-CTx);µg/l;;;;
+BLUT-CHEMIE;20886;ß-CTx;ß-CrossLaps (ß-CTx);µg/l;;;;
+BLUT-CHEMIE;43506;sC5b9;sC5b-9;µg/l;80;350;80;350
+BLUT-CHEMIE;22436;Se-AAS;Selen;µmol/l;0.94;1.77;0.94;1.77
+BLUT-CHEMIE;20460;SE-AL1;Interset Studie 1;Position;;;;
+BLUT-CHEMIE;20461;SE-AL2;Interset Studie 2;Position;;;;
+BLUT-CHEMIE;20462;SE-AL3;Interset Studie 3;Position;;;;
+BLUT-CHEMIE;20463;SE-AL4;Interset Studie 4;Position;;;;
+BLUT-CHEMIE;20464;SE-AL5;Interset Studie 5;Position;;;;
+BLUT-CHEMIE;13771;Selen;Selen;µmol/l;0.94;1.77;0.94;1.77
+BLUT-CHEMIE;22437;Selen1;Selen;µmol/l;0.41;1.28;0.41;1.28
+BLUT-CHEMIE;12166;Selen1;Selen;µmol/l;0.41;1.28;0.41;1.28
+BLUT-CHEMIE;12165;Selen120;Selen;µmol/l;0.23;0.81;0.23;0.81
+BLUT-CHEMIE;22438;Selen120;Selen;µmol/l;0.23;0.81;0.23;0.81
+BLUT-CHEMIE;22439;Selen16;Selen;µmol/l;0.88;1.54;0.88;1.54
+BLUT-CHEMIE;12168;Selen16;Selen;µmol/l;0.88;1.54;0.88;1.54
+BLUT-CHEMIE;22440;Selen5;Selen;µmol/l;0.74;1.47;0.74;1.47
+BLUT-CHEMIE;12167;Selen5;Selen;µmol/l;0.74;1.47;0.74;1.47
+BLUT-CHEMIE;29616;Serot;Serotonin;nmol/l;227;1130;227;1130
+BLUT-CHEMIE;21558;SEROTHEK;Serothek INTEREST;;;;;
+BLUT-CHEMIE;13772;SEROTONIN;Serotonin;µg/l;40;200;40;200
+BLUT-CHEMIE;21271;Sert;Sertindol;;;;;
+BLUT-CHEMIE;41834;Sertralin;Sertralin;µmol/l;0.03;0.49;0.03;0.49
+BLUT-CHEMIE;13890;Sertralin;Sertralin;µmol/l;0.03;0.16;0.03;0.16
+BLUT-CHEMIE;10879;Sertralin;Sertralin;µg/l;30;190;30;190
+BLUT-CHEMIE;22242;Sertralin; Sertralin;µmol/l;0.03;0.49;0.03;0.49
+BLUT-CHEMIE;41837;Sertra-Titel;Sertralin:;;;;;
+BLUT-CHEMIE;38262;Sertra-Titel;Sertralin:;;;;;
+BLUT-CHEMIE;10880;Sertr/Desm;Sertralin/Desmethylsertralin;;0.24;0.85;0.24;0.85
+BLUT-CHEMIE;21493;SE-ST;Serum - holen;Tage;;;;
+BLUT-CHEMIE;19488;SE-5;Serothek ;Tage;;;;
+BLUT-CHEMIE;36653;sFlt-PlGF; sFlt-1/PlGF-Ratio;;<;38;<;38
+BLUT-CHEMIE;36651;sFlt-1; sFlt-1;ng/l;;;;
+BLUT-CHEMIE;21801;SHBG;SHBG;nmol/l;10;57;18;144
+BLUT-CHEMIE;148;SHBG;SHBG;nmol/l;10;73;16;120
+BLUT-CHEMIE;32505;SHBG-DXI;SHBG;nmol/l;13.3;89.5;;
+BLUT-CHEMIE;39035;sIL2R;sIL-2R  (löslicher IL-2 Rezeptor);ng/mL;1.2;8.8;1.2;8.8
+BLUT-CHEMIE;12394;Sirolimus;Sirolimus;µg/l;;;;
+BLUT-CHEMIE;37989;snse2;Estradiol;pmol/l;;;;
+BLUT-CHEMIE;40581;snse2-F-0-19;Estradiol;pmol/l;;;;
+BLUT-CHEMIE;40582;snse2-F-19-999;Estradiol;pmol/l;;;;
+BLUT-CHEMIE;40580;snse2-M-0-19;Estradiol;pmol/l;;;;
+BLUT-CHEMIE;38170;snse2-M-19-999;Estradiol;pmol/l;<;116;;
+BLUT-CHEMIE;12504;SRANKL;sRANKL;;;;;
+BLUT-CHEMIE;31140;sTFR-DXI;lösl. Transf.-Rezeptor;nmol/l;12.16;27.25;12.16;27.25
+BLUT-CHEMIE;32037;Sultiam (Ospolot);Sultiam (Ospolot);µmol/l;6.9;27.7;6.9;27.7
+BLUT-CHEMIE;18368;Syna ;#NAME?;min;;;;
+BLUT-CHEMIE;13918;S100;Protein S-100;µg/l;<;0.105;<;0.105
+BLUT-CHEMIE;31234;S100;Protein S-100;µg/l;<;0.105;<;0.105
+BLUT-CHEMIE;37698;S100 8h;Protein S-100;µg/l;<;0.105;<;0.105
+BLUT-CHEMIE;20911;TCR;Tacrolimus;µg/l;3;20;3;20
+BLUT-CHEMIE;37877;TCR;Tacrolimus;µg/l;5;20;5;20
+BLUT-CHEMIE;38598;TCR;Tacrolimus ;µg/l;5;20;5;20
+BLUT-CHEMIE;29559;TCR;Tacrolimus;µg/l;5;20;5;20
+BLUT-CHEMIE;241;TCR;Tacrolimus;µg/l;3;20;3;20
+BLUT-CHEMIE;29819;TDM-ANAL;TDM-ANALGETIKA (Labor 4);;;;;
+BLUT-CHEMIE;29814;TDM-ANTID;TDM-ANTIDEPR (Labor 4);;;;;
+BLUT-CHEMIE;29816;TDM-ANTIEPI;TDM-ANTIEPI (Labor4);;;;;
+BLUT-CHEMIE;29815;TDM-BENZO;TDM-BENZO (Labor 4);;;;;
+BLUT-CHEMIE;29818;TDM-CYTO;TDM-CYTOSTAT (Labor 4);;;;;
+BLUT-CHEMIE;29820;TDM-KARD;TDM-KARDIAK (Labor 4);;;;;
+BLUT-CHEMIE;29813;TDM-NEURO;TDM-NEUROLEP (Labor 4);;;;;
+BLUT-CHEMIE;29817;TDM-TUBER;TDM-TUBERK (Labor 4);;;;;
+BLUT-CHEMIE;29821;TDM-VIT;TDM-VITAMIN (Labor 4);;;;;
+BLUT-CHEMIE;21514;TD001;T & D 1;Position;;;;
+BLUT-CHEMIE;21527;TD001-1;T & D 1-1;Position;;;;
+BLUT-CHEMIE;21528;TD001-2;T & D 1-2;Position;;;;
+BLUT-CHEMIE;21515;TD002;T & D 2;Position;;;;
+BLUT-CHEMIE;21529;TD002-1;T & D 2-1;Position;;;;
+BLUT-CHEMIE;21530;TD002-2;T & D 2-2;Position;;;;
+BLUT-CHEMIE;11978;TEICO;Teicoplanin;mg/l;;;;
+BLUT-CHEMIE;38141;Temazepam;Temazepam;ng/ml;600;1100;600;1100
+BLUT-CHEMIE;9001;Test;Test, nicht bestellen;;;;;
+BLUT-CHEMIE;27428;Test;Test-DSX - nicht verwenden!;;;;;
+BLUT-CHEMIE;26854;Test;Test-Liaison - nicht verwenden!;;;;;
+BLUT-CHEMIE;15382;TEST-Architect;Test-Architect;;;;;
+BLUT-CHEMIE;15381;TEST-AXSYM;Test-AxSYM;;;;;
+BLUT-CHEMIE;38781;testLQ;TEST für Labuniq;mmol/l;136;144;136;144
+BLUT-CHEMIE;13924;Testo;Testosteron total;nmol/l;;;;
+BLUT-CHEMIE;40563;Testo-F-0-19;Testosteron total;nmol/l;;;;
+BLUT-CHEMIE;40564;Testo-F-19-999;Testosteron total;nmol/l;;;0.52;2.43
+BLUT-CHEMIE;40560;Testo-M-0-10;Testosteron total;nmol/l;;;;
+BLUT-CHEMIE;40561;Testo-M-10-19;Testosteron total;nmol/l;;;;
+BLUT-CHEMIE;38310;Testo-M-19-999;Testosteron total;nmol/l;9.72;38.17;;
+BLUT-CHEMIE;10801;Testo10;Testost. tot.;nmol/l;0.43;3.91;0.55;2.21
+BLUT-CHEMIE;10802;Testo12;Testost. tot.;nmol/l;0.88;3.91;0.6;1.95
+BLUT-CHEMIE;10803;Testo14;Testost. tot.;nmol/l;3.07;11.22;0.69;2.9
+BLUT-CHEMIE;10804;Testo16;Testost. tot.;nmol/l;9.14;37.04;0.4;2.64
+BLUT-CHEMIE;10799;Testo6;Testost. tot.;nmol/l;<;1.74;<;1.37
+BLUT-CHEMIE;10800;Testo8;Testost. tot.;nmol/l;<;1.77;0.53;2.43
+BLUT-CHEMIE;5991;Test1;Test1;;;;;
+BLUT-CHEMIE;5992;Test2;Test2;;;;;
+BLUT-CHEMIE;502;TEST2;TEST2 EDTA-Plasma;;;;;
+BLUT-CHEMIE;5993;Test3;Test3;;;;;
+BLUT-CHEMIE;5994;Test4;Test4;;;;;
+BLUT-CHEMIE;5995;Test5;Test5;;;;;
+BLUT-CHEMIE;5996;Test6;Test6;;;;;
+BLUT-CHEMIE;13773;Thallium;Thallium;nmol/l;<;25;<;25
+BLUT-CHEMIE;38505;THBS1;Thrombospondin 1;µg/l;2691;165700;2691;165700
+BLUT-CHEMIE;22077;Theo;Theophyllin;µmol/l;56;111;56;111
+BLUT-CHEMIE;31856;THGL-DXI;Thyreoglobulin (Tg2);µg/l;<;35;<;35
+BLUT-CHEMIE;13973;THGL-DXI;Thyreoglobulin;µg/l;<;35;<;35
+BLUT-CHEMIE;21643;THGL-S;Thyreoglobulin;µg/l;<;60;<;60
+BLUT-CHEMIE;30298;Thiori;Thioridazin;µmol/l;0.54;2.7;0.54;2.7
+BLUT-CHEMIE;203;TNF;TNF-a;pg/ml;<;6.3;<;6.3
+BLUT-CHEMIE;36916;TNF;TNF-a;pg/ml;<;12;<;12
+BLUT-CHEMIE;37650;tnf a;TNF alpha;pg/ml;<;12;<;12
+BLUT-CHEMIE;12259;TNFPOLY;TNF Polymorphismus;pg/ml;;;;
+BLUT-CHEMIE;33692;Tobra-AU;Tobramycin;mg/l;<;1;<;1
+BLUT-CHEMIE;14806;Tobra-AU-nach;Tobramycin (nach);mg/l;6;12;6;12
+BLUT-CHEMIE;14796;Tobra-DXC;Tobramycin;mg/l;<;2;<;2
+BLUT-CHEMIE;11057;Tolbutamid; Tolbutamid;;;;;
+BLUT-CHEMIE;21809;Topiramat;Topiramat;µmol/l;6;74;6;74
+BLUT-CHEMIE;36391;Topiramat;Topiramat;µmol/l;5.9;29.5;5.9;29.5
+BLUT-CHEMIE;29676;Topiramat;Topiramat;µmol/l;14.7;59;14.7;59
+BLUT-CHEMIE;150;TPA;TPA;U/l;<;75;<;75
+BLUT-CHEMIE;14595;TP-AU;Total Proteine;g/l;63;83;63;83
+BLUT-CHEMIE;14630;TP-AU-Dia;TP (Dialysat);g/l;;;;
+BLUT-CHEMIE;11078;TP-L;T.Proteine Liquor;g/l;0.15;0.45;0.15;0.45
+BLUT-CHEMIE;30154;TPMT;TPMT-Aktivität;nmol MTG/gHb*h;;;;
+BLUT-CHEMIE;14677;TP-1J;Total Proteine;g/l;48;76;48;76
+BLUT-CHEMIE;14676;TP-1M;Total Proteine;g/l;46;68;46;68
+BLUT-CHEMIE;14678;TP-16J;Total Proteine;g/l;60;80;60;80
+BLUT-CHEMIE;14776;Traf-AU;Transferrin;g/l;2;3.8;2;3.8
+BLUT-CHEMIE;183;Traf-S;Transf.-Sättigung;%;15;50;15;50
+BLUT-CHEMIE;11086;TRAK;TRAK (BRAHMS);IU/l;<;1;<;1
+BLUT-CHEMIE;22087;TRAK;TRAK;IU/l;<;1.8;<;1.8
+BLUT-CHEMIE;21879;Tram;Tramadol;µmol/l;0.38;3.8;0.38;3.8
+BLUT-CHEMIE;12505;TRAP;TRAP;U/L;<;5.2;<;5.3
+BLUT-CHEMIE;22422;Trazodon; Trazodon;µmol/l;1.88;2.69;1.88;2.69
+BLUT-CHEMIE;13891;Trazodon;Trazodon;µmol/l;1.75;4;1.75;4
+BLUT-CHEMIE;10881;Trazodon;Trazodon;µg/l;0.3;2.5;0.3;2.5
+BLUT-CHEMIE;38228;TrazodonTitel;Trazodon;;;;;
+BLUT-CHEMIE;14596;TRIG-AU;Triglyceride;mmol/l;<;1.7;<;1.7
+BLUT-CHEMIE;13892;Trimipramin;Trimipramin;µmol/l;0.5;1.2;0.5;1.2
+BLUT-CHEMIE;29677;Trimipramin;Trimipramin;µmol/l;0.5;1.02;0.5;1.02
+BLUT-CHEMIE;30010;Troponin I+3 (Serum);Troponin I+3 (Serum);µg/l;<;0.03;<;0.03
+BLUT-CHEMIE;32792;Troponin I+3 (Serum);Troponin I+3 (Serum);ng/l;<;30;<;30
+BLUT-CHEMIE;21459;Troponin-DXI neu;Troponin I;µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;30009;TroponinI+3;Troponin I+3;µg/l;<;0.03;<;0.03
+BLUT-CHEMIE;21466;Troponin-Ser-DXI neu;Troponin I (Serum);µg/l;<;0.5;<;0.5
+BLUT-CHEMIE;33548;TSH (3.IS);TSH (3.IS);mlU/l;0.25;4;0.25;4
+BLUT-CHEMIE;37890;TSH (3.IS) <3J;TSH (3.IS);mlU/l;;;;
+BLUT-CHEMIE;11047;TSH 4Tage;TSH;mU/l;1;39;1;39
+BLUT-CHEMIE;15385;TSH-AxSYM;TSH (AxSYM);mU/l;0.25;4;0.25;4
+BLUT-CHEMIE;13958;TSH-DXI;TSH  (DxI);mU/l;0.25;4;0.25;4
+BLUT-CHEMIE;15367;TSH-I2000;TSH;mU/l;0.25;4;0.25;4
+BLUT-CHEMIE;15496;TSHn-AxSYM;TSH nach TRH;mU/l;;;;
+BLUT-CHEMIE;21955;Tumor;Tumormarker wählen;;;;;
+BLUT-CHEMIE;27313;T3;tot. T3;nmol/l;1.3;3.1;1.3;3.1
+BLUT-CHEMIE;44;T3;tot. T3;nmol/l;1;3.1;1;3.1
+BLUT-CHEMIE;11589;T3;tot. T3;ng/dl;87;178;87;178
+BLUT-CHEMIE;95;T3n;tot. T3 nach TRH;nmol/l;0.9;2.4;0.9;2.4
+BLUT-CHEMIE;29942;T3-0-6;tot. T3;nmol/l;1.12;4.43;1.12;4.43
+BLUT-CHEMIE;29947;T3-12-20;tot. T3;nmol/l;1.4;3.34;1.4;3.34
+BLUT-CHEMIE;29945;T3-1-6;tot. T3;nmol/l;1.42;3.8;1.42;3.8
+BLUT-CHEMIE;29944;T3-4-12;tot. T3;nmol/l;1.32;4.07;1.32;4.07
+BLUT-CHEMIE;29946;T3-7-11;tot. T3;nmol/l;1.43;3.55;1.43;3.55
+BLUT-CHEMIE;29943;T3-7-3;tot. T3;nmol/l;1.23;4.22;1.23;4.22
+BLUT-CHEMIE;11588;T4;tot. T4;µg/dl;6.1;12.2;6.1;12.2
+BLUT-CHEMIE;18440;T4;tot. T4;nmol/l;78;157;78;157
+BLUT-CHEMIE;27314;T4;tot. T4;nmol/l;66;181;66;181
+BLUT-CHEMIE;96;T4n;tot. T4   nach TRH;nmol/l;60;145;60;145
+BLUT-CHEMIE;12251;UCRE;Creatinin (Ur.);mmol/24h;9;21;7;14
+BLUT-CHEMIE;13592;UCRE;Creatinin enz. (Ur.);mmol/24h;9;21;7;14
+BLUT-CHEMIE;110;UCRE;Creatinin (Ur.);mmol/24h;8;15;8;15
+BLUT-CHEMIE;10529;UCRE-O;Creatinin (Urin);mmol/l;;;;
+BLUT-CHEMIE;13593;UCRE-O;Creatinin enz. (Urin);mmol/l;;;;
+BLUT-CHEMIE;21385;URACDia-DXC;Harnsäure (Dialysat);µmol/l;;;;
+BLUT-CHEMIE;14586;UREA-AU;Harnstoff;mmol/l;2;8;2;8
+BLUT-CHEMIE;14617;UREA-AU-Di;Harnstoff (Dialysat);mmol/l;;;;
+BLUT-CHEMIE;20580;UREA-DXC;Harnstoff nach HD;mmol/l;2;8;2;8
+BLUT-CHEMIE;14585;URIC-AU;Harnsäure;µmol/l;210;430;150;360
+BLUT-CHEMIE;38234;Ustek-Ak;Ustekinumab - Ak;UA/ml;<;1;<;1
+BLUT-CHEMIE;38233;Ustek-Tal;Ustekinumab-Talspiegel;ng/ml;;;;
+BLUT-CHEMIE;13927;VALPROFREI;freie Valproinsäure;%;6;22;6;22
+BLUT-CHEMIE;83;V-AMIKA;Amikacin;mg/l;<;5;<;5
+BLUT-CHEMIE;33927;Vanco-AU;Vancomycin;mg/l;15;20;15;20
+BLUT-CHEMIE;22102;Vanco-DXC;Vancomycin;mg/l;10;15;10;15
+BLUT-CHEMIE;14798;Vanco-DXC;Vancomycin;mg/l;<;10;<;10
+BLUT-CHEMIE;37680;Vedoli;Vedolizumab-Antikörper;ng/ml;<;35;<;35
+BLUT-CHEMIE;37679;Vedoli;Vedolizumab Talspiegel;µg/ml;;;;
+BLUT-CHEMIE;22395;VEN-DES; Venlaf.+Desmethylv.;µmol/l;0.36;1.44;0.36;1.44
+BLUT-CHEMIE;13893;Venlafaxin;Venlafaxin;µmol/l;0.7;1.44;0.7;1.44
+BLUT-CHEMIE;10884;Venlafaxin;Venlafaxin;µg/l;50;400;50;400
+BLUT-CHEMIE;22393;Venlafaxin;Venlafaxin;µmol/l;;;;
+BLUT-CHEMIE;38261;Venla-Titel;Venlafaxin:;;;;;
+BLUT-CHEMIE;19727;VER;Repetition;Tage;;;;
+BLUT-CHEMIE;36539;VIGA;Vigabatrin;mg/l;2;10;2;10
+BLUT-CHEMIE;289;VIGA;Vigabatrin;µmol/l;23;192;23;192
+BLUT-CHEMIE;36017;VIGA;Vigabatrin;µg/ml;0.8;36;0.8;36
+BLUT-CHEMIE;13774;VIGA;Vigabatrin;mg/l;10;60;10;60
+BLUT-CHEMIE;20883;VIGA;Vigabatrin;mg/l;5;35;5;35
+BLUT-CHEMIE;34448;VIGA;Vigabatrin;µg/ml;2;10;2;10
+BLUT-CHEMIE;33629;VIP;VIP;ng/l;<;99;<;99
+BLUT-CHEMIE;33462;Vit A;Vitamin A;µmol/l; ; ; ; 
+BLUT-CHEMIE;33463;Vit A 0-1;Vitamin A;µmol/l;0.53;1.4;0.53;1.4
+BLUT-CHEMIE;33465;Vit A 11-18;Vitamin A;µmol/l;1;2.1;1;2.1
+BLUT-CHEMIE;33464;Vit A 2-10;Vitamin A;µmol/l;0.66;1.7;0.66;1.7
+BLUT-CHEMIE;33467;Vit A=0;Vitamin A;µmol/l;0.35;1;0.35;1
+BLUT-CHEMIE;33466;Vit A>18;Vitamin A;µmol/l;1.05;2.45;1.05;2.45
+BLUT-CHEMIE;21743;Vit C;Vitamin C;mg/l;2;14;2;14
+BLUT-CHEMIE;13775;Vit C;Vitamin C;mg/l;5;15;5;15
+BLUT-CHEMIE;13783;Vit E;Vitamin E;mg/l;5;16;5;16
+BLUT-CHEMIE;31382;Vit E;Vitamin E;µmol/l; ; ; ; 
+BLUT-CHEMIE;32811;Vit E (HPLC);Vitamin E;µmol/l;;;;
+BLUT-CHEMIE;32812;Vit E 0-12;Vitamin E;µmol/l;7;20.9;7;20.9
+BLUT-CHEMIE;31383;Vit E 0-12;Vitamin E;µmol/l;7;20.9;7;20.9
+BLUT-CHEMIE;11946;Vit E -12;Vitamin E;mg/l;4.3;9;4.3;9
+BLUT-CHEMIE;32813;Vit E 13-19;Vitamin E;µmol/l;13.9;23.2;13.9;23.2
+BLUT-CHEMIE;31384;Vit E 13-19;Vitamin E;µmol/l;13.9;23.2;13.9;23.2
+BLUT-CHEMIE;11947;Vit E -19;Vitamin E;mg/l;5.6;10.3;5.6;10.3
+BLUT-CHEMIE;32814;Vit E 19;Vitamin E;µmol/l;11.6;41.8;11.6;41.8
+BLUT-CHEMIE;31385;Vit E 19;Vitamin E;µmol/l;11.6;41.8;11.6;41.8
+BLUT-CHEMIE;11945;Vit E -6;Vitamin E;mg/l;3;9;3;9
+BLUT-CHEMIE;10638;Vit K1;Vitamin K1;ng/l;50;900;50;900
+BLUT-CHEMIE;23129;Vit K1;Vitamin K1;ng/l;110;1150;110;1150
+BLUT-CHEMIE;30293;Vit K1;Vitamin K1;µg/l; ; ; ; 
+BLUT-CHEMIE;38059;Vit K1;Vitamin K1;µg/l;0.13;1.19;0.13;1.19
+BLUT-CHEMIE;35354;VitH;Vitamin H, Biotin;pmol/l;>;1023;>;1023
+BLUT-CHEMIE;117;VLDL;VLDL-Cholesterin;mmol/l;0.1;1.1;0.1;1.1
+BLUT-CHEMIE;55;V-NETIL;Netilmycin;mg/l;<;2;<;2
+BLUT-CHEMIE;20934;V-NETIL;Netilmycin;µmol/l;<;4.2;<;4.2
+BLUT-CHEMIE;20593;Vorico;Voriconazol;mg/l;1;6;1;6
+BLUT-CHEMIE;14797;VPA-AU;Valproinsäure;mg/l;50;100;50;100
+BLUT-CHEMIE;11489;WEF; Wellensitichfedern;;;;;
+BLUT-CHEMIE;10653;XS;D-Xylose;mg/l;>;200;>;200
+BLUT-CHEMIE;12506;YKL40;YKL-40;ng/ml;24;125;25;93
+BLUT-CHEMIE;21735;Zink-AAS;Zink;µmol/l;11;18;11;18
+BLUT-CHEMIE;18074;Zolpidem;Zolpidem;µmol/l;<;0.65;<;0.65
+BLUT-CHEMIE;23128;Zolpidem;Zolpidem;µmol/l;0.26;0.49;0.26;0.49
+BLUT-CHEMIE;36540;Zolpidem;Zolpidem;µmol/l;0.26;0.52;0.26;0.52
+BLUT-CHEMIE;13751;Zopiclon;Zopiclon;nmol/l;<;250;<;250
+BLUT-CHEMIE;13897;Zuclopenthixol;Zuclopenthixol;nmol/l;10;125;10;125
+BLUT-CHEMIE;37672;11-D;11-Desoxycorticosteron;ng/dl;2;15;2;15
+BLUT-CHEMIE;15514;11-D;11-Desoxycorticosteron;ng/dl;<;90;<;90
+BLUT-CHEMIE;37671;11-DC;11-Desoxy-Cortisol;µg/l;<;2.5;<;2.5
+BLUT-CHEMIE;15515;11-DC;11-Desoxycortisol;µg/l;<;8;<;8
+BLUT-CHEMIE;36667;125VTD;1,25-OH-Vitamin D;pmol/l;48;190;48;190
+BLUT-CHEMIE;36668;125VTD-18;1,25-OH-Vitamin D;pmol/l;84;213;84;213
+BLUT-CHEMIE;11487;1.5-ah-D-G;1,5-Anhydro-D-Glucitol;mg/l;>;14;>;14
+BLUT-CHEMIE;22933;5-FU-AUC; AUC;mg h/l;;;;
+BLUT-CHEMIE;22932;5-FU-Dauer; Infusionsdauer;h;;;;
+BLUT-CHEMIE;22931;5-FU-Konz; Konzentration;mg/l;;;;
+BLUT-CHEMIE;38737;5-HIA;5-Hydroxyindolacetat;nmol/l;20.7;52.5;20.7;52.5
+BLUT-CHEMIE;29826;9-OH;9-Hydroxy-Risperidon;nmol/l;;;;
+URIN-CHEMIE;10522;ADR2C;Adrenalin;nmol/mmol Crea.;<;16;<;16
+URIN-CHEMIE;10674;ADR2C1;Adrenalin;nmol/mmol Crea.;<;47;<;47
+URIN-CHEMIE;10677;ADR2C19;Adrenalin;nmol/mmol Crea.;<;22;<;22
+URIN-CHEMIE;10675;ADR2C4;Adrenalin;nmol/mmol Crea.;<;34;<;34
+URIN-CHEMIE;10676;ADR2C9;Adrenalin;nmol/mmol Crea.;<;22;<;22
+URIN-CHEMIE;2229;ADR2M;Adrenalin;nmol/24h;<;110;<;110
+URIN-CHEMIE;10481;ADR2M1;Adrenalin;nmol/24h;<;17;<;17
+URIN-CHEMIE;10485;ADR2M10;Adrenalin;nmol/24h;<;76;<;76
+URIN-CHEMIE;10482;ADR2M2;Adrenalin;nmol/24h;<;22;<;22
+URIN-CHEMIE;10483;ADR2M4;Adrenalin;nmol/24h;<;32;<;32
+URIN-CHEMIE;10484;ADR2M7;Adrenalin;nmol/24h;<;55;<;55
+URIN-CHEMIE;10486;ADR2M99;Adrenalin;nmol/24h;<;110;<;110
+URIN-CHEMIE;2227;ADR2O;Adrenalin;nmol/l;;110;;110
+URIN-CHEMIE;40881;ADR3C;Adrenalin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40885;ADR3Cab16;Adrenalin ;nmol/mmol Crea;<;22;<;22
+URIN-CHEMIE;40884;ADR3Cbis16;Adrenalin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40869;ADR3M;Adrenalin ;nmol/24h;;;;
+URIN-CHEMIE;40891;ADR3Mab16;Adrenalin ;nmol/l/24h;<;130;<;130
+URIN-CHEMIE;40890;ADR3Mbis16;Adrenalin ;nmol/l/24h;;;;
+URIN-CHEMIE;2261;ALAM;Aminolaevulin-Sre.;mg/24h;<;5.4;<;5.4
+URIN-CHEMIE;2258;ALAO;5-ALA qn;µmol/mmol Crea;<;2.5;<;2.5
+URIN-CHEMIE;15283;ALB-C;Albumin;mg/mmol Crea;<;2.26;<;2.26
+URIN-CHEMIE;2255;ALBM;Albumin;mg/24h;<;30;<;30
+URIN-CHEMIE;2254;ALBO;Albumin;mg/l;<;20;<;20
+URIN-CHEMIE;21265;ALD FREI;Aldosteronl frei Aliquot;µg/l;;;;
+URIN-CHEMIE;38356;AldoM;Aldost.;nmol/24h;3.3;78;3.3;78
+URIN-CHEMIE;10492;AldoM;Aldost.;nmol/24h;0.2;1.3;0.2;1.3
+URIN-CHEMIE;38357;AldoM-J;Aldost.;nmol/24h;1.4;13.9;1.4;13.9
+URIN-CHEMIE;2264;AldoO;Aldosteron frei;nmol/l;;;;
+URIN-CHEMIE;14020;Androsteron; 3.16.17-Androsteron;;;;;
+URIN-CHEMIE;14008;Androsteron; Androsteron;;;;;
+URIN-CHEMIE;2246;A1MGO;a-1-Microglobulin;mg/l;<;8;<;8
+URIN-CHEMIE;33627;A-18-H;Aldost.-18-Glucrnd.;µg/24h;1.19;28.1;1.19;28.1
+URIN-CHEMIE;12669;A-18-H O;Aldosteron-18-Glucuronid;µg/l;;;;
+URIN-CHEMIE;12670;A-18-HM;Aldosteron-18-Glucuronid;µg/24h;3.5;20;3.5;20
+URIN-CHEMIE;10478;BAG;Basophile Granulozyten;%;;;;
+URIN-CHEMIE;2114;BAKT; Bakterien;;;;;
+URIN-CHEMIE;2505;BAKT-KOVA; Bakterien;;keine;;keine;
+URIN-CHEMIE;40648;BAKT-KOVA-A; Bakterien;;;;;
+URIN-CHEMIE;2405;BAKT-UF-100; Bakterien;/µl;<;2000;<;3000
+URIN-CHEMIE;42124;BAKT-U6500; Bakterien;;;;;
+URIN-CHEMIE;42111;BIL; Bilirubin;;;;;
+URIN-CHEMIE;2097;BIL; Bilirubin;;;;;
+URIN-CHEMIE;11151;BleiO;Blei;µmol/l;<;0.4;<;0.4
+URIN-CHEMIE;30076;BleiO;Blei;µmol/l;<;0.13;<;0.13
+URIN-CHEMIE;43366;BMLQ-IMFIX;Immunfixation;;;;;
+URIN-CHEMIE;43356;BMLQ-Phos-AU-U;Phosphat;mmol/l;;;;
+URIN-CHEMIE;2235;B2MGBM;ß-2-MGB;µg/24h;<;150;<;150
+URIN-CHEMIE;20820;B2MGBO;ß-2-Microglobulin;µg/l;<;150;<;150
+URIN-CHEMIE;38210;B2MU;ß-2-Microglobulin;µg/l;<;300;<;300
+URIN-CHEMIE;14305;Ca-AUU;Calcium;mmol/l;;;;
+URIN-CHEMIE;41768;Ca-C;Calcium;mmol/mmol Crea;;;;
+URIN-CHEMIE;41769;Ca-C 0-1jmf;Calcium;mmol/mmol Crea;<;2.29;<;2.29
+URIN-CHEMIE;41775;Ca-C 10-17jmf;Calcium;mmol/mmol Crea;<;0.68;<;0.68
+URIN-CHEMIE;41770;Ca-C 1-2jmf;Calcium;mmol/mmol Crea;<;1.58;<;1.58
+URIN-CHEMIE;41776;Ca-C 17-999jmf;Calcium;mmol/mmol Crea;<;0.57;<;0.57
+URIN-CHEMIE;41771;Ca-C 2-3jmf;Calcium;mmol/mmol Crea;<;1.41;<;1.41
+URIN-CHEMIE;41772;Ca-C 3-5jmf;Calcium;mmol/mmol Crea;<;1.16;<;1.16
+URIN-CHEMIE;41773;Ca-C 5-7jmf;Calcium;mmol/mmol Crea;<;0.85;<;0.85
+URIN-CHEMIE;41774;Ca-C 7-10jmf;Calcium;mmol/mmol Crea;<;0.71;<;0.71
+URIN-CHEMIE;35812;Ca-DXC;Calcium Urinportion;;;;;
+URIN-CHEMIE;35813;Ca-DXC;Calcium Sammelurin;;;;;
+URIN-CHEMIE;2293;CAM;Calcium;mmol/24h;<;7;<;7
+URIN-CHEMIE;29939;Canna;Cannabis (Tetrahydrocannabinol);µg/l;;;;
+URIN-CHEMIE;38133;CATAM-LQ;Catecholamine;;;;;
+URIN-CHEMIE;40897;CATAM-PR;Catecholamine (Preis);;;;;
+URIN-CHEMIE;20842;CATAM-PR;Catecholamine (Preis);;;;;
+URIN-CHEMIE;14325;Ca24h-DXC;Calcium;mmol/24h;<;7;<;7
+URIN-CHEMIE;10859;CFPM;Total Proteine;g/24h;<;0.15;<;0.15
+URIN-CHEMIE;17829;CITRM;Citrat;mmol/24h;>;3;>;3
+URIN-CHEMIE;39007;CITRM;Citrat;mmol/24h;1.25;2.76;0.6;4.84
+URIN-CHEMIE;33645;CITRM;Citrat;mmol/24h;1.99;3.98;1.99;3.98
+URIN-CHEMIE;24220;CITRM;Citrat;mmol/24h;0.94;5.39;0.94;5.39
+URIN-CHEMIE;37838;CITRO;Citrat;µmol/mmolCrea;>;80;>;80
+URIN-CHEMIE;2231;CITRO;Citrat;µmol/l;;;;
+URIN-CHEMIE;37837;CITRO_B;Creatinin;;;;;
+URIN-CHEMIE;14306;Cl-AU-U;Chlorid;mmol/l;;;;
+URIN-CHEMIE;2292;CLM;Chlorid;mmol/24h;80;370;80;370
+URIN-CHEMIE;14324;Cl24h-DXC;Chlorid;mmol/24h;80;370;80;370
+URIN-CHEMIE;30006;Coca;Cocain;µg/l;;;;
+URIN-CHEMIE;11785;CORT FREI;Cortisol frei;µg/l;;;;
+URIN-CHEMIE;15071;CORT FREI;Cortisol frei;µg/l;;;;
+URIN-CHEMIE;42473;CORT-F;Cortisol frei;nmol/l;;;;
+URIN-CHEMIE;42474;CORT-F24;Cortisol frei;nmol/24h;;;;
+URIN-CHEMIE;42475;CORT-F24-0-18j;Cortisol frei;nmol/24h;;;;
+URIN-CHEMIE;42476;CORT-F24-18-999j;Cortisol frei;nmol/24h;9.5;111;9.5;111
+URIN-CHEMIE;15072;CORTISOLFM;Cortisol frei;µg/24h;13;83;13;83
+URIN-CHEMIE;29312;CORTISOLFM;Cortisol frei;µg/24h;36;136;36;136
+URIN-CHEMIE;11541;CORTISOLFM;Cortisol frei;nmol/24h;69;361;69;361
+URIN-CHEMIE;11537;CORTISOLFM;Cortisol frei;nmol/24h;39;268;39;268
+URIN-CHEMIE;11784;CORTISOLFM;Cortisol frei;µg/24h;8;77;8;77
+URIN-CHEMIE;15063;CORTISOLFM;Cortisol frei;µg/24h;13;83;13;83
+URIN-CHEMIE;22078;CORTISOLFM10J;Cortisol frei;µg/24h;2;27;2;27
+URIN-CHEMIE;22079;CORTISOLFM20J;Cortisol frei;µg/24h;5;55;5;55
+URIN-CHEMIE;2267;CORTISOLM;Cortisol;nmol/24h;110;436;110;436
+URIN-CHEMIE;38736;Cotinin;Cotinin;µg/l;<;11;<;11
+URIN-CHEMIE;36879;Cotinin;Cotinin;µg/l;<;500;<;500
+URIN-CHEMIE;15068;Cotinin;Cotinin;µg/l;;;;
+URIN-CHEMIE;11642;Cotinin;Cotinin+Hydrocotinin;µg/l;<;499;<;499
+URIN-CHEMIE;14609;Crea-AU-U;Creatinin;mmol/l;;;;
+URIN-CHEMIE;22009;Crea-DXC;Creatinin Urinportion;mmol/l;;;;
+URIN-CHEMIE;22010;Crea-DXC;Creatinin Sammelurin;mmol/l;;;;
+URIN-CHEMIE;14841;CreaEnz-H902;Creatinin enz.;mmol/l;<;15;<;15
+URIN-CHEMIE;13003;CreaEnzM;Creatinin enz.;mmol/24h;9;21;7;14
+URIN-CHEMIE;13002;CreaEnzO;Creatinin enz.;mmol/l;<;15;<;15
+URIN-CHEMIE;12252;CREAM;Creatinin;mmol/24h;9;21;7;14
+URIN-CHEMIE;14658;Crea24h-DXC;Creatinin;mmol/24h;9;21;7;14
+URIN-CHEMIE;20843;CROSS-PR;Crosslinks (Preis);nM;;;;
+URIN-CHEMIE;27318;CYSTUM;Cystin;µmol/24h;<;1040;<;1040
+URIN-CHEMIE;10606;CYSTUO;Cystin;µmol/l;;;;
+URIN-CHEMIE;2120;DEC; Dysmorphe Ec;%;;;;
+URIN-CHEMIE;2089;Dichte; Dichte;kg/l;;;;
+URIN-CHEMIE;42112;Dichte; Dichte;kg/l;1.01;1.03;1.01;1.03
+URIN-CHEMIE;10524;DopaminC;Dopamin;nmol/mmol Crea.;<;335;<;335
+URIN-CHEMIE;2241;DopaminM;Dopamin;nmol/24h;<;2980;<;2980
+URIN-CHEMIE;10487;DopaminM1;Dopamin;nmol/24h;<;550;<;550
+URIN-CHEMIE;10488;DopaminM2;Dopamin;nmol/24h;<;900;<;900
+URIN-CHEMIE;10489;DopaminM4;Dopamin;nmol/24h;<;1700;<;1700
+URIN-CHEMIE;10490;DopaminM99;Dopamin;nmol/24h;<;2980;<;2980
+URIN-CHEMIE;2239;DopaminO;Dopamin;nmol/l;;;;
+URIN-CHEMIE;40883;Dopamin3C;Dopamin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40889;Dopamin3Cab16;Dopamin ;nmol/mmol Crea;<;340;<;340
+URIN-CHEMIE;40888;Dopamin3Cbis16;Dopamin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40871;Dopamin3M;Dopamin ;nmol/24h;;;;
+URIN-CHEMIE;40895;Dopamin3Mab16;Dopamin ;nmol/24h;<;3300;<;3300
+URIN-CHEMIE;40894;Dopamin3Mbis16;Dopamin; nmol/24h;;;;
+URIN-CHEMIE;12623;DPR;DPD-CL;nM/mMCrea;5;11;;
+URIN-CHEMIE;21926;DPR;DPD-CL;nM/mMCrea;5;11;;
+URIN-CHEMIE;10462;DPR-CLO;DPD-CL;nM;;;;
+URIN-CHEMIE;21927;DPR-10J;DPD-CL;nM/mMCrea;31;110;31;110
+URIN-CHEMIE;21928;DPR-14J;DPD-CL;nM/mMCrea;17;100;17;100
+URIN-CHEMIE;21929;DPR-17J;DPD-CL;nM/mMCrea;<;59;<;59
+URIN-CHEMIE;2100;EC; Erythrozyten;;;;;
+URIN-CHEMIE;2501;EC-KOVA; Erythrozyten;/µl;<;20;<;20
+URIN-CHEMIE;40644;EC-KOVA-A; Erythrozyten;;;;;
+URIN-CHEMIE;19676;ECM;Urin Ec-Morphologie incl. Status;;;;;
+URIN-CHEMIE;2401;EC-UF100; Erythrozyten;/µl;<;20;<;20
+URIN-CHEMIE;42125;EC-U6500; Erythrozyten;/µl;<;20;<;20
+URIN-CHEMIE;2107;EC-ZYL; Ec-Zylinder;;;;;
+URIN-CHEMIE;2603;EC-ZYL; Ec-Zylinder;;;;;
+URIN-CHEMIE;2119;EEC; Eumorphe Ec;%;;;;
+URIN-CHEMIE;10477;EOG;Eosinophile Granulozyten;%;;;;
+URIN-CHEMIE;42115;ERY; Hämoglobin;;;;;
+URIN-CHEMIE;2098;ERY; Hämoglobin;;;;;
+URIN-CHEMIE;2276;ESTRIOLM;Estriol;mg/24h;;;;
+URIN-CHEMIE;2271;ESTRIOLO;Estriol;mg/l;;;;
+URIN-CHEMIE;29940;Ethylgl;Ethylglucuronid;mg/l;<;0.1;<;0.1
+URIN-CHEMIE;35350;Ethylgl;Ethylglucuronid;µg/l;<;300;<;300
+URIN-CHEMIE;14009;Etiocholanalon; Etiocholanalon;;;;;
+URIN-CHEMIE;2605;E-ZYL; Epithel-Zylinder;;;;;
+URIN-CHEMIE;2109;E-ZYL; Epithel-Zylinder;;;;;
+URIN-CHEMIE;42121;Farbe; Farbe;;;;;
+URIN-CHEMIE;2132;FEU;Hämosiderin im Urin;;;;;
+URIN-CHEMIE;11346;Fl;Fluorid;µmol/l;<;105;<;105
+URIN-CHEMIE;38764;GAMY-AU-U;a-Amylase, gesamt;U/l;;;;
+URIN-CHEMIE;38776;GAMY-C;a-Amylase, gesamt;kU/mol Crea;<;24.8;<;33.6
+URIN-CHEMIE;38774;GAMY0-2j;a-Amylase, gesamt;U/l;;;;
+URIN-CHEMIE;38775;GAMY2j-99j;a-Amylase, gesamt;U/l;<;490;<;450
+URIN-CHEMIE;42152;G-EC-abs-U6500; Glomeruläre Ec abs.;;;;;
+URIN-CHEMIE;42142;G-EC-U6500; Glomeruläre Ec;%;<;30;<;30
+URIN-CHEMIE;42114;GLU; Glucose;;;;;
+URIN-CHEMIE;2094;GLU; Glucose;;;;;
+URIN-CHEMIE;14612;Gluc-AU-U;Glucose;mmol/l;<;0.8;<;0.8
+URIN-CHEMIE;21581;Gluc-HK-Urin;Glucose;mmol/l;<;0.8;<;0.8
+URIN-CHEMIE;2233;Gluc24;Glucose;mmol/24h;<;0.75;<;0.75
+URIN-CHEMIE;14659;Gluc24h-DXC;Glucose;mmol/24h;<;2.8;<;2.8
+URIN-CHEMIE;2262;GPORPHM;Gesamt-Porphyrine;µg/24h;<;150;<;150
+URIN-CHEMIE;2601;G-ZYL; granulierte Zylinder;;;;;
+URIN-CHEMIE;2105;G-ZYL; granulierte Zylinder;;;;;
+URIN-CHEMIE;2111;HB-ZYL; Hb-Zylinder;;;;;
+URIN-CHEMIE;2607;HB-ZYL; Hb-Zylinder;;;;;
+URIN-CHEMIE;18491;HC-U;Homocystin;mmol/mol Crea;<;NWG;;
+URIN-CHEMIE;2141;HEPTA;Heptacarboxyporphyrine;;;;;
+URIN-CHEMIE;2140;HEXA;Hexacarboxyporphyrine;;;;;
+URIN-CHEMIE;11324;HGA;Homogentisinsäure;;;;;
+URIN-CHEMIE;2273;HIASM;5-OH-Indol. sre.;mg/24h;<;10;<;10
+URIN-CHEMIE;2268;HIASO;5-OH-Indol-Essigsäure;mg/l;2;9;2;9
+URIN-CHEMIE;10669;HVAC;HVA;µmol/mmolCrea;<;5;<;5
+URIN-CHEMIE;10670;HVAC1;HVA;µmol/mmolCrea;<;20;<;20
+URIN-CHEMIE;10673;HVAC19;HVA;µmol/mmolCrea;<;8;<;8
+URIN-CHEMIE;10671;HVAC4;HVA;µmol/mmolCrea;<;14;<;14
+URIN-CHEMIE;10672;HVAC9;HVA;µmol/mmolCrea;<;9;<;9
+URIN-CHEMIE;2304;HVAM;HVA;µmol/24h;8;48;8;48
+URIN-CHEMIE;10621;HVAM10;HVA;µmol/24h;12;26;12;26
+URIN-CHEMIE;10622;HVAM16;HVA;µmol/24h;13;48;13;48
+URIN-CHEMIE;42727;HVAM3;HVA;µmol/24h;;;;
+URIN-CHEMIE;10620;HVAM6;HVA;µmol/24h;8;24;8;24
+URIN-CHEMIE;2303;HVAO;HVA;µmol/l;;;;
+URIN-CHEMIE;2274;HYCOSM;17-OH-Corticostrd.;mg/24h;5;18;8;25
+URIN-CHEMIE;2269;HYCOSO;17-OH-Corticosteroide;mg/l;;;;
+URIN-CHEMIE;2104;H-ZYL; hyaline Zylinder;;;;;
+URIN-CHEMIE;2504;H-ZYL-KOVA; Zylinder (hyaline);/µl;<;1.5;<;1.5
+URIN-CHEMIE;40647;H-ZYL-KOVA-A; Zylinder (hyaline);;;;;
+URIN-CHEMIE;2404;H-ZYL-UF-100; Zylinder (hyaline);/µl;<;1.5;<;1.5
+URIN-CHEMIE;42128;H-ZYL-U6500; Zylinder (hyaline);;;;;
+URIN-CHEMIE;2252;IgGUO;IgG;mg/l;<;4.3;<;4.3
+URIN-CHEMIE;43361;IMFIX;Immunfixation;;;;;
+URIN-CHEMIE;2019;IMFIX;Immun-EP;;;;;
+URIN-CHEMIE;13115;IMFIX-KURVE; Immunfixation;;;;;
+URIN-CHEMIE;11013;Isoniazid;Isoniazid;;;;;
+URIN-CHEMIE;33529;Jod;Jod;µg/mmol Crea;20;53;20;53
+URIN-CHEMIE;29798;Jod;Jod;µmol/mmol Crea;<;0.9;<;0.9
+URIN-CHEMIE;32638;Jod;Jod;µmol/mmol Crea;0.16;0.42;0.16;0.42
+URIN-CHEMIE;32816;Jod;Jod;µmol/mmol Crea;0.16;0.42;0.16;0.42
+URIN-CHEMIE;43133;JodC;Jod;µmol/mmol Crea;0.16;0.42;0.16;0.42
+URIN-CHEMIE;43134;JodM;Jod;µmol/24h;;;;
+URIN-CHEMIE;29797;JodM;Jod;µg/24h;;;;
+URIN-CHEMIE;43132;JodU;Jod;µmol/l;0.78;1.57;0.78;1.57
+URIN-CHEMIE;33528;JodU;Jod;µg/l;100;199;100;199
+URIN-CHEMIE;29796;JodU;Jod;µmol/l;<;10;<;10
+URIN-CHEMIE;32637;JodU;Jod;µmol/l;0.79;1.56;0.79;1.56
+URIN-CHEMIE;32815;JodU;Jod;µmol/l;0.79;1.56;0.79;1.56
+URIN-CHEMIE;2291;KALM;Kalium;mmol/24h;25;100;25;100
+URIN-CHEMIE;14307;K-AU-U;Kalium;mmol/l;;;;
+URIN-CHEMIE;42116;KET; Ketone;;;;;
+URIN-CHEMIE;2095;KET; Ketone;;;;;
+URIN-CHEMIE;2275;KETOSM;17-Ketosteroide;mg/24h;;;;
+URIN-CHEMIE;11956;KETOSM;17-Ketosteroide;µmol/24h;9;31;12;38
+URIN-CHEMIE;10609;KETOSM10;17-Ketosteroide;mg/24h;<;1;<;1
+URIN-CHEMIE;10610;KETOSM16;17-Ketosteroide;mg/24h;3;13;1;8
+URIN-CHEMIE;10611;KETOSM50;17-Ketosteroide;mg/24h;10;22;2.5;10
+URIN-CHEMIE;10612;KETOSM70;17-Ketosteroide;mg/24h;4.5;15;2.5;10
+URIN-CHEMIE;11955;KETOSO;17-Ketosteroide;µmol/l;;;;
+URIN-CHEMIE;40652;KOVA-VOL;Kova Vol;;;;;
+URIN-CHEMIE;2138;KP13;Koproporhyrine I u. III;;;;;
+URIN-CHEMIE;42131;KRISTALLE-U6500; Kristalle;;;;;
+URIN-CHEMIE;14941;KupferM;Kupfer;µmol/24h;<;0.56;<;0.56
+URIN-CHEMIE;38532;KupferM;Kupfer  ;µmol/24h;0.21;0.72;0.21;0.72
+URIN-CHEMIE;14940;KupferO;Kupfer;µmol/l;;;;
+URIN-CHEMIE;14320;K24h-DXC;Kalium;mmol/24h;25;125;25;125
+URIN-CHEMIE;43100;LABUNIQ-CREAU;Creatinin;mmol/l;;;;
+URIN-CHEMIE;43065;LABUNIQ-TPU;Total Proteine;g/l;;;;
+URIN-CHEMIE;2099;LC; Leukozyten;;;;;
+URIN-CHEMIE;2502;LC-KOVA; Leukozyten;/µl;<;20;<;20
+URIN-CHEMIE;40645;LC-KOVA-A; Leukozyten;;;;;
+URIN-CHEMIE;2402;LC-UF-100; Leukozyten;/µl;<;20;<;20
+URIN-CHEMIE;42126;LC-U6500; Leukozyten;/µl;<;20;<;20
+URIN-CHEMIE;2108;LC-ZYL; Lc-Zylinder;;;;;
+URIN-CHEMIE;2604;LC-ZYL; Lc-Zylinder;;;;;
+URIN-CHEMIE;2399;LEIT-UF100; Leitfähigkeit;mS/cm;7;28;7;28
+URIN-CHEMIE;2090;LEU; Leukozyten;;;;;
+URIN-CHEMIE;42117;LEU; Leukozyten;;;;;
+URIN-CHEMIE;2606;LI-ZYL; Lipid-Zylinder;;;;;
+URIN-CHEMIE;2110;LI-ZYL; Lipid-Zylinder;;;;;
+URIN-CHEMIE;2244;LKKM;Kappa-Kette;g/24h;<;0.1;<;0.1
+URIN-CHEMIE;2242;LKKO;Kappa-Kette;g/l;<;0.07;<;0.07
+URIN-CHEMIE;2245;LKLM;Lambda-Kette;g/24h;<;0.06;<;0.06
+URIN-CHEMIE;2243;LKLO;Lambda-Kette;g/l;<;0.04;<;0.04
+URIN-CHEMIE;10479;LYM;Lymphozyten;%;;;;
+URIN-CHEMIE;10480;MAK;Makrophagen;%;;;;
+URIN-CHEMIE;42177;mAlb-AU-U-C;Albumin;mg/mmol Crea;<;3;<;3
+URIN-CHEMIE;42239;mAlb-AU-U-M;Albumin;mg/24h;<;30;<;30
+URIN-CHEMIE;42166;mAlb-AU-U-O;Albumin;mg/l;;;;
+URIN-CHEMIE;42141;MALT; Malteserkreuze;;;;;
+URIN-CHEMIE;2609;MALT; Malteserkreuze;;;;;
+URIN-CHEMIE;2113;MALT; Malteserkreuze;;;;;
+URIN-CHEMIE;11921;METAM;Metanephrin;nmol/24h;380;1510;380;1510
+URIN-CHEMIE;10850;METAM;Metanephrin;nmol/24h;380;1510;380;1510
+URIN-CHEMIE;10849;METAO;Metanephrin;nmol/l;;;;
+URIN-CHEMIE;29413;MethPhenU;Methylphenidat;nmol/l;;;;
+URIN-CHEMIE;21281;Methyl;Methmalonsr.;mmol/mol Crea;<;3.6;<;3.6
+URIN-CHEMIE;12188;Methyl;Methmalonsr.;µmol/mmol Crea;<;5;<;5
+URIN-CHEMIE;12187;Methyl;Methylmalonsäure;µmol;;;;
+URIN-CHEMIE;21280;Methyl;Methylmalonsäure;µmol/l;;;;
+URIN-CHEMIE;14308;Mg-AU-U;Magnesium;mmol/l;;;;
+URIN-CHEMIE;2290;MGM;Magnesium;mmol/24h;4;7;4;7
+URIN-CHEMIE;14326;Mg24h-DXC;Magnesium;mmol/24h;3;5;3;5
+URIN-CHEMIE;42169;MUCUS-U6500; Mucus (Schleim);;;;;
+URIN-CHEMIE;2047;MYOGLB;Myoglobin;;;;;
+URIN-CHEMIE;14309;Na-AU-U;Natrium;mmol/l;;;;
+URIN-CHEMIE;10523;NADRC;Noradrenalin;nmol/mmol Crea.;<;77;<;77
+URIN-CHEMIE;10678;NADRC1;Noradr.;nmol/mmol Crea.;<;280;<;280
+URIN-CHEMIE;10681;NADRC19;Noradr.;nmol/mmol Crea.;<;53;<;53
+URIN-CHEMIE;10679;NADRC4;Noradr.;nmol/mmol Crea.;<;80;<;80
+URIN-CHEMIE;10680;NADRC9;Noradr.;nmol/mmol Crea.;<;60;<;60
+URIN-CHEMIE;2228;NADRM;Noradrenalin;nmol/24h;<;473;<;473
+URIN-CHEMIE;10569;NADRM1;Noradr.;nmol/24h;<;59;<;59
+URIN-CHEMIE;10573;NADRM10;Noradr.;nmol/24h;<;384;<;384
+URIN-CHEMIE;10570;NADRM2;Noradr.;nmol/24h;<;100;<;100
+URIN-CHEMIE;10571;NADRM4;Noradr.;nmol/24h;<;170;<;170
+URIN-CHEMIE;10572;NADRM7;Noradr.;nmol/24h;<;266;<;266
+URIN-CHEMIE;2226;NADRO;Noradrenalin;nmol/l;;;;
+URIN-CHEMIE;14840;NAG-H902;N-Acetyl-ß-D-Glucosaminidase;U/I;;;;
+URIN-CHEMIE;13005;NAGM;NAG;U/24Std.;1.39;3.23;1.39;3.23
+URIN-CHEMIE;13004;NAGO;N-Acetyl-ß-D-Glucosaminidase;U/I;;;;
+URIN-CHEMIE;2289;NATM;Natrium;mmol/24h;40;250;40;250
+URIN-CHEMIE;14322;Na24h-DXC;Natrium;mmol/24h;40;250;40;250
+URIN-CHEMIE;2091;NIT; Nitrit;;;;;
+URIN-CHEMIE;42118;NIT; Nitrit;;;;;
+URIN-CHEMIE;40882;NorADR3C;Noradrenalin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40887;NorADR3Cab16;Noradrenalin ;nmol/mmol Crea;<;45;<;45
+URIN-CHEMIE;40886;NorADR3Cbis16;Noradrenalin ;nmol/mmol Crea;;;;
+URIN-CHEMIE;40870;NorADR3M;Noradrenalin ;nmol/24h;;;;
+URIN-CHEMIE;40893;NorADR3Mab16;Noradrenalin ;nmol/24h;<;610;<;610
+URIN-CHEMIE;40892;NorADR3Mbis16;Noradrenalin ;nmol/24h;;;;
+URIN-CHEMIE;10852;NORMETAM;Normeta.;nmol/24h;580;2500;580;2500
+URIN-CHEMIE;10851;NORMETAO;Normetanephrin;nmol/l;;;;
+URIN-CHEMIE;10475;NSG;Neutroph. stabk. Granuloz.;%;;;;
+URIN-CHEMIE;10476;NSK;Neutroph. segmentkernige;%;;;;
+URIN-CHEMIE;22075;OSM;Osmolalität Sammelurin;mmol/l;;;;
+URIN-CHEMIE;2046;OSM;Osmolalität (Urin);mOsm/kg;50;1200;50;1200
+URIN-CHEMIE;39008;OXAM;Oxalat;mmol/24h;;;;
+URIN-CHEMIE;39009;OXAM0-7;Oxalat;mmol/24h;0.14;0.52;0.14;0.52
+URIN-CHEMIE;39011;OXAM14-120;Oxalat;mmol/24h;0.2;0.52;0.2;0.52
+URIN-CHEMIE;39010;OXAM7-14;Oxalat;mmol/24h;0.14;0.42;0.14;0.42
+URIN-CHEMIE;37839;OXAO;Oxalat;µmol/mmolCrea;<;40;<;40
+URIN-CHEMIE;2236;OXAO;Oxalat;µmol/l;;;;
+URIN-CHEMIE;43315;OXAO0-0.5;Oxalat;µmol/mmolCrea;<;325;<;325
+URIN-CHEMIE;43314;OXAO0.5-2;Oxalat;µmol/mmolCrea;<;132;<;132
+URIN-CHEMIE;43313;OXAO2-5;Oxalat;µmol/mmolCrea;<;100;<;100
+URIN-CHEMIE;43312;OXAO5-16;Oxalat;µmol/mmolCrea;<;70;<;70
+URIN-CHEMIE;29414;OXLM;Oxalat;mmol/24h;<;0.5;<;0.5
+URIN-CHEMIE;10590;PAmy24;Amylase Pancr.;U/24h;<;350;<;350
+URIN-CHEMIE;14662;PAMY24h-DXC;Amylase Pancr.;U/24h;;;;
+URIN-CHEMIE;39670;PBG Preis;Preismethode PBG qn + ALA qn;;;;;
+URIN-CHEMIE;39671;PBG qn;Porphobilinogen qn;µmol/mmol Crea;<;1.25;<;1.25
+URIN-CHEMIE;2263;PBGM;Porphobilinogen;µg/24h;<;2000;<;2000
+URIN-CHEMIE;2260;PBGO;Porphobilinogen, ql.;;;;;
+URIN-CHEMIE;2139;PENTA;Pentacarboxyporphyrine;;;;;
+URIN-CHEMIE;2102;P-EPI; Platten-Epithelien;;;;;
+URIN-CHEMIE;2503;P-EPI-KOVA; Platten-Epithelien;/µl;<;10;<;10
+URIN-CHEMIE;40646;P-EPI-KOVA-A; Platten-Epithelien;;;;;
+URIN-CHEMIE;2403;P-EPI-UF-100; Platten-Epithelien;/µl;<;10;<;10
+URIN-CHEMIE;42127;P-EPI-U6500; Platten-Epithelien;;;;;
+URIN-CHEMIE;2150;PHm;pH (pH-Meter);;;;;
+URIN-CHEMIE;14629;Phos-AU-U;Phosphat;mmol/l;;;;
+URIN-CHEMIE;2294;PHOSM;Phosphat;mmol/24h;<;35;<;35
+URIN-CHEMIE;14663;Phos24h-DXC;Phosphat;mmol/24h;<;35;<;35
+URIN-CHEMIE;42119;PH-S; pH;;5;8;5;8
+URIN-CHEMIE;2092;PH-S; pH;;;;;
+URIN-CHEMIE;2610;PILZE; Pilze;;;;;
+URIN-CHEMIE;2103;PILZE; Pilze;;;;;
+URIN-CHEMIE;42130;PILZE-U6500; Pilze;;;;;
+URIN-CHEMIE;10525;Porph. diff.;Porphyrine diff.;s. Blatt;;;;
+URIN-CHEMIE;2136;PORPHQ;Porph. qn.;µmol/l;0.7;2.9;0.7;2.9
+URIN-CHEMIE;2256;PORPHQM;Porph. qn.;µmol/24h;;2.9;;2.9
+URIN-CHEMIE;2257;PORPHQO;Porph. qn.;µmol/l;0.7;2.9;0.7;2.9
+URIN-CHEMIE;14013;Pregnandiol; Pregnandiol;;;;;
+URIN-CHEMIE;14019;Pregnantriol; Pregnantriol;;;;;
+URIN-CHEMIE;14016;Pregnantriolon; Pregnantriolon;;;;;
+URIN-CHEMIE;14018;Pregnentriol; Pregnentriol;;;;;
+URIN-CHEMIE;2020;PREP;Protein-EP;;;;;
+URIN-CHEMIE;2093;PROT; Eiweiss;;;;;
+URIN-CHEMIE;42113;PROT; Eiweiss;;;;;
+URIN-CHEMIE;12628;PROT-EP;Protein-EP (HYRYS2);;;;;
+URIN-CHEMIE;12643;PROT-EP-GEL;Protein-EP Gel;;;;;
+URIN-CHEMIE;12629;PROT-EP-K; Kommentar Protein-EP;;;;;
+URIN-CHEMIE;12644;PROT-EP-KURVE; Densitogramm;;;;;
+URIN-CHEMIE;21930;PYD-CL;PYD-CL;nM/mM Crea;20;52;;
+URIN-CHEMIE;12624;PYD-CL;PYD-CL;nM/mM Crea;20;52;;
+URIN-CHEMIE;10463;PYD-CLO;PYD-CL;nM;;;;
+URIN-CHEMIE;21931;PYD-CL-10J;PYD-CL;nM/mM Crea;160;440;160;440
+URIN-CHEMIE;21932;PYD-CL-14J;PYD-CL;nM/mM Crea;105;400;105;400
+URIN-CHEMIE;21933;PYD-CL-17J;PYD-CL;nM/mM Crea;42;200;42;200
+URIN-CHEMIE;12625;PYRI/DPR;PYD/DPD;;2.5;7;2.5;7
+URIN-CHEMIE;42135;P-ZYL-EC-U6500; Erythrozyten-Zylinder;;;;;
+URIN-CHEMIE;42138;P-ZYL-E-U6500; Epithel-Zylinder;;;;;
+URIN-CHEMIE;42133;P-ZYL-G-U6500; granulierte Zylinder;;;;;
+URIN-CHEMIE;42136;P-ZYL-HB-U6500; Hämoglobin-Zylinder;;;;;
+URIN-CHEMIE;42134;P-ZYL-LC-U6500; Leukozyten-Zylinder;;;;;
+URIN-CHEMIE;42139;P-ZYL-L-U6500; Lipid-Zylinder;;;;;
+URIN-CHEMIE;42132;P-ZYL-U6500; pathologische Zylinder;;;;;
+URIN-CHEMIE;42137;P-ZYL-W-U6500; Wachs-Zylinder;;;;;
+URIN-CHEMIE;2251;RBPO;Retinol-bind. Protein;mg/l;<;1.2;<;1.2
+URIN-CHEMIE;2506;R-EPI; Rund-Epithelien;;keine;;keine;
+URIN-CHEMIE;2101;R-EPI; Rund-Epithelien;;;;;
+URIN-CHEMIE;2005;SCHW;Schwangerschaftstest;;;25;;25
+URIN-CHEMIE;2310;SelenM;Selen;;;;;
+URIN-CHEMIE;2313;SelenO;Selen;µmol/l;;;;
+URIN-CHEMIE;42129;S-EPI-6500; sonstige Epithelien;;;;;
+URIN-CHEMIE;11950;Serotonin;Serotonin;µg/24h;0.28;1.74;0.28;1.74
+URIN-CHEMIE;11949;Serotonin;Serotonin;µg/l;;;;
+URIN-CHEMIE;42168;SPERMIEN-U6500; Spermien;;;;;
+URIN-CHEMIE;2041;SPG;Spez. Gewicht;kg/l;>;1.018;>;1.018
+URIN-CHEMIE;14015;Tetrahydo S; Tetrahydo S;;;;;
+URIN-CHEMIE;14631;TP-AU-U;Total Proteine;g/l;;;;
+URIN-CHEMIE;15284;TP-C;Total Proteine;mg/mmol Crea;;;;
+URIN-CHEMIE;41292;TP-C 0-1jmf;Total Proteine;mg/mmol Crea;<;80;<;80
+URIN-CHEMIE;41293;TP-C 1-2jmf;Total Proteine;mg/mmol Crea;<;45;<;45
+URIN-CHEMIE;42178;TP-C 17-999jmf;Total Proteine;mg/mmol Crea;<;11;<;11
+URIN-CHEMIE;41298;TP-C 17-999jmf_alt;Total Proteine;mg/mmol Crea;<;11.3;<;11.3
+URIN-CHEMIE;41294;TP-C 2-3jmf;Total Proteine;mg/mmol Crea;<;30;<;30
+URIN-CHEMIE;41295;TP-C 3-5jmf;Total Proteine;mg/mmol Crea;<;20;<;20
+URIN-CHEMIE;41296;TP-C 5-8jmf;Total Proteine;mg/mmol Crea;<;19;<;19
+URIN-CHEMIE;41297;TP-C 8-17jmf;Total Proteine;mg/mmol Crea;<;18;<;18
+URIN-CHEMIE;22011;TP-DXC;Total Proteine Urinportion;g/l;;;;
+URIN-CHEMIE;22012;TP-DXC;Total Proteine Sammelurin;g/l;;;;
+URIN-CHEMIE;14664;TP24h-DXC;Total Proteine;g/24h;<;0.1;<;0.1
+URIN-CHEMIE;2253;TRAFO;Transferrin;mg/l;<;2;<;2
+URIN-CHEMIE;42140;TRCH; Trichomonaden;;;;;
+URIN-CHEMIE;2608;TRCH; Trichomonaden;;;;;
+URIN-CHEMIE;2112;TRCH; Trichomonaden;;;;;
+URIN-CHEMIE;42120;UBG; Urobilinogen;;;;;
+URIN-CHEMIE;2096;UBG; Urobilinogen;;;;;
+URIN-CHEMIE;2142;UI;Uroporphyrin I;;;;;
+URIN-CHEMIE;2143;UIII;Uroporphyrin III;;;;;
+URIN-CHEMIE;36851;UMYO;Myoglobin;µg/l;<;10;<;10
+URIN-CHEMIE;13204;UMYO;Myoglobin;µg/l;<;21;<;21
+URIN-CHEMIE;43403;UMYO;Myoglobin;µg/l;<;21;<;21
+URIN-CHEMIE;2297;URAC24;Harnsäure;mmol/24h;1.4;4.5;1.4;4.5
+URIN-CHEMIE;14660;URAC24h-DXC;Harnsäure;mmol/24h;1.5;4.4;1.5;4.4
+URIN-CHEMIE;14618;UREA-AU-U;Harnstoff;mmol/l;;;;
+URIN-CHEMIE;22076;Urea-DXC;Harnstoff Sammelurin;mmol/l;;;;
+URIN-CHEMIE;2295;UREA24;Harnstoff;mmol/24h;250;500;250;500
+URIN-CHEMIE;14661;UREA24h-DXC;Harnstoff;mmol/24h;430;710;430;710
+URIN-CHEMIE;21526;U-RES;Urin-Reserve;;;;;
+URIN-CHEMIE;14615;URIC-AU-U;Harnsäure;mmol/l;;;;
+URIN-CHEMIE;42154;USEDI-DIV-U6500;Mikroskopie (Diverses):;;;;;
+URIN-CHEMIE;20155;USTAT;Einmalkatheter Urin-Status;;;;;
+URIN-CHEMIE;21472;USTAT;Urin-Status Urisys Bestellmethode;;;;;
+URIN-CHEMIE;20710;USTAT;SP: Urin-Status;;;;;
+URIN-CHEMIE;20153;USTAT;post Massage Urin-Status;;;;;
+URIN-CHEMIE;21611;USTAT;Katheter Urin-Status;;;;;
+URIN-CHEMIE;20139;USTAT;ES: Urin-Status;;;;;
+URIN-CHEMIE;20145;USTAT;MS Urin-Status;;;;;
+URIN-CHEMIE;30365;USTAT;Urin-Status u601 (nur Test);;;;;
+URIN-CHEMIE;38214;USTAT(Poct);Urinstatus  (U411);;;;;
+URIN-CHEMIE;13960;USTAT-PREIS;Preis Urin-Status gross;;;;;
+URIN-CHEMIE;10664;VMSC;VMS;µmol/mmolCrea;<;3;<;3
+URIN-CHEMIE;10665;VMSC1;VMS;µmol/mmolCrea;<;11;<;11
+URIN-CHEMIE;10668;VMSC19;VMS;µmol/mmolCrea;<;5;<;5
+URIN-CHEMIE;10666;VMSC4;VMS;µmol/mmolCrea;<;6;<;6
+URIN-CHEMIE;10667;VMSC9;VMS;µmol/mmolCrea;<;5;<;5
+URIN-CHEMIE;2240;VMSM;VMS;µmol/24h;;35;;35
+URIN-CHEMIE;2238;VMSO;VMS;µmol/l;;;;
+URIN-CHEMIE;10974;VOLU01;1-Std. Volumen;ml/h;;;;
+URIN-CHEMIE;10975;VOLU02;2-Std. Volumen;ml/2h;;;;
+URIN-CHEMIE;10976;VOLU03;3-Std. Volumen;ml/3h;;;;
+URIN-CHEMIE;10977;VOLU04;4-Std. Volumen;ml/4h;;;;
+URIN-CHEMIE;10654;VOLU05;5-Std. Volumen;ml/5h;;;;
+URIN-CHEMIE;10978;VOLU06;6-Std. Volumen;ml/6h;;;;
+URIN-CHEMIE;10979;VOLU07;7-Std. Volumen;ml/7h;;;;
+URIN-CHEMIE;10980;VOLU08;8-Std. Volumen;ml/8h;;;;
+URIN-CHEMIE;10981;VOLU09;9-Std. Volumen;ml/9h;;;;
+URIN-CHEMIE;10982;VOLU10;10-Std. Volumen;ml/10h;;;;
+URIN-CHEMIE;10983;VOLU11;11-Std. Volumen;ml/11h;;;;
+URIN-CHEMIE;10984;VOLU12;12-Std. Volumen;ml/12h;;;;
+URIN-CHEMIE;10985;VOLU13;13-Std. Volumen;ml/13h;;;;
+URIN-CHEMIE;10987;VOLU14;14-Std. Volumen;ml/14h;;;;
+URIN-CHEMIE;10988;VOLU15;15-Std. Volumen;ml/15h;;;;
+URIN-CHEMIE;10989;VOLU16;16-Std. Volumen;ml/16h;;;;
+URIN-CHEMIE;10990;VOLU17;17-Std. Volumen;ml/17h;;;;
+URIN-CHEMIE;10991;VOLU18;18-Std. Volumen;ml/18h;;;;
+URIN-CHEMIE;10992;VOLU19;19-Std. Volumen;ml/19h;;;;
+URIN-CHEMIE;10993;VOLU20;20-Std. Volumen;ml/20h;;;;
+URIN-CHEMIE;10994;VOLU21;21-Std. Volumen;ml/21h;;;;
+URIN-CHEMIE;10995;VOLU22;22-Std. Volumen;ml/22h;;;;
+URIN-CHEMIE;10996;VOLU23;23-Std. Volumen;ml/23h;;;;
+URIN-CHEMIE;2040;VOLU24;24h-Volumen;ml;;;;
+URIN-CHEMIE;2106;W-ZYL; Wachs-Zylinder;;;;;
+URIN-CHEMIE;2602;W-ZYL; Wachs-Zylinder;;;;;
+URIN-CHEMIE;2064;XSP;Xylose-Ausscheidung im Urin;%;;;;
+URIN-CHEMIE;2068;XVU;5-Std.Volumen;ml/5h;;;;
+URIN-CHEMIE;10655;XYLOSE;Xylose-Ausscheidung;%;>;16;>;16
+URIN-CHEMIE;2115;ZA; Zylinder-Art;;;;;
+URIN-CHEMIE;2309;ZinkM;Zink;µmol/24h;3;19.3;;
+URIN-CHEMIE;33963;ZinkO;Zink;µmol/l;;;;
+URIN-CHEMIE;2116;ZZ; Zylinder-Zahl;;;;;
+URIN-CHEMIE;14011;11-OH-Androsteron; 11-OH-Androsteron;;;;;
+URIN-CHEMIE;14012;16-OH-DHEA; 16-OH-DHEA;;;;;
+URIN-CHEMIE;14017;16-OH-Pregnenolon; 16-OH-Pregnenolon;;;;;
+URIN-CHEMIE;14010;17-OH-Pregnanolon; 17-OH-Pregnanolon;;;;;
