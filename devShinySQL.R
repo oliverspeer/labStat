@@ -36,7 +36,8 @@ packages <- c(
               "rstudioapi", 
               "flextable", 
               "cachem", 
-              "scales"
+              "scales",
+              "dtplyr"
               )
 
 # Loop to check if libraries are installed and install them if not and load them
@@ -56,10 +57,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
   } else {
     stop("Operating system not supported")
   }
@@ -205,7 +206,6 @@ server <- function(input, output, session) {
    output$yearlyDevicePlot <- renderPlot({
      req(input$device) 
      query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
-                       Quartal AS Quarter, 
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -213,43 +213,48 @@ server <- function(input, output, session) {
                   JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
                   WHERE MethodData.Gerät = '%s' 
-                  GROUP BY MeasurementData.Jahr, Quartal
-                  ORDER BY MeasurementData.Jahr ASC, Quartal ASC", input$device)
-     data.device.Q <- dbGetQuery(db, query)
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(db, query)
      
      # Initialize new column
-     data.device.Q$'Delta Aufträge' <- 0
-     setDT(data.device.Q)
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
      
      # calculate the year-over-year percentage change
-     if(nrow(data.device.Q) >1) {
-       data.device.Q[, 'Delta Aufträge' := c(NA, diff('Anzahl Aufträge')/shift('Anzahl Aufträge', type = "lag"))]
-       data.device.Q[, YearQuarter := paste(Year, Quarter, sep = "-Q")]
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
      }
      
      
-     
-     # # Convert the data to a data frame and calculate the year-over-year percentage change
-     # if(nrow(data.device.Q) > 1)   {
-     #   data.device.Q$`Delta Aufträge`[-1] <- diff(data.device.Q$`Anzahl Aufträge`)/head(data.device.Q$`Anzahl Aufträge`, -1)
-     #   # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
-     #   
-     #   data.device.Q$YearQuarter <- with(data.device.Q, paste(Year, Quarter, sep = "-Q"))
-     #   data.device.Q$YearQuarter <- factor(data.device.Q$YearQuarter, levels = unique(data.device.Q$YearQuarter))
-     #   
-     # }
-     
-  #   # Plot the data
-     ggplot(data.device.Q, aes(x = YearQuarter)) +
-       # geom_line(aes(y = `Txp Umsatz`, group = 1), color = 'blue') +
-       geom_point(aes(y = `Txp Umsatz`, group = 1), color = 'red') +
-       geom_smooth(aes(y = `Txp Umsatz`, group = 1), method = 'loess', span = 0.2, se = TRUE, color = 'red') +
-       # geom_line(aes(y = `Delta Aufträge`, group = 1), color = 'red') +
-       # scale_y_continuous(sec.axis = sec_axis(~ . *1000000, name = "Delta Aufträge [%]", labels = percent_format())) +
+     # Plot the data
+     ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = TRUE, 
+                   color = 'red') +
        labs(x = "Jahr", y = "Txp Umsatz", title = "jährlicher Txp Umsatz") +
-       theme_minimal() +
-       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
-       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'))
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.')) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+     
        
    }) 
   #   

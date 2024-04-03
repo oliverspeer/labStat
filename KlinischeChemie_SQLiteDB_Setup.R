@@ -60,11 +60,11 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
   } else if (os == "Windows") {
     
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
   } else {
     stop("Operating system not supported")
   }

@@ -39,10 +39,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
   } else {
     stop("Operating system not supported")
   }
@@ -248,21 +248,35 @@ setDT(data.device.y)
 if(nrow(data.device.y) >1) {
   data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
   
+  # identify the last complete year
+  lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+  
+  # calculate the year fraction
+  yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+  
+  # Identify and adjust counts for the current year
+  data.device.y <- data.device.y %>%
+    lazy_dt(immutable = FALSE) %>%
+    mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+      `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+           `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+  
 }
 
 
    # Plot the data
 ggplot(data.device.y, aes(x = Year)) +
-  geom_point(aes(y = `Txp Umsatz`, group = 1), color = 'red') +
-  geom_smooth(aes(y = `Txp Umsatz`, group = 1), 
+  geom_point(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+  geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
               method = 'loess',
               formula = y ~ x,
               se = TRUE, 
               color = 'red') +
   labs(x = "Jahr", y = "Txp Umsatz", title = "jährlicher Txp Umsatz") +
-  theme_minimal() +
+  # theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
-  scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'))
+  scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.')) +
+  scale_x_continuous(breaks = unique(data.device.y$Year))
 
 
 
