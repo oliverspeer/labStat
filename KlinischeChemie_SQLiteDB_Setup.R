@@ -60,11 +60,11 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
   } else if (os == "Windows") {
     
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
   } else {
     stop("Operating system not supported")
   }
@@ -91,7 +91,7 @@ setnames(DT.customer, "VAXKUERZEL", "KundenID")
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+con <- dbConnect(SQLite(), dbname = db.wd)
 dbGetQuery(con, "SELECT name FROM sqlite_master WHERE type='table'")
 
 # create new tables in the database
@@ -230,6 +230,9 @@ setDT(DT.unitsRI)
 setDT(DT.method)
 DT.unitsRI <- merge(x = DT.method, y = DT.unitsRI, by = c("Methode", "Bezeichnung"), all.x = TRUE, all.y = TRUE, id = TRUE)
 
+# set columns 7:10 as numeric
+DT.unitsRI[, 7:10] <- lapply(DT.unitsRI[, 7:10], as.numeric)
+
 #DT.unitsRI <- left_join(DT.unitsRI, DT.method, by = "Methode")
 
 
@@ -240,7 +243,7 @@ DT.unitsRI <- merge(x = DT.method, y = DT.unitsRI, by = c("Methode", "Bezeichnun
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0(getwd(),"/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), dbname = db.wd)
 
 # create new tables in the database
 dbExecute(con, "
@@ -428,7 +431,6 @@ AU.data$`GFR(CKD-EPI)_22125` <- round(CKDEpi_RF.creat(creatinin, sex, age), 2)
 
 # tidy up the data
 DT.tidy.AU <- fun.write.tidy.data(AU.data, 
-                                  #DT.tarif, 
                                   "DT.tidy.AU")
 
 # Create a new SQLite database / open connection to the database
@@ -451,7 +453,7 @@ CREATE TABLE IF NOT EXISTS MeasurementData (
           Woche INTEGER,
           Tag INTEGER,
           \"Alter\" NUMERIC,
-          Werte REAL,
+          Werte TEXT,
           Bezeichnung TEXT, 
           Methode INTEGER,
           WerteID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -559,7 +561,9 @@ for (file.name in files) {
     
     # Loop through the columns and apply the logic
     for (col in cols_to_modify) {
-      set(dt, j = col, value = ifelse(!grepl("SISTIERT", dt[[col]], fixed = TRUE) & !is.na(dt[[col]]), 1, NA_integer_))
+      set(dt, j = col, value = ifelse(!grepl("SISTIERT", dt[[col]], fixed = TRUE) &
+                                        !grepl("entfernt", dt[[col]], fixed = TRUE) &
+                                        !is.na(dt[[col]]), 1, NA_integer_))
     }
   }
   
@@ -632,6 +636,13 @@ DT.tidy.lcms <- fun.write.tidy.data(lcms.data,
 # Insert data from DT.tidy.AU into the measurement.data table in the SQLite database
 dbWriteTable(con, "MeasurementData", DT.tidy.lcms, append = TRUE, row.names = FALSE)
 
+
+# residual data (read excel, tidy up data) ------------------------------------
+residual.data <- fun.read.multi.excel.data("Residual", "residual.data")
+DT.tidy.residual <- fun.write.tidy.data(residual.data, 
+                                        "DT.tidy.residual")
+
+
 # VH4 Data (read excel, tidy up data) ------------------------------------
 # Define the path and file name
 file.pattern <- "VH4"
@@ -676,7 +687,12 @@ for (file.name in files) {
   chr.col <- c("IgG-oligoklonale Banden_25329", 
                "Oligoklonale IgG Banden_11475", 
                "Oligoklonale IgG Banden_102", 
-               "IEF (Oligoklonale Banden)_21618")
+               "IEF (Oligoklonale Banden)_21618",
+               "FOB (OC-Sensor)_43106",
+               "fäkales okkultes Blut (FOB) (OC-Sensor)_43709",
+               "Infrarotspektroskopie:_43931"
+                 
+  )
   # Loop through each column name in chr.col and convert to character
   for (col in chr.col) {
     dt[, (col) := as.character(get(col))]
@@ -686,12 +702,27 @@ for (file.name in files) {
   # Define a function to change strings to 1
   apply_logic_to_columns <- function(dt) {
     # Get the column names except the first five
-    cols_to_modify <- names(dt)[c(18:21, 26)]
+    # cols_to_modify <- names(dt)[c(18:21, 26)]
+    
     
     # Loop through the columns and apply the logic
-    for (col in cols_to_modify) {
-      set(dt, j = col, value = ifelse(!grepl("SISTIERT", dt[[col]], fixed = TRUE) & !is.na(dt[[col]]), 1, NA_integer_))
+    # for (col in cols_to_modify) {
+    #   set(dt, j = col, value = ifelse(!grepl("SISTIERT", dt[[col]], fixed = TRUE) &
+    #                                     !grepl("entfernt", dt[[col]], fixed = TRUE) &
+    #                                     !is.na(dt[[col]]), 1, NA_integer_))
+    # }
+    
+    for (col in chr.col) {
+      # Identify rows that should NOT be replaced with NA
+      should_keep <- !grepl("SISTIERT", dt[[col]], fixed = TRUE) &
+        !grepl("entfernt", dt[[col]], fixed = TRUE) &
+        !is.na(dt[[col]])
+      
+      # For rows that should be replaced (i.e., do not satisfy the above conditions), set to NA
+      dt[!should_keep, (col) := NA_integer_]
     }
+    
+    
   }
   
   # Apply the function to your data.table
@@ -699,7 +730,7 @@ for (file.name in files) {
   
   
   # Define and exclude certain columns from conversion to numeric
-  exclude.cols <- c("Tagesnummer", "Geb.datum", "Geschl.", "Auftragg.")
+  exclude.cols <- c("Tagesnummer", "Geb.datum", "Geschl.", "Auftragg.", chr.col)
   include.cols <- setdiff(names(dt), exclude.cols)
   
   # Convert included columns to numeric
@@ -781,10 +812,10 @@ wb <- loadWorkbook(filepath)
 sheet_name <- "Tabelle3"
 
 # Write query execution date & time starting at a specific cell
-writeData(wb, sheet = sheet_name, x = paste("query time:", Sys.time()), startRow = 23, startCol = 2 )
+writeData(wb, sheet = sheet_name, x = paste("query time:", Sys.time(), con@dbname), startRow = 30, startCol = 2 )
 
 # Write min_max_dates starting at a specific cell
-writeData(wb, sheet = sheet_name, min_max_dates, startRow = 26, startCol = 2, colNames = TRUE )
+writeData(wb, sheet = sheet_name, min_max_dates, startRow = 32, startCol = 2, colNames = TRUE )
 
 # Save the workbook (this overwrites the existing Excel file with the new data added)
 saveWorkbook(wb, filepath, overwrite = T)
