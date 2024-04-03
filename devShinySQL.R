@@ -56,10 +56,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
   } else {
     stop("Operating system not supported")
   }
@@ -116,9 +116,7 @@ ui <- fluidPage(
   ),
       
       mainPanel(
-        fluidRow(
-          column(12, DTOutput("yearlyDevice"))
-        ),
+        
         fluidRow(
           column(6, plotOutput("yearlyDevicePlot"))
         ),
@@ -127,6 +125,9 @@ ui <- fluidPage(
         # ),
         fluidRow(
           column(12, DTOutput("yearlyMethod"))
+        ),
+        fluidRow(
+          column(12, DTOutput("yearlyDevice"))
         ),
       )
   
@@ -218,22 +219,31 @@ server <- function(input, output, session) {
      
      # Initialize new column
      data.device.Q$'Delta Aufträge' <- 0
+     setDT(data.device.Q)
      
-     # Convert the data to a data frame and calculate the year-over-year percentage change
-     if(nrow(data.device.Q) > 1)   {
-       data.device.Q$`Delta Aufträge`[-1] <- diff(data.device.Q$`Anzahl Aufträge`)/head(data.device.Q$`Anzahl Aufträge`, -1)
-       # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
-       
-       data.device.Q$YearQuarter <- with(data.device.Q, paste(Year, Quarter, sep = "-Q"))
-       data.device.Q$YearQuarter <- factor(data.device.Q$YearQuarter, levels = unique(data.device.Q$YearQuarter))
-       
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.Q) >1) {
+       data.device.Q[, 'Delta Aufträge' := c(NA, diff('Anzahl Aufträge')/shift('Anzahl Aufträge', type = "lag"))]
+       data.device.Q[, YearQuarter := paste(Year, Quarter, sep = "-Q")]
      }
      
+     
+     
+     # # Convert the data to a data frame and calculate the year-over-year percentage change
+     # if(nrow(data.device.Q) > 1)   {
+     #   data.device.Q$`Delta Aufträge`[-1] <- diff(data.device.Q$`Anzahl Aufträge`)/head(data.device.Q$`Anzahl Aufträge`, -1)
+     #   # data.device$`Delta Aufträge [%]` <- round(data.device$`Delta Aufträge [%]` * 100, 2)
+     #   
+     #   data.device.Q$YearQuarter <- with(data.device.Q, paste(Year, Quarter, sep = "-Q"))
+     #   data.device.Q$YearQuarter <- factor(data.device.Q$YearQuarter, levels = unique(data.device.Q$YearQuarter))
+     #   
+     # }
+     
   #   # Plot the data
-     ggplot(data.device.Q, aes(x = Year)) +
+     ggplot(data.device.Q, aes(x = YearQuarter)) +
        # geom_line(aes(y = `Txp Umsatz`, group = 1), color = 'blue') +
-       geom_point(aes(y = `Txp Umsatz`, group = 1), color = 'blue') +
-       geom_smooth(aes(y = `Txp Umsatz`, group = 1), method = 'loess', span = 0.2, se = TRUE, color = 'blue') +
+       geom_point(aes(y = `Txp Umsatz`, group = 1), color = 'red') +
+       geom_smooth(aes(y = `Txp Umsatz`, group = 1), method = 'loess', span = 0.2, se = TRUE, color = 'red') +
        # geom_line(aes(y = `Delta Aufträge`, group = 1), color = 'red') +
        # scale_y_continuous(sec.axis = sec_axis(~ . *1000000, name = "Delta Aufträge [%]", labels = percent_format())) +
        labs(x = "Jahr", y = "Txp Umsatz", title = "jährlicher Txp Umsatz") +
