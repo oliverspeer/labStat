@@ -272,7 +272,7 @@ ggplot(data.device.y, aes(x = Year)) +
               formula = y ~ x,
               se = TRUE, 
               color = 'red') +
-  labs(x = "Jahr", y = "Txp Umsatz", title = "jährlicher Txp Umsatz") +
+  labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Gerät/AP: ", "HPLC")) +
   # theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
   scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.')) +
