@@ -228,6 +228,13 @@ ggplot(data.device.Q, aes(x = YearQuarter)) +
 
 
 # query for year--------------------------------------------------------------
+query.lcy <- sprintf("SELECT MAX(MeasurementData.Jahr) AS lcYear 
+                       FROM MeasurementData
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'", "DxI")
+lcy <- dbGetQuery(db, query.lcy)
+(lcy <- lcy$lcYear)
+
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
@@ -280,61 +287,42 @@ ggplot(data.device.y, aes(x = Year)) +
 
 
 # query for year and analyte --------------------------------------------------------------
-query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Methode AS Analyt,
+query.lcy <- sprintf("SELECT MAX(MeasurementData.Jahr) AS lcYear 
+                       FROM MeasurementData
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'", "DxI")
+(lcy <- dbGetQuery(db, query.lcy)$lcYear)
+
+
+
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
                   FROM MeasurementData
                   JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
                   WHERE MethodData.Gerät = '%s' 
-                  AND MeasurementData.Jahr = (
-                    SELECT MAX(Jahr) 
-                    FROM MeasurementData 
-                    WHERE Gerät = '%s' 
-                    AND Jahr < strftime('%%Y', 'now')
-                  )
+                  AND MeasurementData.Jahr =  '%s' 
                   GROUP BY MeasurementData.Jahr, MeasurementData.Methode
-                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", "HLPC", "HLPC")
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", "DxI", lcy)
 
 data.device.a <- dbGetQuery(db, query)
 
-# Initialize new column
-data.device.y$'Delta Aufträge' <- 0
-setDT(data.device.y)
-
-# calculate the year-over-year percentage change
-if(nrow(data.device.y) >1) {
-  data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
-  
-  # identify the last complete year
-  lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
-  
-  # calculate the year fraction
-  yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
-  
-  # Identify and adjust counts for the current year
-  data.device.y <- data.device.y %>%
-    lazy_dt(immutable = FALSE) %>%
-    mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
-           `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
-           `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
-  
-}
-
-
 # Plot the data
-ggplot(data.device.y, aes(x = Year)) +
-  geom_point(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
-  geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
-              method = 'loess',
-              formula = y ~ x,
-              se = TRUE, 
-              color = 'red') +
-  labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Gerät/AP: ", "HPLC")) +
-  # theme_minimal() +
+ggplot(data.device.a, aes(x = Analyt)) +
+  geom_col(aes(y = `Txp Umsatz`
+                # , color = "Txp Umsatz"
+               )) +
+  geom_point(aes(y = 200*`Anzahl Aufträge`
+                 # , color = "Anzahl Aufträge"
+                )) + 
+  # scale_color_manual(values = c("red", "blue"), breaks = c("Txp Umsatz", "Anzahl Aufträge")) +
+  labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", "HPLC")) +
+  theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
-  scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.')) +
-  scale_x_continuous(breaks = unique(data.device.y$Year))
+  scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'), 
+                     sec.axis = sec_axis(~. /200, name = "Anzahl Aufträge")) # +
+  # scale_x_continuous(breaks = unique(data.device.y$Year))
 
 
 
