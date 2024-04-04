@@ -60,11 +60,11 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
   } else if (os == "Windows") {
     
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
   } else {
     stop("Operating system not supported")
   }
@@ -146,9 +146,7 @@ DT.tarifZLM <- DT.tarifZLM[
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), 
-                 dbname = paste0(getActiveProject(),
-                                 "/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), dbname = db.wd)
 
 # create new tables in the database
 dbExecute(con, "
@@ -175,7 +173,7 @@ setDT(DT.tarif)
 
 # import into SQLite db
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0(getActiveProject(),"/ClinicalChemistry_test.db"))
+con <- dbConnect(SQLite(), dbname = db.wd)
 
 # create new tables in the database
 dbExecute(con, "
@@ -208,7 +206,8 @@ DT.method <- data.table(DT.method)
 
 
 # import units and reference intervals ----------------------------------------
-DT.unitsRI <- fread("Einheiten&RefIntrvle.csv")
+#DT.unitsRI <- fread("Einheiten&RefIntrvle.csv")
+DT.unitsRI <- read_excel("Einheiten&RefIntrvle.xlsx")
 
 setnames(DT.unitsRI, c("NUMMER", 
                        "NAME", 
@@ -252,10 +251,10 @@ CREATE TABLE MethodData (
            CODE	TEXT,
            Bezeichnung TEXT,
            EINHEIT TEXT,
-           REF_L_M	NUMERIC,
-           REF_H_M	NUMERIC,
-           REF_L_W	NUMERIC,
-           REF_H_W	NUMERIC,
+           REF_L_M	TEXT,
+           REF_H_M	TEXT,
+           REF_L_W	TEXT,
+           REF_H_W	TEXT,
            ABTEILUNG	TEXT,
            Gerät	TEXT
 ) ")
@@ -264,7 +263,8 @@ CREATE TABLE MethodData (
 dbWriteTable(con, "MethodData", DT.unitsRI, append = TRUE, row.names = FALSE)
 # dbWriteTable(con, "MethodData", DT.unitsRI, append = FALSE, row.names = FALSE, overwrite = TRUE)
 
-(dbGetQuery(con, "SELECT * FROM MethodData LIMIT 5"))
+(dbGetQuery(con, "SELECT DISTINCT Bezeichnung, Methode, CODE, EINHEIT, Gerät FROM MethodData WHERE Gerät = 'DxI'
+            LIMIT 200"))
 
 # dbExecute(con, "DROP TABLE IF EXISTS MethodData")
 
@@ -434,7 +434,7 @@ DT.tidy.AU <- fun.write.tidy.data(AU.data,
                                   "DT.tidy.AU")
 
 # Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+con <- dbConnect(SQLite(), dbname = db.wd)
 
 # create new tables in the database
 dbExecute(con, "
@@ -471,7 +471,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.AU, append = TRUE, row.names = FALS
 
 # controlle if the data was inserted
 (dbGetQuery(con, "PRAGMA table_info(MeasurementData)"))
-(dbGetQuery(con, "SELECT * FROM MeasurementData LIMIT 5"))
+(dbGetQuery(con, "SELECT * FROM MeasurementData LIMIT 20"))
 
 # for deletion of a table
 # dbExecute(con, "DROP TABLE IF EXISTS MeasurementData")
@@ -612,7 +612,7 @@ DT.tidy.ep <- fun.write.tidy.data(ep.data,
                                   "DT.tidy.ep")
 
 # Connect to the SQLite database
-con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+con <- dbConnect(SQLite(), dbname = db.wd)
 
 # Insert data from DT.tidy.AU into the measurement.data table in the SQLite database
 dbWriteTable(con, "MeasurementData", DT.tidy.ep, append = TRUE, row.names = FALSE)
@@ -628,7 +628,7 @@ dbWriteTable(con, "MeasurementData", DT.tidy.hplc, append = TRUE, row.names = FA
 
 
 # LcMSMS Data (read excel, tidy up data) ------------------------------------
-lcms.data <- fun.read.multi.excel.data("MSMS", "lcms.data")
+lcms.data <- fun.read.multi.excel.data("LcMSMS", "lcms.data")
 DT.tidy.lcms <- fun.write.tidy.data(lcms.data, 
                                     # DT.tarif, 
                                     "DT.tidy.lcms")
@@ -786,7 +786,7 @@ print(query.result)
 # check and document the min_max_dates into ERD.xlsx----------------------------
 # query presence of device data
 # and query for time stamps in device data
-con <- dbConnect( SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+con <- dbConnect(SQLite(), dbname = db.wd)
 query <- "SELECT m.Gerät, 
           MIN(a.Datum) AS MinDate, 
           MAX(a.Datum) AS MaxDate 
@@ -840,4 +840,68 @@ dbDisconnect(con)
 #   ))
 # setDT(DT.kc.blood)
 
+# clone database to have less data for shiny app---------------------------------
+# Function to detect the operating system 
+# and return the corresponding database path
+
+getDatabasePath <- function() {
+  # Detect operating system
+  os <- Sys.info()["sysname"]
+  
+  # Set the path based on the operating system
+  if (os == "Linux") {
+    # Path for Ubuntu
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
+  } else if (os == "Windows") {
+    
+    # Path for Windows
+    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
+  } else {
+    stop("Operating system not supported")
+  }
+  
+  return(path)
+}
+
+# set database directory
+db.wd <- getDatabasePath()
+
+# Connect to the database
+con <- dbConnect(SQLite(), dbname = db.wd)
+
+con.clone <- dbConnect(SQLite(), dbname = "C:/R_local/labStat/ClinicalChemistry_1_clone.db")
+
+# List of tables to copy
+tables_to_copy <- c(
+  "CustomerData", 
+  "TarifData", 
+  "EALData", 
+  "MethodData", 
+  "MeasurementData"
+  )
+
+# Copy each table
+for (table_name in tables_to_copy) {
+  # Create table structure in the new database
+  structure_query <- sprintf("CREATE TABLE %s AS SELECT * FROM %s WHERE 0=1", table_name, table_name)
+  dbExecute(con.clone, structure_query)
+  
+  # Conditionally copy data
+  if (table_name == "MeasurementData") {
+    # For MeasurementData, only copy data from 2021 onwards
+    data_query <- sprintf("INSERT INTO %s SELECT * FROM %s WHERE Jahr >= 2021", table_name, table_name)
+  } else {
+    # For all other tables, copy data as is
+    data_query <- sprintf("INSERT INTO %s SELECT * FROM %s", table_name, table_name)
+  }
+  
+  # Execute the data copy
+  dbExecute(con.clone, sprintf("ATTACH DATABASE '%s' AS new_db", "C:/R_local/labStat/ClinicalChemistry_1_clone.db"))
+  dbExecute(con.clone, data_query)
+  dbExecute(con.clone, "DETACH DATABASE new_db")
+}
+
+# Close the database connections
+dbDisconnect(con)
+dbDisconnect(con.clone)
 
