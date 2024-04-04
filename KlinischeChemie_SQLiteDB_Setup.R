@@ -1,11 +1,3 @@
-# preparing libraries
-# library(data.table)
-# library(tidyverse)
-# library(readxl)
-# library(nephro)
-# library(DBI)
-# library(RSQLite)
-# library(openxlsx)
 
 # Vector of library names
 libraries <- c(
@@ -60,11 +52,11 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
   } else if (os == "Windows") {
     
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
   } else {
     stop("Operating system not supported")
   }
@@ -201,7 +193,7 @@ dbWriteTable(con, "EALData", DT.tarif, append = TRUE, row.names = FALSE)
 # import method data ------------------------------------------------------
 
 DT.method <- read_excel("MethodenKatalogKC.xlsx")
-DT.method <- data.table(DT.method)
+# DT.method <- data.table(DT.method)
 
 
 
@@ -230,7 +222,7 @@ setDT(DT.method)
 DT.unitsRI <- merge(x = DT.method, y = DT.unitsRI, by = c("Methode", "Bezeichnung"), all.x = TRUE, all.y = TRUE, id = TRUE)
 
 # set columns 7:10 as numeric
-DT.unitsRI[, 7:10] <- lapply(DT.unitsRI[, 7:10], as.numeric)
+# DT.unitsRI[, 7:10] <- lapply(DT.unitsRI[, 7:10], as.numeric)
 
 #DT.unitsRI <- left_join(DT.unitsRI, DT.method, by = "Methode")
 
@@ -260,8 +252,8 @@ CREATE TABLE MethodData (
 ) ")
 
 # Insert data from TarifData into the measurement.data table in the SQLite database
-dbWriteTable(con, "MethodData", DT.unitsRI, append = TRUE, row.names = FALSE)
-# dbWriteTable(con, "MethodData", DT.unitsRI, append = FALSE, row.names = FALSE, overwrite = TRUE)
+# dbWriteTable(con, "MethodData", DT.unitsRI, append = TRUE, row.names = FALSE)
+dbWriteTable(con, "MethodData", DT.unitsRI, append = FALSE, row.names = FALSE, overwrite = TRUE)
 
 (dbGetQuery(con, "SELECT DISTINCT Bezeichnung, Methode, CODE, EINHEIT, Gerät FROM MethodData WHERE Gerät = 'DxI'
             LIMIT 200"))
@@ -485,8 +477,7 @@ DT.tidy.dxi <- fun.write.tidy.data(dxi.data,
                                    #DT.tarif, 
                                    "DT.tidy.dxi")
 
-# Create a new SQLite database / open connection to the database
-con <- dbConnect(SQLite(), dbname = paste0( getActiveProject(), "/ClinicalChemistry_test.db") )
+
 
 # Insert data from DT.tidy.dxi into the measurement.data table in the SQLite database
 dbWriteTable(con, "MeasurementData", DT.tidy.dxi, append = TRUE, row.names = FALSE)
