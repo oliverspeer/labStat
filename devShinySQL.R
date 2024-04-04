@@ -1,21 +1,4 @@
-# library(shiny)
-# library(tidyverse)
-# library(ggplot2)
-# library(plotly)
-# library(shinythemes)
-# library(shinyjs)
-# library(shinycssloaders)
-# library(DT)
-# library(memoise)
-# library(cachem)
-# library(data.table)
-# library(DBI)
-# library(RSQLite)
-# if (!requireNamespace("rstudioapi", quietly = TRUE)) {
-#   install.packages("rstudioapi")
-# }
-# library(rstudioapi)
-
+# prepare libraries ---------------------------------------------------------
 # Vector of libraries
 packages <- c(
               "shiny", 
@@ -57,10 +40,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
   } else {
     stop("Operating system not supported")
   }
@@ -94,7 +77,7 @@ if (!is.null(project_directory)) {
 
 
 # shiny app ----------------------------------------------------------------
-
+shinyOptions(cache = cache_mem(max_size = 5000e6))
 # Define UI------------------------------------------------------------------
 ui <- fluidPage(
   
@@ -119,24 +102,40 @@ ui <- fluidPage(
       mainPanel(
         
         fluidRow(
-          column(6, plotOutput("yearlyDevicePlot"))
+          column(6, withSpinner( plotOutput("yearlyDevicePlot", height = "300px"),
+                                 type = 2, 
+                                 color ="red", 
+                                 color.background = "white",
+                                 size = 2, 
+                                 hide.ui = FALSE)),
+          column(6, plotOutput("yearlyMethodPlot", height = "300px"))
         ),
         # fluidRow(
-        #   column(6, DTOutput("yearlyMethodPlot"))
+        #   column(12, DTOutput("yearlyMethodPlot", height = "200px"))
         # ),
         fluidRow(
-          column(12, DTOutput("yearlyMethod"))
+          column(12, withSpinner(DTOutput("yearlyMethod"), 
+                                 type = 2, 
+                                 color ="red", 
+                                 color.background = "white",
+                                 size = 2, 
+                                 hide.ui = FALSE))
         ),
         fluidRow(
           column(12, DTOutput("yearlyDevice"))
         ),
       )
   
-)))
+     )
+   )
+)
 
 # Define server logic---------------------------------------------------------------------
 
 server <- function(input, output, session) {
+  
+ # cut.years <- as.integer(format(Sys.Date(), "%Y")) - 9
+
   # Update Device choices based on the database
   updateSelectInput(session, "device",
                     choices = dbGetQuery(db, "SELECT DISTINCT Gerät FROM MethodData 
@@ -172,7 +171,7 @@ server <- function(input, output, session) {
                       FROM MeasurementData
                       JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                       JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
-                      WHERE MethodData.Gerät = '%s' 
+                      WHERE MethodData.Gerät = '%s'
                       GROUP BY Year
                       ORDER BY Year ASC", input$device)
     data.device <- dbGetQuery(db, query)
@@ -191,7 +190,7 @@ server <- function(input, output, session) {
     # render the data table
     datatable(data.device, options = list(
                             hover = TRUE, 
-                            pageLength = 5, 
+                            pageLength =2, 
                             lengthChange = TRUE,
                             searching = FALSE,
                             ordering = TRUE,
@@ -212,7 +211,7 @@ server <- function(input, output, session) {
                   FROM MeasurementData
                   JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
-                  WHERE MethodData.Gerät = '%s' 
+                  WHERE MethodData.Gerät = '%s'
                   GROUP BY MeasurementData.Jahr
                   ORDER BY MeasurementData.Jahr ASC", input$device)
      data.device.y <- dbGetQuery(db, query)
@@ -244,11 +243,12 @@ server <- function(input, output, session) {
      # Plot the data
      ggplot(data.device.y, aes(x = Year)) +
        geom_point(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
-       geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
-                   method = 'loess',
-                   formula = y ~ x,
-                   se = TRUE, 
-                   color = 'red') +
+       # geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
+       #             method = 'lm',
+       #             formula = y ~ x,
+       #             se = TRUE, 
+       #             color = 'red') +
+       geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
        labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Gerät/AP: ", input$device)) +
        # theme_minimal() +
        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
@@ -257,7 +257,49 @@ server <- function(input, output, session) {
      
        
    }) 
-  #   
+  
+   
+   # Generate plot with yearly Txp & Count data per method for the selected device
+   output$yearlyMethodPlot <- renderPlot({
+     req(input$device) 
+     # query for the last complete year (lcy)
+     query.lcy <- sprintf("SELECT MAX(MeasurementData.Jahr) AS lcYear 
+                       FROM MeasurementData
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'", input$device)
+     
+     lcy <- dbGetQuery(db, query.lcy)$lcYear
+     
+     
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '%s' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device, lcy)
+     
+     data.device.a <- dbGetQuery(db, query)
+     
+     # Plot the data
+     ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`
+                    # , color = "Txp Umsatz"
+       )) +
+       geom_point(aes(y = 200*`Anzahl Aufträge`
+                      # , color = "Anzahl Aufträge"
+       )) + 
+       # scale_color_manual(values = c("red", "blue"), breaks = c("Txp Umsatz", "Anzahl Aufträge")) +
+       labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", input$device)) +
+       theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'), 
+                          sec.axis = sec_axis(~. /200, name = "Anzahl Aufträge")) # +
+  
+   }) 
     
 
  # Generate table with yearly data for the selected method

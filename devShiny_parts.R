@@ -39,10 +39,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
   } else {
     stop("Operating system not supported")
   }
@@ -328,4 +328,8 @@ ggplot(data.device.a, aes(x = Analyt)) +
 
 
 
-
+query <- sprintf("SELECT DISTINCT Jahr
+                       FROM MeasurementData
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'", "Nephelometrie")
+(lcy <- dbGetQuery(db, query))
