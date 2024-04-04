@@ -20,7 +20,8 @@ packages <- c(
               "flextable", 
               "cachem", 
               "scales",
-              "dtplyr"
+              "dtplyr",
+              "shinydashboard"
               )
 
 # Loop to check if libraries are installed and install them if not and load them
