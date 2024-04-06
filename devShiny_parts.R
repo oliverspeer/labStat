@@ -39,10 +39,10 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_test.db"
   } else if (os == "Windows") {
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_test.db"
   } else {
     stop("Operating system not supported")
   }
@@ -287,12 +287,27 @@ ggplot(data.device.y, aes(x = Year)) +
 
 
 # query for year and analyte --------------------------------------------------------------
-query.lcy <- sprintf("SELECT MAX(MeasurementData.Jahr) AS lcYear 
+fun.labels <- function(values, data.range = NULL) {
+  if(is.null(data.range)) {
+    data.range <- range(values, na.rm = TRUE)
+  }
+  max.value <- max(abs(data.range))
+
+  if (max.value >= 1e6) {
+  return(number(values / 1e6, accuracy = 1, suffix = " M"))
+  } else if (max.value >= 1e3) {
+  return(number(values / 1e3, accuracy = 1, suffix = " k"))
+  } else {
+  return(number(values))
+  }
+}
+
+query.lcy <- sprintf("SELECT DISTINCT MeasurementData.Jahr AS Years 
                        FROM MeasurementData
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
                   WHERE MethodData.Gerät = '%s'", "DxI")
-(lcy <- dbGetQuery(db, query.lcy)$lcYear)
-
+(lcy <- dbGetQuery(db, query.lcy))
+lcy <- max(lcy$Years[lcy$Years < year(today())])
 
 
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
@@ -308,20 +323,28 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnu
 
 data.device.a <- dbGetQuery(db, query)
 
+# calculate 'Txp' as percentage of total
+data.device.a$'Txp [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+
+data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+
 # Plot the data
 ggplot(data.device.a, aes(x = Analyt)) +
-  geom_col(aes(y = `Txp Umsatz`
-                # , color = "Txp Umsatz"
-               )) +
-  geom_point(aes(y = 200*`Anzahl Aufträge`
-                 # , color = "Anzahl Aufträge"
-                )) + 
+  geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkred", alpha = 0.8) +
+  geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Txp [%]`), 
+             shape = 21, 
+             fill = "lightblue", 
+             color = "navy", 
+             stroke = 0.8, 
+             alpha = 0.8) + 
   # scale_color_manual(values = c("red", "blue"), breaks = c("Txp Umsatz", "Anzahl Aufträge")) +
-  labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", "HPLC")) +
+  labs(x = " ", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", "DxI")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
-  scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'), 
-                     sec.axis = sec_axis(~. /200, name = "Anzahl Aufträge")) # +
+  scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                     #label_number(big.mark = "'", decimal.mark = '.'), 
+                     sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge")) # +
   # scale_x_continuous(breaks = unique(data.device.y$Year))
 
 

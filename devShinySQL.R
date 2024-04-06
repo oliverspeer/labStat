@@ -32,6 +32,15 @@ for (package in packages) {
   }
 }
 
+# setting ggplot theme------------------------------------------------------
+theme_set(
+  theme_grey() +
+  theme( text = element_text(size = 14),
+         axis.title = element_text(size = 16),
+         axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+         axis.text.y = element_text(size = 14))
+                      )
+
 # connect to database ------------------------------------------------------
 # Function to detect the operating system and return the corresponding database path
 getDatabasePath <- function() {
@@ -72,7 +81,21 @@ if (!is.null(project_directory)) {
   print("This R session is not running within an RStudio Project.")
 }
 
-
+# setup functions ------------------------------------------------------------
+fun.labels <- function(values, data.range = NULL) {
+  if(is.null(data.range)) {
+    data.range <- range(values, na.rm = TRUE)
+  }
+  max.value <- max(abs(data.range))
+  
+  if (max.value >= 1e6) {
+    return(number(values / 1e6, accuracy = 0.1, suffix = " M"))
+  } else if (max.value >= 1e3) {
+    return(number(values / 1e3, accuracy = 0.1, suffix = " k"))
+  } else {
+    return(number(values))
+  }
+}
 
 
 
@@ -88,32 +111,37 @@ ui <- fluidPage(
                     width = 130, 
                     style = "margin:1px 3px", "  Klinische Chemie ")
     ), 
-    theme = shinytheme("paper"), 
+    # theme = shinytheme("paper"), 
     collapsible = TRUE,
     fluid = TRUE,
     
-    sidebarLayout(
-      sidebarPanel(
+    tabPanel("Jährlicher Umsatz in Grafiken",
+      # sidebarPanel(
   # titlePanel("Clinical Chemistry Analysis"),
   selectInput("device", "Wähle den Arbeitsplatz", choices = NULL),
-  selectInput("method", "Wähle die Methode", choices = NULL),
-  # selectInput("year", "Wähle das Jahr", choices = NULL)
-  ),
+  
+  # selectInput("year", "Wähle das Jahr", choices = NULL),
       
-      mainPanel(
+      # mainPanel(
         
         fluidRow(
-          column(6, withSpinner( plotOutput("yearlyDevicePlot", height = "300px"),
+          column(12, withSpinner( plotOutput("yearlyDevicePlot", height = "300px"),
                                  type = 2, 
                                  color ="red", 
                                  color.background = "white",
                                  size = 2, 
-                                 hide.ui = FALSE)),
-          column(6, plotOutput("yearlyMethodPlot", height = "300px"))
+                                 hide.ui = FALSE)) # ,
+          # column(6, plotOutput("yearlyMethodPlot", height = "300px"))
         ),
-        # fluidRow(
-        #   column(12, DTOutput("yearlyMethodPlot", height = "200px"))
-        # ),
+        fluidRow(
+         column(12, plotOutput("yearlyMethodPlot", height = "400px"))
+        )),
+  
+    tabPanel("Jährlicher Umsatz in Tabellen",
+        fluidRow(
+          column(12, DTOutput("yearlyDevice"))
+        ),
+             selectInput("method", "Wähle die Methode", choices = NULL),
         fluidRow(
           column(12, withSpinner(DTOutput("yearlyMethod"), 
                                  type = 2, 
@@ -121,13 +149,10 @@ ui <- fluidPage(
                                  color.background = "white",
                                  size = 2, 
                                  hide.ui = FALSE))
-        ),
-        fluidRow(
-          column(12, DTOutput("yearlyDevice"))
-        ),
-      )
+        ))
+      # )
   
-     )
+     # )
    )
 )
 
@@ -240,22 +265,25 @@ server <- function(input, output, session) {
        
      }
      
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
      
      # Plot the data
-     ggplot(data.device.y, aes(x = Year)) +
-       geom_point(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
-       # geom_smooth(aes(y = `Txp Umsatz*`, group = 1), 
-       #             method = 'lm',
-       #             formula = y ~ x,
-       #             se = TRUE, 
-       #             color = 'red') +
-       geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
-       labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Gerät/AP: ", input$device)) +
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'lm',
+                   formula = y ~ x,
+                   se = TRUE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
        # theme_minimal() +
        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
-       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.')) +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
+    
      
+     p
        
    }) 
   
@@ -264,12 +292,13 @@ server <- function(input, output, session) {
    output$yearlyMethodPlot <- renderPlot({
      req(input$device) 
      # query for the last complete year (lcy)
-     query.lcy <- sprintf("SELECT MAX(MeasurementData.Jahr) AS lcYear 
+     query.lcy <- sprintf("SELECT DISTINCT MeasurementData.Jahr AS Years 
                        FROM MeasurementData
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
                   WHERE MethodData.Gerät = '%s'", input$device)
      
-     lcy <- dbGetQuery(db, query.lcy)$lcYear
+     lcy <- dbGetQuery(db, query.lcy)
+     lcy <- max(lcy$Years[lcy$Years < year(today())]) 
      
      
      query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
@@ -285,22 +314,32 @@ server <- function(input, output, session) {
      
      data.device.a <- dbGetQuery(db, query)
      
+     # calculate 'Txp' as percentage of total
+     data.device.a$'[%] Txp\n Umsatz' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
      # Plot the data
      ggplot(data.device.a, aes(x = Analyt)) +
-       geom_col(aes(y = `Txp Umsatz`
-                    # , color = "Txp Umsatz"
-       )) +
-       geom_point(aes(y = 200*`Anzahl Aufträge`
-                      # , color = "Anzahl Aufträge"
-       )) + 
-       # scale_color_manual(values = c("red", "blue"), breaks = c("Txp Umsatz", "Anzahl Aufträge")) +
-       labs(x = "Jahr", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", input$device)) +
-       theme_minimal() +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `[%] Txp\n Umsatz`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = "Jahr", y = "Txp Umsatz", title = paste( input$device, ": Umsatz und Produktionszahlen", lcy," pro Analyt ")) +
        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
-       scale_y_continuous(labels = label_number(big.mark = "'", decimal.mark = '.'), 
-                          sec.axis = sec_axis(~. /200, name = "Anzahl Aufträge")) # +
-  
-   }) 
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge")) # +
+     # scale_x_continuous(breaks = unique(data.device.y$Year))
+
+        }) 
     
 
  # Generate table with yearly data for the selected method
