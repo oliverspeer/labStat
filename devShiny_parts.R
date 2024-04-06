@@ -305,7 +305,7 @@ fun.labels <- function(values, data.range = NULL) {
 query.lcy <- sprintf("SELECT DISTINCT MeasurementData.Jahr AS Years 
                        FROM MeasurementData
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
-                  WHERE MethodData.Gerät = '%s'", "DxI")
+                  WHERE MethodData.Gerät = '%s'", "HPLC")
 (lcy <- dbGetQuery(db, query.lcy))
 lcy <- max(lcy$Years[lcy$Years < year(today())])
 
@@ -319,7 +319,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnu
                   WHERE MethodData.Gerät = '%s' 
                   AND MeasurementData.Jahr =  '%s' 
                   GROUP BY MeasurementData.Jahr, MeasurementData.Methode
-                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", "DxI", lcy)
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", "HPLC", lcy)
 
 data.device.a <- dbGetQuery(db, query)
 
@@ -348,9 +348,126 @@ ggplot(data.device.a, aes(x = Analyt)) +
   # scale_x_continuous(breaks = unique(data.device.y$Year))
 
 
+# plot yearly method data --------------------------------------------------------------
+query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      WHERE MeasurementData.Bezeichnung = '%s' 
+                      GROUP BY Year
+                      ORDER BY Year ASC", "Vitamin A")
+
+data.method <- dbGetQuery(db, query)
+
+# initialize a new column
+data.method$'Delta Aufträge' <- NA
+
+# Convert the data to a data frame and calculate the year-over-year percentage change
+if(nrow(data.method) > 1)   {
+  data.method$`Delta Aufträge`[-1] <- percent(diff(data.method$`Anzahl Aufträge`)/head(data.method$`Anzahl Aufträge`, -1))
+                              }
+
+  data.range <- range(data.method$'Txp Umsatz', na.rm = TRUE)
+  scaling.factor <- max(abs(data.range))/max(data.method$'Anzahl Aufträge', na.rm = TRUE)
+
+# Plot the data
+ggplot(data.method, aes(x = Year)) +
+  geom_point(aes(y = `Txp Umsatz`), size = 1, fill = "red", color = "darkred", alpha = 0.8) +
+  geom_line(aes(y = `Txp Umsatz`, group = 1), color = "red", linetype = "dashed") +
+  geom_point(aes(y = scaling.factor*`Anzahl Aufträge`), 
+             shape = 21,
+             size = 1,
+             fill = "lightblue", 
+             color = "navy", 
+             stroke = 0.8, 
+             alpha = 0.8) + 
+  geom_line(aes(y = scaling.factor*`Anzahl Aufträge`, group = 2), color = "blue", linetype = "dashed") +
+  labs(x = " ", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", "*")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+  scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                     #label_number(big.mark = "'", decimal.mark = '.'), 
+                     sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+
+# all methods per device over years ---------------------------------------------------
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", "EP_IFE")
+
+data.method <- dbGetQuery(db, query)
+if(nrow(data.method) > 1)   {
+
+data.method <- data.method %>%
+  group_by(Analyt) %>%
+  mutate(
+    # Calculate scaling factor for each Analyt
+    scaling.factor = max(`Txp Umsatz`, na.rm = TRUE) / max(`Anzahl Aufträge`, na.rm = TRUE)
+  )
+}
+
+# facet the data
+ggplot(data.method, aes(x = Year)) +
+  # geom_point(aes(y = `Txp Umsatz`, group = Analyt), size = 1, fill = "red", color = "darkred", alpha = 0.8) +
+  # geom_line(aes(y = `Txp Umsatz`, group = Analyt), color = "red", linetype = "dashed") +
+  geom_point(aes(y = scaling.factor * `Anzahl Aufträge`, group = Analyt),
+             shape = 21,
+             size = 1,
+             fill = "lightblue",
+             color = "navy",
+             stroke = 0.8,
+             alpha = 0.8) +
+  geom_line(aes(y = scaling.factor * `Anzahl Aufträge`, group = Analyt), color = "blue", linetype = "dashed") +
+  labs(x = " ", y = "Txp Umsatz", title = paste("Jährlicher Umsatz pro Analyt: ", "*")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+  scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                     #label_number(big.mark = "'", decimal.mark = '.'), 
+                    sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge")
+                     ) +
+  facet_wrap(~Analyt, scales = "free_y")
+
+# all  devices over years ---------------------------------------------------
+query.all <- sprintf("SELECT MeasurementData.Jahr AS Year, MethodData.Gerät AS Device,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  GROUP BY MeasurementData.Jahr, MethodData.Gerät
+                  ORDER BY MeasurementData.Jahr ASC, MethodData.Gerät ASC")
+
+data.all <- dbGetQuery(db, query.all)
+
+data.range <- range(data.all$'Txp Umsatz', na.rm = TRUE)
+
+
+# ggplot stacked bar chart
+ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(x = " ", y = "Txp Umsatz", title = "Jährlicher Umsatz pro Gerät") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+  scale_fill_brewer(palette = "Set1") +
+  scale_y_continuous(labels = function(values) fun.labels(values, data.range))
+
+ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+  geom_bar(stat = "identity", position = "fill") +
+  labs(x = " ", y = "relativer Txp Umsatz", title = "Jährlicher Umsatz pro Gerät") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+  scale_fill_brewer(palette = "Set1") 
 
 
 
+# ---------------------------------------------------------------------------------
 query <- sprintf("SELECT DISTINCT Jahr
                        FROM MeasurementData
                   JOIN MethodData ON MeasurementData.Methode = MethodData.Methode

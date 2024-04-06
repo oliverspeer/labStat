@@ -114,7 +114,7 @@ ui <- fluidPage(
     # theme = shinytheme("paper"), 
     collapsible = TRUE,
     fluid = TRUE,
-    
+  # tabPanel-----------------------------------------------------------------------
     tabPanel("Jährlicher Umsatz in Grafiken",
       # sidebarPanel(
   # titlePanel("Clinical Chemistry Analysis"),
@@ -136,7 +136,7 @@ ui <- fluidPage(
         fluidRow(
          column(12, plotOutput("yearlyMethodPlot", height = "400px"))
         )),
-  
+  # tabPanel-----------------------------------------------------------------------
     tabPanel("Jährlicher Umsatz in Tabellen",
         fluidRow(
           column(12, DTOutput("yearlyDevice"))
@@ -149,18 +149,33 @@ ui <- fluidPage(
                                  color.background = "white",
                                  size = 2, 
                                  hide.ui = FALSE))
-        ))
+        )),
+  # tabPanel-----------------------------------------------------------------------
+    tabPanel("Umsatz pro Analyt",
+      fluidRow(
+        column(12, withSpinner(plotOutput("analytePlot", height = "400px"),
+                               type = 2, 
+                               color ="red", 
+                               color.background = "white",
+                               size = 2, 
+                               hide.ui = FALSE))
+      ),
+      # fluidRow(
+      #   column(12, DTOutput("analyteTable"))
+      # )
+      )
+   # ------------------------------------------------------------------------------   
+    )
       # )
   
      # )
    )
-)
+
 
 # Define server logic---------------------------------------------------------------------
 
 server <- function(input, output, session) {
   
- # cut.years <- as.integer(format(Sys.Date(), "%Y")) - 9
 
   # Update Device choices based on the database
   updateSelectInput(session, "device",
@@ -187,7 +202,7 @@ server <- function(input, output, session) {
    #   # updateSelectInput(session, "year", choices = years)
    # })
    
-    # Generate table with yearly data for the selected device
+# Generate table with yearly data for the selected device-------------------------------
   output$yearlyDevice <- renderDT({
     req(input$device) # Require a device to be selected
     query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
@@ -227,7 +242,7 @@ server <- function(input, output, session) {
     
   })
   
-  # Generate plot with yearly data for the selected device
+# Generate plot with yearly data for the selected device-------------------------------
    output$yearlyDevicePlot <- renderPlot({
      req(input$device) 
      query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
@@ -288,7 +303,7 @@ server <- function(input, output, session) {
    }) 
   
    
-   # Generate plot with yearly Txp & Count data per method for the selected device
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
    output$yearlyMethodPlot <- renderPlot({
      req(input$device) 
      # query for the last complete year (lcy)
@@ -340,9 +355,57 @@ server <- function(input, output, session) {
      # scale_x_continuous(breaks = unique(data.device.y$Year))
 
         }) 
+  
+  
+  # plot the yearly data for the selected method----------------------------------------------------------------
+  output$analytePlot <- renderPlot({
+    req(input$device) 
     
+  query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+  
+  data.method <- dbGetQuery(db, query)
+  if(nrow(data.method) > 1)   {
+    
+    data.method <- data.method %>%
+      group_by(Analyt) %>%
+      mutate(
+        # Calculate scaling factor for each Analyt
+        scaling.factor = max(`Txp Umsatz`, na.rm = TRUE) / max(`Anzahl Aufträge`, na.rm = TRUE)
+      )
+  }
+  
+  # facet the data
+  ggplot(data.method, aes(x = Year)) +
+    # geom_point(aes(y = `Txp Umsatz`, group = Analyt), size = 1, fill = "red", color = "darkred", alpha = 0.8) +
+    # geom_line(aes(y = `Txp Umsatz`, group = Analyt), color = "red", linetype = "dashed") +
+    geom_point(aes(y = scaling.factor * `Anzahl Aufträge`, group = Analyt),
+               shape = 21,
+               size = 1,
+               fill = "lightblue",
+               color = "navy",
+               stroke = 0.8,
+               alpha = 0.8) +
+    geom_line(aes(y = scaling.factor * `Anzahl Aufträge`, group = Analyt), color = "blue", linetype = "dashed") +
+    labs(x = " ", y = "Txp Umsatz", title = paste(input$device,"Jährlicher Umsatz pro Analyt")) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+    scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                       #label_number(big.mark = "'", decimal.mark = '.'), 
+                       sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge")
+    ) +
+    facet_wrap(~Analyt, scales = "free_y")
+  
+})
 
- # Generate table with yearly data for the selected method
+ # Generate table with yearly data for the selected method-----------------------------------------------------
   output$yearlyMethod <- renderDT({
     req(input$method) # Require a method to be selected
     query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
