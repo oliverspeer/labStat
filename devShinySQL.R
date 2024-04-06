@@ -114,16 +114,11 @@ ui <- fluidPage(
     # theme = shinytheme("paper"), 
     collapsible = TRUE,
     fluid = TRUE,
-  # tabPanel-----------------------------------------------------------------------
-    tabPanel("Jährlicher Umsatz in Grafiken",
-      # sidebarPanel(
-  # titlePanel("Clinical Chemistry Analysis"),
-  selectInput("device", "Wähle den Arbeitsplatz", choices = NULL),
   
-  # selectInput("year", "Wähle das Jahr", choices = NULL),
-      
-      # mainPanel(
-        
+  
+  # tabPanel-----------------------------------------------------------------------
+   tabPanel("Jährlicher Umsatz in Grafiken -> hier Auswahl des Gerätes / Arbeitsplatz.", 
+            selectInput("device", "Wähle den Arbeitsplatz", choices = NULL),
         fluidRow(
           column(12, withSpinner( plotOutput("yearlyDevicePlot", height = "300px"),
                                  type = 2, 
@@ -135,7 +130,25 @@ ui <- fluidPage(
         ),
         fluidRow(
          column(12, plotOutput("yearlyMethodPlot", height = "400px"))
-        )),
+        ), 
+
+  ),
+  
+  # tabPanel-----------------------------------------------------------------------
+  tabPanel("Gesamtumsatz",
+           # sidebarPanel(
+           # titlePanel("Clinical Chemistry Analysis"),
+           
+           
+           # selectInput("year", "Wähle das Jahr", choices = NULL),
+           
+           # mainPanel(
+           
+           fluidRow(
+             column(6, plotOutput("globalChart", height = "350px")),
+             column(6, plotOutput("globalChartRel", height = "350px"))
+           )),
+  
   # tabPanel-----------------------------------------------------------------------
     tabPanel("Jährlicher Umsatz in Tabellen",
         fluidRow(
@@ -239,6 +252,47 @@ server <- function(input, output, session) {
                                            ),
               caption = paste("Jährlicher Umsatz pro Gerät/AP: ", input$device),
               rownames = FALSE)
+    
+  })
+
+  # all  devices over years ---------------------------------------------------
+  
+    query.all <- sprintf("SELECT MeasurementData.Jahr AS Year, MethodData.Gerät AS Device,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  GROUP BY MeasurementData.Jahr, MethodData.Gerät
+                  ORDER BY MeasurementData.Jahr ASC, MethodData.Gerät ASC")
+  
+    data.all <- dbGetQuery(db, query.all)
+  
+  output$globalChart <- renderPlot({  
+        data.range <- range(data.all$'Txp Umsatz', na.rm = TRUE)
+  
+  
+  # ggplot stacked bar chart
+    ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+      geom_bar(stat = "identity", position = "stack") +
+      labs(x = " ", y = "Txp Umsatz", title = "Jährlicher Txp Umsatz") +
+     # theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+      scale_fill_brewer(palette = "Set1") +
+      scale_y_continuous(labels = function(values) fun.labels(values, data.range))
+  
+  })  
+  
+  output$globalChartRel <- renderPlot({  
+    
+    
+    # ggplot stacked bar chart
+    ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+      geom_bar(stat = "identity", position = "fill") +
+      labs(x = " ", y = "relativer Umsatz", title = "Jährlicher Umsatz, relativ pro Gerät") +
+      #theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
+      scale_fill_brewer(palette = "Set1") 
     
   })
   
@@ -347,7 +401,7 @@ server <- function(input, output, session) {
                   stroke = 0.8, 
                   alpha = 0.8
                   ) + 
-       labs(x = "Jahr", y = "Txp Umsatz", title = paste( input$device, ": Umsatz und Produktionszahlen", lcy," pro Analyt ")) +
+       labs(x = " ", y = "Txp Umsatz", title = paste( input$device, ": Umsatz und Produktionszahlen", lcy," pro Analyt ")) +
        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
        scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
                           #label_number(big.mark = "'", decimal.mark = '.'),  
