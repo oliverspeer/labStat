@@ -455,7 +455,7 @@ ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
   labs(x = " ", y = "Txp Umsatz", title = "Jährlicher Umsatz pro Gerät") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
-  scale_fill_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set2") +
   scale_y_continuous(labels = function(values) fun.labels(values, data.range))
 
 ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
@@ -463,7 +463,7 @@ ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
   labs(x = " ", y = "relativer Txp Umsatz", title = "Jährlicher Umsatz pro Gerät") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
-  scale_fill_brewer(palette = "Set1") 
+  scale_fill_brewer(palette = "Set3") 
 
 
 
