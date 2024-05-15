@@ -189,6 +189,8 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # Create a reactiveValues object to cache plots
+  cachedPlots <- reactiveValues()
 
   # Update Device choices based on the database
   updateSelectInput(session, "device",
@@ -257,6 +259,8 @@ server <- function(input, output, session) {
 
   # all  devices over years ---------------------------------------------------
   
+ 
+    
     query.all <- sprintf("SELECT MeasurementData.Jahr AS Year, MethodData.Gerät AS Device,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
@@ -268,37 +272,71 @@ server <- function(input, output, session) {
   
     data.all <- dbGetQuery(db, query.all)
   
-  output$globalChart <- renderPlot({  
-        data.range <- range(data.all$'Txp Umsatz', na.rm = TRUE)
+ 
+        
   
-  
+   output$globalChart <- renderPlot({ 
+    
+    plotKey <- "globalChart"
+    
+    # Check if the plot is already cached
+    if (!is.null(cachedPlots[[plotKey]])) {
+      return(cachedPlots[[plotKey]])
+    }
+    data.range <- range(data.all$'Txp Umsatz', na.rm = TRUE)
   # ggplot stacked bar chart
-    ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+   p <-  ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
       geom_bar(stat = "identity", position = "stack") +
       labs(x = " ", y = "Txp Umsatz", title = "Jährlicher Txp Umsatz") +
      # theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
       scale_fill_brewer(palette = "Set1") +
       scale_y_continuous(labels = function(values) fun.labels(values, data.range))
+    
+    # Cache the plot
+    cachedPlots[[plotKey]] <- p
+    
+    p
   
   })  
   
   output$globalChartRel <- renderPlot({  
     
+    plotKey <- "globalChartRel"
+    
+    # Check if the plot is already cached
+    if (!is.null(cachedPlots[[plotKey]])) {
+      return(cachedPlots[[plotKey]])
+    }
+    
     
     # ggplot stacked bar chart
-    ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
+    p <- ggplot(data.all, aes(x = Year, y = `Txp Umsatz`, fill = Device)) +
       geom_bar(stat = "identity", position = "fill") +
       labs(x = " ", y = "relativer Umsatz", title = "Jährlicher Umsatz, relativ pro Gerät") +
       #theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14)) +
       scale_fill_brewer(palette = "Set1") 
     
+    # Cache the plot
+    cachedPlots[[plotKey]] <- p
+    
+    p
+    
   })
   
 # Generate plot with yearly data for the selected device-------------------------------
    output$yearlyDevicePlot <- renderPlot({
      req(input$device) 
+     
+     plotKey <- paste("yearlyDevicePlot", input$device, sep = "_")
+     
+     # Check if the plot is already cached
+     if (!is.null(cachedPlots[[plotKey]])) {
+       return(cachedPlots[[plotKey]])
+     }
+     
+     
      query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
@@ -351,6 +389,8 @@ server <- function(input, output, session) {
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
+     # Cache the plot
+     cachedPlots[[plotKey]] <- p
      
      p
        
@@ -360,6 +400,14 @@ server <- function(input, output, session) {
 # Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
    output$yearlyMethodPlot <- renderPlot({
      req(input$device) 
+     
+     plotKey <- paste("yearlyMethodPlot", input$device, sep = "_")
+     
+     # Check if the plot is already cached
+     if (!is.null(cachedPlots[[plotKey]])) {
+       return(cachedPlots[[plotKey]])
+     }
+     
      # query for the last complete year (lcy)
      query.lcy <- sprintf("SELECT DISTINCT MeasurementData.Jahr AS Years 
                        FROM MeasurementData
@@ -392,7 +440,7 @@ server <- function(input, output, session) {
      
      
      # Plot the data
-     ggplot(data.device.a, aes(x = Analyt)) +
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
        geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
        geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `[%] Txp\n Umsatz`), 
                   shape = 21, 
@@ -407,6 +455,11 @@ server <- function(input, output, session) {
                           #label_number(big.mark = "'", decimal.mark = '.'),  
                           sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge")) # +
      # scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    # Cache the plot
+    cachedPlots[[plotKey]] <- p
+    
+    p
 
         }) 
   
