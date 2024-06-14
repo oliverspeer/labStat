@@ -52,11 +52,11 @@ getDatabasePath <- function() {
   # Set the path based on the operating system
   if (os == "Linux") {
     # Path for Ubuntu
-    path <- "/home/olli/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "/home/olli/R_local/labStat/ClinicalChemistry_2.db"
   } else if (os == "Windows") {
     
     # Path for Windows
-    path <- "C:/R_local/labStat/ClinicalChemistry_1.db"
+    path <- "C:/R_local/labStat/ClinicalChemistry_2.db"
   } else {
     stop("Operating system not supported")
   }
@@ -759,6 +759,16 @@ DT.tidy.vh <- fun.write.tidy.data(vh.data,
 # Insert data from DT.tidy.vh into the measurement.data table in the SQLite database
 dbWriteTable(con, "MeasurementData", DT.tidy.vh, append = TRUE, row.names = FALSE)
 
+# adding CBC data to the database------------------------------------------------
+# cbc.data <- fun.read.excel.data("CBC", "cbc.data")
+
+cbc.data <- fun.read.multi.excel.data("CBC", "cbc.data")
+DT.tidy.cbc <- fun.write.tidy.data(cbc.data, 
+                                  #DT.tarif, 
+                                  "DT.tidy.cbc")
+
+# Insert data from DT.tidy.bn into the measurement.data table in the SQLite database
+dbWriteTable(con, "MeasurementData", DT.tidy.cbc, append = TRUE, row.names = FALSE)
 
 
 # Testing the db----------------------------------------------------------------
@@ -831,6 +841,27 @@ dbDisconnect(con)
 #   ))
 # setDT(DT.kc.blood)
 
+
+# add table for reference intervals calculations-----------------------------------------
+
+# dbExecute(con, "DROP TABLE IF EXISTS RefineRData")
+
+dbExecute(con, 
+          "CREATE TABLE IF NOT EXISTS RefineRData (
+          ReferenzID INTEGER PRIMARY KEY AUTOINCREMENT,
+          Bezeichnung TEXT, 
+          Methode INTEGER,
+          Percentile REAL,
+          PointEst REAL,
+          CILow REAL,
+          CIHigh REAL,
+          n INTEGER,
+          Geschlecht TEXT,
+          plot BLOB,
+          file TEXT,
+          FOREIGN KEY(Methode) REFERENCES MethodData(Methode)
+          )"
+          )
 # clone database to have less data for shiny app---------------------------------
 # Function to detect the operating system 
 # and return the corresponding database path
