@@ -1,0 +1,1184 @@
+---
+title:  "Benchmarks Klinische Chemie"
+author: "Oliver Speer"
+date:   "`r Sys.Date()`"
+lang: de
+language: 
+  title-block-author-single: "Autor"
+  title-block-published: "Version vom"
+format: 
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    toc-location: left
+    theme: flatly
+    fig-width: 8
+    fig-height: 6
+    fig-align: "center"
+    fig-caption: true
+    df-print: kable
+    highlight: "monochrome"
+editor: source
+website:
+  navbar:
+    logo: C:\\R_local\\labStat\\www\\logo_pos.png
+---
+
+```{r setup, echo=FALSE, eval=T, message=F, warning=F}
+source("StartUp.R")
+StartUpRoutine()
+
+# setup functions ------------------------------------------------------------
+fun.labels <- function(values, data.range = NULL) {
+  if(is.null(data.range)) {
+    data.range <- range(values, na.rm = TRUE)
+  }
+  max.value <- max(abs(data.range))
+  
+  if (max.value >= 1e6) {
+    return(number(values / 1e6, accuracy = 0.1, suffix = " M"))
+  } else if (max.value >= 1e3) {
+    return(number(values / 1e3, accuracy = 0.1, suffix = " k"))
+  } else {
+    return(number(values))
+  }
+}
+
+```
+
+
+# Jährlicher Umsatz pro Arbeitsplatz
+## AU
+:::: {.columns}
+::: {.column width="60%"}
+
+```{r AU, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+
+# generate an empty data frame
+
+input <- data.frame(device = c("AU5800"), stringsAsFactors = FALSE)
+
+# generate a query to retrieve the data
+query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+data.device$'Delta Aufträge' <- 0
+setDT(data.device)
+
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1))
+
+     }
+ 
+
+
+   
+data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz: ", "AU5800"),
+              rownames = FALSE)
+```
+:::
+
+::: {.column width="40%"}
+
+```{r AUplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+     
+     
+     p
+
+```
+:::
+::::
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-AUumsatz
+#| fig-cap: "Umsatz der verschiedenen AU Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
+
+## DxI
+:::: {.columns}
+::: {.column width="60%"}
+
+```{r DxI, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("DxI"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "DxI800"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+
+::: {.column width="40%"}
+```{r DxIplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+:::
+::::
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-DxIumsatz
+#| fig-cap: "Umsatz der verschiedenen DxI Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
+
+## BNII
+:::: {.columns}
+::: {.column width="60%"}
+
+```{r BNII, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("Nephelometrie"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "BNII"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+::: {.column width="40%"}
+```{r BNIIplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+:::
+::::
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-BNumsatz
+#| fig-cap: "Umsatz der verschiedenen BNII Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
+
+## EP & IFE
+:::: {.columns}
+::: {.column width="60%"}
+
+
+```{r EP_IFE, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("EP_IFE"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "EP & IFE"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+::: {.column width="40%"}
+```{r EPIFEplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+:::
+::::
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = 'EP_IFE' 
+                  AND MeasurementData.Jahr =  '2023' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC")
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-epumsatz
+#| fig-cap: "Umsatz der verschiedenen EP & IFE Analysen in der Spezial-Chemie im Jahr 2023"
+
+(p)
+```
+
+
+## Lc-MS/MS
+:::: {.columns}
+::: {.column width="60%"}
+
+```{r LcMS, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("LcMS"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "Lc-MS/MS"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+::: {.column width="40%"}
+```{r LCMSplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+:::
+::::
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-LcMSumsatz
+#| fig-cap: "Umsatz der verschiedenen LcMS Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
+
+## HPLC
+:::: {.columns}
+::: {.column width="60%"}
+
+
+```{r HPLC, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("HPLC"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "HPLC"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+::: {.column width="40%"}
+```{r HPLCplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+:::
+::::
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-HPLCumsatz
+#| fig-cap: "Umsatz der verschiedenen HPLC Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
+
+## VH4
+:::: {.columns}
+::: {.column width="60%"}
+
+```{r VH4, echo=FALSE,eval=TRUE,message=FALSE, warning=FALSE}
+input <- data.frame(device = c("VH4"), stringsAsFactors = FALSE)
+    query <- sprintf("SELECT strftime('%%Y', Datum) as Year, 
+                       SUM(Txp) as 'Txp Umsatz', 
+                       COUNT (DISTINCT Tagesnummer) as 'Anzahl Aufträge',
+                       COUNT (DISTINCT Fallnummer) as 'Anzahl Fälle'
+                      FROM MeasurementData
+                      JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                      JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                      WHERE MethodData.Gerät = '%s'
+                      GROUP BY Year
+                      ORDER BY Year ASC", input$device)
+    data.device <- dbGetQuery(con, query)
+   
+ # Initialize new column
+    data.device$'Delta Aufträge' <- NA
+    
+    # Convert the data to a data frame and calculate the year-over-year percentage change
+    if(nrow(data.device) > 1)   {
+      data.device$`Delta Aufträge`[-1] <- percent(diff(data.device$`Anzahl Aufträge`)/head(data.device$`Anzahl Aufträge`, -1)) 
+      
+    }
+    
+    data.device <- data.device |>
+      mutate(across(.cols = where(is.numeric), 
+                    .fns = ~ format(., decimal.mark = ".", big.mark = "'")))
+    # render the data table
+    datatable(data.device, options = list(
+                            hover = TRUE, 
+                            pageLength =3, 
+                            lengthChange = TRUE,
+                            searching = FALSE,
+                            ordering = TRUE,
+                            order = list(0, "desc")
+                                           ),
+              caption = paste("Jährlicher Umsatz pro Gerät/AP: ", "VH4"),
+              rownames = FALSE)  
+       
+```    
+:::
+
+::: {.column width="40%"}
+```{r VH4plot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
+                       COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s'
+                  GROUP BY MeasurementData.Jahr
+                  ORDER BY MeasurementData.Jahr ASC", input$device)
+     data.device.y <- dbGetQuery(con, query)
+     
+     # Initialize new column
+     data.device.y$'Delta Aufträge' <- 0
+     setDT(data.device.y)
+     
+     # calculate the year-over-year percentage change
+     if(nrow(data.device.y) >1) {
+       data.device.y[, `Delta Aufträge` := ( `Anzahl Aufträge` - shift(`Anzahl Aufträge`) )/shift(`Anzahl Aufträge`)*100]
+       
+       # identify the last complete year
+       lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
+       
+       # calculate the year fraction
+       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       
+       # Identify and adjust counts for the current year
+       data.device.y <- data.device.y %>%
+         lazy_dt(immutable = FALSE) %>%
+         mutate(`Txp Umsatz*` = ifelse(Year == year(today()), `Txp Umsatz` / yearFraction, `Txp Umsatz`),
+                `Anzahl Aufträge*` = ifelse(Year == year(today()) , `Anzahl Aufträge` / yearFraction, `Anzahl Aufträge`),
+                `Anzahl Fälle*` = ifelse(Year == year(today()), `Anzahl Fälle` / yearFraction, `Anzahl Fälle`)) |> as.data.table()
+       
+     }
+     
+     data.range <- range(data.device.y$'Txp Umsatz*', na.rm = TRUE)
+     
+     # Plot the data
+     p <- ggplot(data.device.y, aes(x = Year)) +
+       geom_point(aes(y = `Txp Umsatz*`), size = 5, shape = 21,  fill = "red", color = "darkgreen", stroke = 0.8, alpha = 0.8) +
+       geom_smooth(aes(y = `Txp Umsatz*`, group = 1),
+                   method = 'loess',
+                   formula = y ~ x,
+                   se = FALSE,
+                   color = 'red') +
+       # geom_line(aes(y = `Txp Umsatz*`, group = 1), color = 'red') +
+       labs(size = 25, x = " ", y = "Txp Umsatz", title = paste(input$device, "Jährlicher Txp-Umsatz" )) +
+       # theme_minimal() +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 14))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
+       scale_x_continuous(breaks = unique(data.device.y$Year))
+    
+    
+     
+     p
+
+```
+
+:::
+::::
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+# Generate plot with yearly Txp & Count data per method for the selected device-------------------------------
+
+     query <- sprintf("SELECT MeasurementData.Jahr AS Year, MeasurementData.Bezeichnung AS Analyt,
+                       SUM(Txp) AS 'Txp Umsatz', 
+                       COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge'
+                  FROM MeasurementData
+                  JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2024' 
+                  GROUP BY MeasurementData.Jahr, MeasurementData.Methode
+                  ORDER BY MeasurementData.Jahr ASC, MeasurementData.Methode ASC", input$device)
+     
+     data.device.a <- dbGetQuery(con, query)
+     
+     # calculate 'Txp' as percentage of total
+     data.device.a$'Umsatz [%]' <- data.device.a$'Txp Umsatz' / sum(data.device.a$'Txp Umsatz') * 100
+     
+     # calculate ranges and factors for axis scaling
+     data.range <- range(data.device.a$'Txp Umsatz', na.rm = TRUE)
+     scaling.factor <- max(abs(data.range))/max(data.device.a$'Anzahl Aufträge', na.rm = TRUE)
+     
+     
+     # Plot the data
+    p <-  ggplot(data.device.a, aes(x = Analyt)) +
+       geom_col(aes(y = `Txp Umsatz`), fill = "red", color = "darkgreen", alpha = 0.8) +
+       geom_point(aes(y = scaling.factor*`Anzahl Aufträge`, size = `Umsatz [%]`), 
+                  shape = 21, 
+                  fill = "lightblue", 
+                  color = "navy", 
+                  stroke = 0.8, 
+                  alpha = 0.8
+                  ) + 
+       labs(x = " ", y = "Umsatz [CHF]", title = " ") +
+       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+             axis.text.y = element_text(size = 8),
+             axis.title.y = element_text(size = 10))  +
+       scale_y_continuous(labels = function(values) fun.labels(values, data.range), 
+                          #label_number(big.mark = "'", decimal.mark = '.'),  
+                          sec.axis = sec_axis(~. /scaling.factor, name = "Anzahl Aufträge"))
+    
+# disconnect from database
+# dbDisconnect(db)
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+#| label: fig-VH4umsatz
+#| fig-cap: "Umsatz der verschiedenen VH4 Analysen in der Hochdurchsatz-Chemie im Jahr 2024"
+
+(p)
+```
