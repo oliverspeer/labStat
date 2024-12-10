@@ -306,3 +306,105 @@ p <- ggplot(result, aes(x = Analyt, y = out_of_range_percentage, fill = Sex)) +
 p
 
 ```
+
+
+```{r}
+# Hinzufügen einer Spalte, die angibt, ob der Wert außerhalb des Referenzintervalls liegt
+data.device.RI <- data.device.RI  |> 
+  mutate(
+    out_of_range = case_when(
+      Sex == "M" & (Result < REF_L_M | Result > REF_H_M) ~ TRUE,
+      Sex == "F" & (Result < REF_L_F | Result > REF_H_F) ~ TRUE,
+      TRUE ~ FALSE
+    )
+  )
+
+# Berechnung der Anteile der Werte außerhalb des Referenzintervalls nach Geschlecht
+result <- data.device.RI  |> 
+  group_by(Sex)  |> 
+  # group_by(Analyt)  |>
+  summarise(
+    total = n(),
+    out_of_range_count = sum(out_of_range),
+    out_of_range_percentage = (out_of_range_count / total) * 100
+  )
+
+
+```
+
+```{r}
+# Erstellen eines Balkendiagramms
+p <- ggplot(result, aes(x = Sex, y = out_of_range_percentage, fill = Sex)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(x = " ", y = "Resultate ausserhalb des Referenzintervalls (%)", title = "DxI: Anteil der Werte ausserhalb des Referenzintervalls") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+p
+
+```
+
+
+```{r}
+input <- data.frame(device = c("AU5800"), stringsAsFactors = FALSE)
+query <- sprintf("SELECT MeasurementData.Tagesnummer AS TaNu,
+                         CAST(MethodData.Methode AS INTEGER) AS MethodNr,
+                         MeasurementData.Bezeichnung AS Analyt,
+                         MeasurementData.Geschlecht AS Sex,
+                         CAST(MeasurementData.Werte AS DECIMAL(10, 2)) AS Result,
+                         CAST(MethodData.REF_L_M AS DECIMAL(10, 2)) AS REF_L_M,
+                         CAST(MethodData.REF_H_M AS DECIMAL(10, 2)) AS REF_H_M,
+                         CAST(MethodData.REF_L_W AS DECIMAL(10, 2)) AS REF_L_F,
+                         CAST(MethodData.REF_H_W AS DECIMAL(10, 2)) AS REF_H_F
+                  FROM MeasurementData
+                  -- JOIN TarifData ON MeasurementData.Methode = TarifData.Methode
+                  JOIN MethodData ON MeasurementData.Methode = MethodData.Methode
+                  WHERE MethodData.Gerät = '%s' 
+                  AND MeasurementData.Jahr =  '2023' 
+                  -- GROUP BY MeasurementData.Methode
+                  --  BY MeasurementData.Methode ASC
+                 ;",
+                 input$device)
+
+data.AU.RI <- dbGetQuery(con, query) |> na.omit() |> filter(Sex !=" ")
+data.AU.RI$Sex <- as.factor(data.AU.RI$Sex)
+
+```
+
+```{r}
+# Hinzufügen einer Spalte, die angibt, ob der Wert außerhalb des Referenzintervalls liegt
+data.AU.RI <- data.AU.RI  |> 
+  mutate(
+    out_of_range = case_when(
+      Sex == "M" & (Result < REF_L_M | Result > REF_H_M) ~ TRUE,
+      Sex == "F" & (Result < REF_L_F | Result > REF_H_F) ~ TRUE,
+      TRUE ~ FALSE
+    )
+  )
+
+# Berechnung der Anteile der Werte außerhalb des Referenzintervalls nach Geschlecht
+result.AU <- data.AU.RI  |> 
+  group_by(Sex
+           #, Analyt
+           )  |> 
+  # group_by(Analyt)  |>
+  summarise(
+    total = n(),
+    out_of_range_count = sum(out_of_range),
+    out_of_range_percentage = (out_of_range_count / total) * 100
+  )
+
+
+```
+
+```{r}
+# Erstellen eines Balkendiagramms
+p <- ggplot(result.AU, aes(x = Sex, y = out_of_range_percentage, fill = Sex)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(x = " ", y = "Resultate ausserhalb des Referenzintervalls (%)", title = "AU: Anteil der Werte ausserhalb des Referenzintervalls") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+p
+
+```
