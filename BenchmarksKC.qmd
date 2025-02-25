@@ -108,6 +108,7 @@ datatable(data.device, options = list(
 ```{r AUplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -122,6 +123,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -131,7 +133,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -268,6 +271,7 @@ input <- data.frame(device = c("DxI"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r DxIplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -282,6 +286,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -291,7 +296,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -319,7 +325,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
 
@@ -428,6 +434,7 @@ input <- data.frame(device = c("Nephelometrie"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r BNIIplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -442,6 +449,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -451,7 +459,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -479,7 +488,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
 
@@ -589,6 +598,7 @@ input <- data.frame(device = c("EP_IFE"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r EPIFEplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -603,6 +613,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -612,7 +623,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -640,7 +652,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
 
@@ -750,6 +762,7 @@ input <- data.frame(device = c("LcMS"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r LCMSplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -764,6 +777,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -773,7 +787,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -801,10 +816,9 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
-
 ```
 :::
 ::::
@@ -911,6 +925,7 @@ input <- data.frame(device = c("HPLC"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r HPLCplot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -925,6 +940,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -934,7 +950,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -962,7 +979,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
 
@@ -1070,6 +1087,7 @@ input <- data.frame(device = c("VH4"), stringsAsFactors = FALSE)
 ::: {.column width="40%"}
 ```{r VH4plot, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 query <- sprintf("SELECT MeasurementData.Jahr AS Year, 
+                         MAX(MeasurementData.Datum) as Datum,
                        SUM(Txp) AS 'Txp Umsatz', 
                        COUNT(DISTINCT Tagesnummer) AS 'Anzahl Aufträge',
                        COUNT(DISTINCT Fallnummer) AS 'Anzahl Fälle'
@@ -1084,6 +1102,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
      # Initialize new column
      data.device.y$'Delta Aufträge' <- 0
      setDT(data.device.y)
+     data.device.y$Datum <- as.Date(data.device.y$Datum, format = "%Y-%m-%d")
      
      # calculate the year-over-year percentage change
      if(nrow(data.device.y) >1) {
@@ -1093,7 +1112,8 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        lastCompleteYear <-  max(data.device.y$Year[data.device.y$Year < year(today())])
        
        # calculate the year fraction
-       yearFraction <- yday(today()) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       #yearFraction <- yday(today()-11) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
+       yearFraction <- yday(data.device.y$Datum[data.device.y$Year == year(today())]) / yday(as.Date(paste(year(today()), "12-31", sep = "-")))
        
        # Identify and adjust counts for the current year
        data.device.y <- data.device.y %>%
@@ -1121,7 +1141,7 @@ query <- sprintf("SELECT MeasurementData.Jahr AS Year,
        scale_y_continuous(labels = function(values) fun.labels(values, data.range)) +
        scale_x_continuous(breaks = unique(data.device.y$Year))
     
-    
+     
      
      p
 
